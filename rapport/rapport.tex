@@ -2,7 +2,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage[francais]{babel}
 \usepackage[pdftex]{graphicx}
-
 \usepackage{amsmath}
 \usepackage{amssymb} 
 \usepackage{algorithm} 
@@ -114,7 +113,7 @@ Enfin, nous définirons une clique \textit{maximum} comme étant la clique de pl
   \node[vertex](v4) at (3, 0){4};
   \node[vertex](v5) at (4, 2){5};
   \node[vertex](v6) at (6, 1){6};
-
+  
   \draw[-](v1)--(v2);
   \draw[-](v2)--(v3);
   \draw[-](v3)--(v4);
@@ -145,12 +144,44 @@ Initialiement, $ SUBG \leftarrow V $ et $ CAND \leftarrow V $. L'objectif est d'
 Soit $ Q = \{v_1, v_2, ..., v_d\} $ la clique courante.
 Alors $ SUBG = V \cap N(v_1) \cap N(v_2) \cap ... \cap N(v_d)$, c'est à dire l'ensemble des nœuds voisins de tout nœud appartenant à \emph{Q}. L'algorithme selectionne alors  un noeud $ u \in SUBG $ et l'ajoute à \emph{Q} et ceci pour tout nœud dans \emph{SUBG}. Cela egendre un appel récursif avec $ SUBG = SUBG \cap N(u) $. \emph{u} sera retiré de \emph{CAND} après l'exécution de l'appel récursif lors du \textit{backtracking}. \\
 
-Le noeud \emph{u} choisi est appelé le \textit{pivot}. Il existe plusieurs facon de choisir ce pivot. Afin de ne pas engendrer trop d'appel récursif, Conte et Tomita\cite{contetomita} décrivent un bon pivot \emph{u} comme étant un noeud de \emph{SUBG} qui minimise $ | CAND \cap N(u) |$
+Le noeud \emph{u} choisi est appelé le \textit{pivot}. Il existe
+plusieurs facon de choisir ce pivot. Afin de ne pas engendrer trop
+d'appel récursif, Conte et Tomita\cite{contetomita} décrivent un bon
+pivot \emph{u} comme étant un noeud de \emph{SUBG} qui minimise
+$ | CAND \cap N(u) |$
 
 
+Ensuite, nous choisissons un noeuds $ p $ parmi les candidats possible
+pour la clique courante qui se trouve dans le voisinage de $ u $,
+c'est à dire dans $ CAND \setminus N(u) $.\\
+Nous ferons évoluer \emph{SUBG} en fonction de l'ajout ou non de \emph{p} comme suit : $$ SUBG_p = SUBG \cap G(p) $$ Une clique maximale est trouvée lorsque \emph{SUBG} est vide. C'est à dire qu'il n'y a plus de nœud dans \emph{G} qui soient voisins de tout nœud dans \emph{Q}. \\
 
-Nous ferons évoluer \emph{SUBG} en fonction de l'ajout ou non de \emph{u} comme suit : $$ SUBG_u = SUBG \cap G(u) $$ Une clique maximale est trouvée lorsque \emph{SUBG} est vide. C'est à dire qu'il n'y a plus de nœud dans \emph{G} qui soient voisins de tout nœud dans \emph{Q}. \\
-
+Ci-dessous le pseudo-code de l'algorithme décrit précédement.
+\begin{algorithm}
+  \caption{CLIQUES}
+  \textbf{Input}: un graphe $G = (V,E)$\\
+  \textbf{Output}: toutes les cliques maximales de $G$
+  \begin{algorithmic}[1]
+    \Procedure{CLIQUES}{$SUBG, CAND$}
+      \If{$SUBG = \emptyset$} \Comment{$Q$ est une clique maximale}
+        \State \textbf{print} ($ Q $)
+      \Else
+        \State $u \gets$ un noeud de $SUBG$ qui maximise $|CAND \cap N(u)|$
+        \While{$CAND \setminus N(u) \neq \emptyset$}
+          \State $p \gets$ un noeud dans $CAND \setminus N(u)$
+          \State $ Q \cup p $ \Comment{on ajoute p à $Q$}
+          \State // Mise à jour des paramètres
+          \State $SUBG_p \gets SUBG \cap N(p)$
+          \State $CAND_p \gets CAND \cap N(p)$
+          \State \Call{Cliques}{$SUBG_p, CAND_p$}
+          \State $CAND \gets CAND \setminus {p}$
+          \State $ Q \setminus p $ \Comment{on retire p de $Q$}
+        \EndWhile
+      \EndIf
+    \EndProcedure
+    \State \Call{Cliques}{$V,V$}
+  \end{algorithmic}
+\end{algorithm}
 
 \section{Conclusion}
 
@@ -162,3 +193,8 @@ Nous ferons évoluer \emph{SUBG} en fonction de l'ajout ou non de \emph{u} comme
 \end{thebibliography}
 
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

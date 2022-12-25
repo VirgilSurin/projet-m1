@@ -5,3 +5,5 @@
 *.toc
 ./rapport/rapport.pdf
 rapport.pdf
+/rapport/auto/
+*.gz
