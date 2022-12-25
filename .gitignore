@@ -1,3 +1,7 @@
 ./rapport/auto/*
 *.aux
 *.log
+*.out
+*.toc
+./rapport/rapport.pdf
+rapport.pdf
