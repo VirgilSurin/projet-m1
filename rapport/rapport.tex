@@ -141,20 +141,23 @@ CLIQUE est une procédure récursive. Il introduit un ensemble \emph{Q} vide rep
 
 Initialiement, $ SUBG \leftarrow V $ et $ CAND \leftarrow V $. L'objectif est d'énumérer toutes les cliques maximales dans le sous-graphe induit par \emph{SUBG} en étendant la clique courante \emph{Q} avec des noeuds candidats dans \emph{CAND}. \\
 
-Soit $ Q = \{v_1, v_2, ..., v_d\} $ la clique courante.
-Alors $ SUBG = V \cap N(v_1) \cap N(v_2) \cap ... \cap N(v_d)$, c'est à dire l'ensemble des nœuds voisins de tout nœud appartenant à \emph{Q}. L'algorithme selectionne alors  un noeud $ u \in SUBG $ et l'ajoute à \emph{Q} et ceci pour tout nœud dans \emph{SUBG}. Cela egendre un appel récursif avec $ SUBG = SUBG \cap N(u) $. \emph{u} sera retiré de \emph{CAND} après l'exécution de l'appel récursif lors du \textit{backtracking}. \\
-
-Le noeud \emph{u} choisi est appelé le \textit{pivot}. Il existe
-plusieurs facon de choisir ce pivot. Afin de ne pas engendrer trop
-d'appel récursif, Conte et Tomita\cite{contetomita} décrivent un bon
-pivot \emph{u} comme étant un noeud de \emph{SUBG} qui minimise
-$ | CAND \cap N(u) |$
+Soit $ Q = \{p_1, p_2, ..., p_d\} $ la clique courante.
+Alors $ SUBG = V \cap N(p_1) \cap N(p_2) \cap ... \cap N(p_d)$, c'est à dire l'ensemble des nœuds voisins de tout
+nœud appartenant à \emph{Q}. L'algorithme selectionne alors  un noeud $ p \in SUBG $ et l'ajoute à \emph{Q} et
+ceci pour tout nœud dans \emph{SUBG}. Cela egendre un appel récursif avec $ SUBG_p = SUBG \cap N(p) $ et $ CANDp = CAND \cap N(p) $. \emph{p} sera retiré de $ CAND $ après l'exécution de l'appel récursif lors du \textit{backtracking}. \\
 
 
-Ensuite, nous choisissons un noeuds $ p $ parmi les candidats possible
-pour la clique courante qui se trouve dans le voisinage de $ u $,
-c'est à dire dans $ CAND \setminus N(u) $.\\
-Nous ferons évoluer \emph{SUBG} en fonction de l'ajout ou non de \emph{p} comme suit : $$ SUBG_p = SUBG \cap G(p) $$ Une clique maximale est trouvée lorsque \emph{SUBG} est vide. C'est à dire qu'il n'y a plus de nœud dans \emph{G} qui soient voisins de tout nœud dans \emph{Q}. \\
+Afin de ne pas engendrer trop d'appel récursif, nous pouvons choisir
+inteligemment un noeud \textit{u} qui nous appèlerons le \textit{pivot}. Il existe plusieurs facon de choisir
+ce pivot. Conte et Tomita\cite{contetomita} décrivent un bon pivot \emph{u} comme étant un noeud de
+\emph{SUBG} qui maximise $ | CAND \cap N(u) |$. Un tel pivot va ainsi minimiser $ |CAND \setminus N(u)| $, ce
+qui est intéressant car toute clique maximale $ Q' $ dans $ SUBG \cap N(u) $ n'est pas maximale dans
+$ G(SUBG) $ car il est possible d'ajouter $ u $ à cette clique. Ainsi, toute clique maximale contien soit
+\textit{u} soit un noeud dans $ SUBG \setminus N(u)$. Il n'est donc pas nécessaire d'explorer les voisins de
+$ u $ dans ce cas. \\
+Cela explique pourquoi $ u $ est un bon pivot, car maximiser $ | CAND \cap N(u) | $ va minimiser
+$ CAND \setminus N(u)$ et donc minimiser le nombre d'appel.
+
 
 Ci-dessous le pseudo-code de l'algorithme décrit précédement.
 \begin{algorithm}
@@ -182,6 +185,8 @@ Ci-dessous le pseudo-code de l'algorithme décrit précédement.
     \State \Call{Cliques}{$V,V$}
   \end{algorithmic}
 \end{algorithm}
+
+La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $.
 
 \section{Conclusion}
 
