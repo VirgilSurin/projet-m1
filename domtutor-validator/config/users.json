@@ -1,0 +1,43 @@
+{
+  "users": [
+    {
+      "login": "admin",
+      "display_name": "Admin",
+      "email": "admin@localhost",
+      "role": "admin",
+      "password_hash": "$2b$12$uY9TMbUjcdarkPe6OcSOG.KSbSEcfyZMYZRqhxjjyJVNQT.btJeyS"
+    },
+    {
+      "login": "virgil",
+      "display_name": "Virgil",
+      "email": "virgil.surin@student.umons.ac.be",
+      "role": "participant",
+      "password_hash": "$2b$12$uY9TMbUjcdarkPe6OcSOG.KFvfrNubh2INW4iR68XQa6bL0EM23ja"
+    }
+  ],
+  "affiliations": [
+    {
+      "short_name": "Umons",
+      "name": "Umons"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Virgil",
+      "display_name": "Virgil",
+      "category": "participants",
+      "members": [
+        "virgil"
+      ],
+      "affiliation": "Umons"
+    },
+    {
+      "name": "admin_team",
+      "display_name": "Admin",
+      "category": "jury",
+      "members": [
+        "admin"
+      ]
+    }
+  ]
+}

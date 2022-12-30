@@ -1,0 +1,16 @@
+{
+  "key": "projet-m1",
+  "name": "Projet M1 - maximal cliques",
+  "activate": "2022-12-29T15:00:00 Europe/Brussels",
+  "start": "2022-12-29T15:00:00 Europe/Brussels",
+  "end": "2023-01-12T15:00:00 Europe/Brussels",
+  "problems": [
+    {
+      "name": "1",
+      "points": 1,
+      "color": "blue",
+      "problem": "validate_cliques"
+    }
+  ],
+  "deactivate": "2023-01-13T15:00:00 Europe/Brussels"
+}

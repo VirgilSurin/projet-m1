@@ -1,0 +1,11 @@
+* install networkx in pypy !
+to do this run :
+#+begin_src bash 
+  /usr/bin/pypy3 -m ensurepip
+#+end_src
+
+then
+#+begin_src bash 
+  pypy3 -m pip install networkx
+#+end_src
+
