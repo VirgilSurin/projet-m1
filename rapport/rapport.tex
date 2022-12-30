@@ -188,6 +188,15 @@ Ci-dessous le pseudo-code de l'algorithme décrit précédement.
 
 La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $.
 
+\section{DOMTutor -Système de vérification}
+
+Afin de pouvoir tester le plus exhaustivement possible l'exactitude des algorithmes qui vont être implémenter lors de ce projet, j'ai adapté le système \textbf{DOMtutor}\cite{domtutor}, étant lui-même une adaptation de \textbf{DOMjudge}\cite{domjudge}.
+
+DOMtutor est un système utilisé lors de concours d'algorithmie et permet à des équipes de soumettre un code qui a pour but de résoudre un problème donné. Ce code sera ensuite lancé sur plusieurs \textit{test cases} écrit au préalable par un jury. DOMtutor comparera ensuite la réponse du code soumis avec les réponses données par les codes fournis par les jury. \\
+
+Dans le cadre de l'énumération des cliques maximales dans un graph, j'ai pris comme \textit{test cases} l'ensemble de tout les graphes d'ordre 6 au format g6. Comme code \og solution \og , j'ai utilisé la librairie \textit{NetworkX} afin d'énumérer toutes les cliques maximales.
+% TODO finish this
+
 \section{Conclusion}
 
 % TODO
@@ -195,6 +204,9 @@ La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $.
 \newpage
 \begin{thebibliography}{unsrt}
 \bibitem{contetomita} Alessio Conte et Etsuji Tomita :  \textit{"On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms"} -  12/11/2021
+\bibitem{domtutor} \url{https://www.domjudge.org/} par Jaap Eldering, Nicky Gerritsen, Keith Johnson, Thijs Kinkhorst, Mart Pluijmaekers, Michael Vasseur and Tobias Werth - consulté le 30/12/2022 à 17h05
+\bibitem{domjudge} \url{https://github.com/DOMtutor} par Tobias Meggendorfer - consulté le 30/12/2022 à 17h10
+\bibitem{networkx} \url{https://networkx.org} - consulté le 30/12/2022 à 17h15
 \end{thebibliography}
 
 \end{document}
