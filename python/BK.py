@@ -72,6 +72,17 @@ def decode_g6(bytes_in):
 # <<<=== END OF UTILITY ===>>>
 
 def BK(SUBG: set, CAND: set, Q: list, G: Graph):
+    """
+    :param SUBG: set of vertices in the current subgraph
+    :param CAND: set of vertices in the current candidate set
+    :param Q: current clique
+    :param G: a graph represented by it's adjecency list
+
+    Print all maximal cliques of G.
+    The implementation is based on the BK algorithm described in
+    the paper "On the overall and delay complexity of the CLIQUES and
+Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
+    """
     if len(SUBG) == 0:
         print(" ".join(map(str, Q)))
     else:
