@@ -1,3 +1,5 @@
+import random
+
 # <<<=== START OF UTILITY ===>>>
 class Graph:
     def __init__(self, order):
@@ -71,8 +73,8 @@ def decode_g6(bytes_in):
     return G
 # <<<=== END OF UTILITY ===>>>
 
-# CLIQUES algorithm
-def CLIQUES(SUBG: set, CAND: set, Q: list, G: Graph):
+# BKP algorithm
+def BKP_R(SUBG: set, CAND: set, Q: list, G: Graph):
     """
     :param SUBG: set of vertices in the current subgraph
     :param CAND: set of vertices in the current candidate set
@@ -80,7 +82,7 @@ def CLIQUES(SUBG: set, CAND: set, Q: list, G: Graph):
     :param G: a graph represented by it's adjecency list
 
     Print all maximal cliques of G.
-    The implementation is based on the CLIQUES algorithm described in
+    The implementation is based on the BKP_R algorithm described in
     the paper "On the overall and delay complexity of the CLIQUES and
 Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita. 
     
@@ -88,13 +90,13 @@ Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
     if len(SUBG) == 0:
         print(" ".join(map(str, Q)))
     else:
-        u = max(SUBG, key=lambda u: len(CAND & G.adj[u]))        
+        u = random.choice(list(G.adj.keys()))
         for p in CAND - G.adj[u]:
             p_neighbors = G.adj[p]
             Q.append(p)
             SUBG_p = SUBG & p_neighbors
             CAND_p = CAND & p_neighbors
-            CLIQUES(SUBG_p, CAND_p, Q, G)
+            BKP_R(SUBG_p, CAND_p, Q, G)
             Q.pop()
             CAND.remove(p)
                 
@@ -102,5 +104,5 @@ Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
 if __name__ == '__main__':
     g6 = input()
     G = decode_g6(g6.encode())
-    CLIQUES(set(G.adj.keys()), set(G.adj.keys()), [], G)
+    BKP_R(set(G.adj.keys()), set(G.adj.keys()), [], G)
         
