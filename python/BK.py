@@ -33,3 +33,4 @@ if __name__ == "__main__":
     G = decode_g6(g6.encode())
     res = []
     BK(set(G.adj.keys()), set(G.adj.keys()), [], G, res)
+    # coucou
