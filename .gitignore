@@ -8,3 +8,4 @@ rapport.pdf
 /rapport/auto/
 *.gz
 domtutor-validator/venv
+/python/__pycache__/
