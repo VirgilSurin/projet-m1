@@ -19,9 +19,9 @@ Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
     """
     if len(SUBG) == 0:
         result.append(" ".join(map(str, Q)))
-        print(" ".join(map(str, Q)))
+        # print(" ".join(map(str, Q)))
     else:
-        u = random.choice(list(G.adj.keys()))
+        u = random.choice(list(SUBG))
         for p in CAND - G.adj[u]:
             p_neighbors = G.adj[p]
             Q.append(p)
