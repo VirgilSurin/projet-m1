@@ -1,4 +1,8 @@
 * Projet de master 1 - Virgil Surin - Théorie des graphes
+Auteur : Virgil Surin
+
 Directeur : Hadrien Mélot
+
 Co-directeur : Sébastien Bonte
-2022-2023
+
+2023-2024
