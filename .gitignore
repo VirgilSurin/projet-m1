@@ -9,3 +9,6 @@ rapport.pdf
 *.gz
 domtutor-validator/venv
 /python/__pycache__/
+/rapport/.auctex-auto/
+/rapport/rapport.fdb_latexmk
+/rapport/rapport.fls

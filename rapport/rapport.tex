@@ -82,7 +82,10 @@ L'objectif de ce projet est d'implémenter les algorithmes présentés et de con
 
 Nous commencerons par un rappel des notions et notations utilisées, suivi d'une présentation des différents algorithmes implémenter pour terminer par la comparaison d'efficacité en temps de ceux-ci.
 
-\subsection{Quelques notions de bases} 
+\section{Les graphes}%
+\label{sec:graphes}
+
+\subsection{Notions de bases}
 
 Dans ce rapport, nous allons définir un graphe simple non orienté \emph{G(V, E)} comme étant un ensemble de nœuds \emph{V} reliés par des arêtes. Nous notons l'ensemble des arêtes comme étant l'ensemble \emph{E}. Une arêtes est définie comme un tuple $ (v, v') $ où $ v $ et $ v' $ sont les 2 nœuds réliés par l'arête. Les nœuds peuvent être étiquetés pour plus de lisibilité. \\
 
@@ -93,7 +96,8 @@ Nous définissons l'ordre \emph{m} d'un graphe comme étant $ |V| $ et sa taille
 
 Soit $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG(W, E(W))} un sous-graphe de \emph{G}.
 
-\subsection{Définition d'une \textit{clique}}
+\subsection{Les cliques}%
+\label{subsec:cliques}
 
 Une \textit{clique} \emph{C} est un sous-ensemble de nœuds de $ V $ tel que tous les nœuds de $ C $ sont voisins entre-eux. C'est-à-dire :
 $$ \forall v, w \in C | (v, w)\in V \ avec\  v \neq w$$
@@ -129,6 +133,15 @@ Enfin, nous définirons une clique \textit{maximum} comme étant la clique de pl
 Dans le graphe \ref{fig:x example graph}, l'ensemble $ \{3, 4\} $ est une clique non maximale car il est possible d'y ajouter le noeud $ 5 $, celui-ci étant voisin de $ 3 $ et de $ 4 $.
 
 $ \{3, 4, 5\}$ est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum).
+
+\subsection{Le problème d'énumération des cliques dans un graphe}
+Ce problème consiste, dans un graphe simple, à énumérer toutes les cliques maximales de celui-ci. L'ordre dans lequel celles-ci sont listées n'est pas important.
+
+Exemple :
+% TODO
+
+\subsection{Complexité du probleme}
+Le problème d'énumération de toutes les cliques maximales dans un graphe simple est un problème appartenant à la classe NP-Complet.
 
 
 \section{Algorithmes}
@@ -188,16 +201,19 @@ Ci-dessous le pseudo-code de l'algorithme décrit précédement.
 
 La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $\cite{contetomita}.
 
-\section{DOMTutor -Système de vérification}
+\section{Tests}%
+\label{sec:tests}
+Cette section est dédiée aux tests de performances réalisé dans le cadre de ce projet. Les différents elgorithmes testés sont les suivants
 
-Afin de pouvoir tester le plus exhaustivement possible l'exactitude des algorithmes qui vont être implémenter lors de ce projet, j'ai adapté le système \textbf{DOMtutor}\cite{domtutor}, étant lui-même une adaptation de \textbf{DOMjudge}\cite{domjudge}.
+\subsection{Méthodologie}%
+\label{subsec:methodo}
+Explication de la méthodo pour les temps
 
-DOMtutor est un système utilisé lors de concours d'algorithmie et permet à des équipes de soumettre un code qui a pour but de résoudre un problème donné. Ce code sera ensuite lancé sur plusieurs \textit{test cases} écrit au préalable par un jury. DOMtutor comparera ensuite la réponse du code soumis avec les réponses données par les codes fournis par les jury. \\
+\subsection{Tests sets}%
+\label{subsec:sets}
 
-Dans le cadre de l'énumération des cliques maximales dans un graph, j'ai pris comme \textit{test cases} l'ensemble de tout les graphes d'ordre 6 au format g6. Comme code \textit{solution}, j'ai utilisé la librairie \textit{NetworkX} afin d'énumérer toutes les cliques maximales.
+Explications des différents input de tests.
 
-L'avantage de ce système est qu'il peut tourner sur un serveur ce qui permet de bénéficier de plus de puissance. Ici j'ai fourni dans le .zip l'ensemble du système afin de le faire tourner en local.
-% TODO finish this
 
 \section{Conclusion}
 
@@ -206,8 +222,6 @@ L'avantage de ce système est qu'il peut tourner sur un serveur ce qui permet de
 \newpage
 \begin{thebibliography}{unsrt}
 \bibitem{contetomita} Alessio Conte et Etsuji Tomita :  \textit{"On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms"} -  12/11/2021
-\bibitem{domtutor} \url{https://www.domjudge.org/} par Jaap Eldering, Nicky Gerritsen, Keith Johnson, Thijs Kinkhorst, Mart Pluijmaekers, Michael Vasseur and Tobias Werth - consulté le 30/12/2022 à 17h05
-\bibitem{domjudge} \url{https://github.com/DOMtutor} par Tobias Meggendorfer - consulté le 30/12/2022 à 17h10
 \bibitem{networkx} \url{https://networkx.org} - consulté le 30/12/2022 à 17h15
 \end{thebibliography}
 

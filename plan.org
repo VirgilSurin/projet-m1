@@ -1,0 +1,27 @@
+#+title: Plan
+
+* Introduction
+Explications du projet et de son objectif
+- Objectif principal
+- motivations
+- plans du rapport
+* Les graphes
+Chapitre expliquant les notions que nous allons utiliser
+** Notions de bases
+** Les cliques
+** Le probleme d'enumeration des cliques maximales dans un graphe simple
+- définition du problème
+- complexité
+
+* Algorithmes
+** CLIQUES
+** BK
+
+* Tests de performances
+** Methodologie
+** Tests sets
+** Résultats
+
+* Conclusion
+
+* Bibliographie
