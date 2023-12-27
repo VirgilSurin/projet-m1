@@ -94,7 +94,68 @@ Nous notons les voisins d'un nœud \emph{v} par \emph{N(v)}.\\
 
 Nous définissons l'ordre \emph{m} d'un graphe comme étant $ |V| $ et sa taille \emph{m} comme $ |E| $. \\
 
-Soit $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG(W, E(W))} un sous-graphe de \emph{G}.
+Dans la figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \textit{a} dont l'ensemble des noeuds \(V\) est l'ensemble \(\{1, 2, 3\}\). L'ensemle des arretes \(E\) quant a lui est l'ensemble \(\{(1,2), (2,3)\}\). Le graphe \textit{a} est un graphe d'ordre 3 et de taille 2. De la meme facon, pour le graphe \textit{b} on a \(V = \{1, 2, 3, 4, 5\}\) et \(E = \{(1,2), (2,3), (4,5)\}\). \textit{b} est d'ordre 5 et de taille 3. \\
+
+\begin{figure}[h]
+
+  \begin{subfigure}[b]{0.50\textwidth}
+    \centering
+        \begin{tikzpicture}
+          \tikzstyle{vertex}=[circle,fill=black!10]
+
+          \node[vertex](v1) at (0, 0){1};
+          \node[vertex](v2) at (0, 2){2};
+          \node[vertex](v3) at (2, 2){3};
+
+          \draw[-](v1)--(v2);
+          \draw[-](v2)--(v3);
+
+        \end{tikzpicture}
+        \caption{}
+        \label{fig:x g1}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.50\textwidth}
+    \centering
+        \begin{tikzpicture}
+          \tikzstyle{vertex}=[circle,fill=black!10]
+
+          \node[vertex](v1) at (0, 0){1};
+          \node[vertex](v2) at (1, 2){2};
+          \node[vertex](v3) at (3, 2){3};
+          \node[vertex](v4) at (2, 0){4};
+          \node[vertex](v5) at (4, 1){5};
+
+          \draw[-](v1)--(v2);
+          \draw[-](v2)--(v3);
+          \draw[-](v4)--(v5);
+
+        \end{tikzpicture}
+        \caption{}
+        \label{fig:x g2}
+  \end{subfigure}
+  \caption{Deux graphes (\textit{a} et \textit{b})}
+  \label{fig:x exemple1}
+\end{figure}
+
+
+
+Soit $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG(W, E(W))} un sous-graphe de \emph{G}.\\
+Par exemple, en prenant le graphe \textit{b} de la figure \ref{fig:x exemple1}, le sous-graphe \(SG(\{1, 2, 5\}, E(\{1, 2, 5\}))\) est un sous-graphe valide de \textit{b} contenant uniquement les noeuds 1, 2 et 5 (\(W\)) et l'arrete \((1,2)\) (\(E(W)\)).
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \tikzstyle{vertex}=[circle,fill=black!10]
+
+    \node[vertex](v1) at (0, 0){1};
+    \node[vertex](v2) at (1, 2){2};
+    \node[vertex](v5) at (4, 1){5};
+
+    \draw[-](v1)--(v2);
+
+  \end{tikzpicture}
+  \caption{un sous-graphe de \textit{b}}
+\end{figure}
 
 \subsection{Les cliques}%
 \label{subsec:cliques}
@@ -102,9 +163,45 @@ Soit $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{S
 Une \textit{clique} \emph{C} est un sous-ensemble de nœuds de $ V $ tel que tous les nœuds de $ C $ sont voisins entre-eux. C'est-à-dire :
 $$ \forall v, w \in C | (v, w)\in V \ avec\  v \neq w$$
 
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+    \tikzstyle{vertex}=[circle,fill=black!10]
+
+    \node[blue, vertex](v1) at (0, 0){1};
+    \node[blue, vertex](v2) at (0, 2){2};
+    \node[blue, vertex](v3) at (2, 2){3};
+    \node[blue, vertex](v4) at (3, 0){4};
+    \node[vertex](v5) at (4, 2){5};
+    \node[vertex](v6) at (6, 1.5){6};
+    \node[vertex](v7) at (5, 0){7};
+
+    \draw[blue, ultra thick](v1)--(v2);
+    \draw[blue, ultra thick](v2)--(v3);
+    \draw[blue, ultra thick](v1)--(v3);
+    \draw[blue, ultra thick](v1)--(v4);
+    \draw[blue, ultra thick](v2)--(v4);
+    \draw[blue, ultra thick](v3)--(v4);
+    \draw[-](v3)--(v5);
+    \draw[-](v4)--(v5);
+    \draw[-](v5)--(v6);
+    \draw[-](v4)--(v6);
+    \draw[-](v4)--(v7);
+    \draw[-](v6)--(v7);
+  \end{tikzpicture}
+  \caption{Un graphe, en bleu une clique de ce graphe}
+  \label{fig:x clique1}
+\end{figure}
+
+Il est important de remarquer qu'avec cette definition d'une clique, un noeud seul n'est pas une clique. \\
+
+La \textit{taille} d'une clique est définie par sa cardinalité, c'est à dire que la taille d'une clique \emph{C} est \(|C|\). Comme exemple, prenons la clique en bleu dans le graphe de la figure \ref{fig:x clique1} : nous avons que \(C = {1,2,3,4}\) et \(|C| = 4\). C'est donc une clique de taille 4.\\
+
 Nous dirons qu'une clique est \textit{maximale} s'il est impossible de rajouter un nœuds de \emph{G} dans la clique tel que la propriété si dessus reste respectée.
 
-Enfin, nous définirons une clique \textit{maximum} comme étant la clique de plus grande cardinalité, c'est à dire contenant le plus de noeuds. Notons que toute clique maximum sera maximale et qu'il peut y avoir plusieurs cliques maximum dans un même graphe.
+Dans la figure \ref{fig:x clique1}, la clique \textit{bleue} composee des noeuds 1, 2, 3 et 4 est egalement maximale. Par contre, la clique composee des noeuds 3 et 5 ne l'est pas car il est possible d'y rajouter le noeud 4.\\
+
+Enfin, nous définirons une clique \textit{maximum} comme étant la clique de plus grande taille. Notons que toute clique maximum sera maximale et qu'il peut y avoir plusieurs cliques maximum dans un même graphe.
 
 \begin{figure}[h]
   \begin{center}
@@ -113,32 +210,66 @@ Enfin, nous définirons une clique \textit{maximum} comme étant la clique de pl
 
   \node[vertex](v1) at (0, 0){1};
   \node[vertex](v2) at (0, 2){2};
-  \node[vertex](v3) at (2, 2){3};
-  \node[vertex](v4) at (3, 0){4};
-  \node[vertex](v5) at (4, 2){5};
+  \node[blue, vertex](v3) at (2, 2){3};
+  \node[blue, vertex](v4) at (3, 0){4};
+  \node[blue, vertex](v5) at (4, 2){5};
   \node[vertex](v6) at (6, 1){6};
   
   \draw[-](v1)--(v2);
   \draw[-](v2)--(v3);
-  \draw[-](v3)--(v4);
-  \draw[-](v3)--(v5);
-  \draw[-](v4)--(v5);
+  \draw[blue, ultra thick](v3)--(v4);
+  \draw[blue, ultra thick](v3)--(v5);
+  \draw[blue, ultra thick](v4)--(v5);
   \draw[-](v5)--(v6);
 \end{tikzpicture}
 \caption{Un graphe}
-  \label{fig:x example graph}
+  \label{fig:x clique2}
 \end{center}
 \end{figure}
 
-Dans le graphe \ref{fig:x example graph}, l'ensemble $ \{3, 4\} $ est une clique non maximale car il est possible d'y ajouter le noeud $ 5 $, celui-ci étant voisin de $ 3 $ et de $ 4 $.
+Regardons la figure \ref{fig:x clique2}. $ \{3, 4, 5\}$ (en bleu) est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum). Par contre, la clique composée des noéuds 1 et 2, bien qu'étant maximale (en effet, aucun autre noeud du graphe ne peut être ajouté à cette clique) n'est pas maximum car elle ne contient que 2 noeuds là où la clique précédemment mentionnée (celle en bleu sur la figure \ref{fig:x clique2}) est plus grande vu qu'elle contient 3 noeuds.
 
-$ \{3, 4, 5\}$ est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum).
+\section{Le problème d'énumération des cliques dans un graphe}
+Ce problème consiste, dans un graphe simple, à énumérer toutes les cliques \textbf{maximales} de celui-ci. L'ordre dans lequel celles-ci sont listées n'est pas important.
 
-\subsection{Le problème d'énumération des cliques dans un graphe}
-Ce problème consiste, dans un graphe simple, à énumérer toutes les cliques maximales de celui-ci. L'ordre dans lequel celles-ci sont listées n'est pas important.
+\begin{figure}[h]
+  \begin{center}
+    \begin{tikzpicture}
+      \tikzstyle{vertex}=[circle,fill=black!10]
 
-Exemple :
-% TODO
+      \node[vertex](v1) at (0, 1){1};
+      \node[vertex](v2) at (0, 3){2};
+      \node[vertex](v3) at (2, 2){3};
+      \node[vertex](v4) at (4, 0){4};
+      \node[vertex](v5) at (4, 2){5};
+      \node[vertex](v6) at (6, 3){6};
+      \node[vertex](v7) at (6, 1){7};
+
+      \draw[-](v1)--(v2);
+      \draw[-](v1)--(v3);
+      \draw[-](v2)--(v3);
+      \draw[-](v3)--(v4);
+      \draw[-](v3)--(v5);
+      \draw[-](v4)--(v5);
+      \draw[-](v5)--(v6);
+      \draw[-](v5)--(v7);
+      \draw[-](v4)--(v7);
+      \draw[-](v4)--(v6);
+      \draw[-](v6)--(v7);
+    \end{tikzpicture}
+    \caption{}
+    \label{fig:x clique3}
+  \end{center}
+\end{figure}
+
+Prenons par exemple le graphe en figure \ref{fig:x clique3}. Nous sommes donc intéressé d'obtenir les cliques suivantes :
+\begin{itemize}
+        \item \(\{1, 2, 3\}\)
+        \item \(\{5, 4, 3\}\)
+        \item \(\{4, 5, 7, 6\}\)
+\end{itemize}
+Ces trois cliques sont bien les seules et uniques cliques maximales de ce graphe. De plus, la clique maximum est celles contenant les noeuds 4, 5, 6 et 7.
+Notez comme la clique \({4, 5, 6}\) n'est pas reprise, en effet celle-ci n'est pas maximale car elle peut être agrandie avec le noeud 7.
 
 \subsection{Complexité du probleme}
 Le problème d'énumération de toutes les cliques maximales dans un graphe simple est un problème appartenant à la classe NP-Complet.
