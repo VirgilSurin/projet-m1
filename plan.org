@@ -2,6 +2,7 @@
 
 * Introduction
 Explications du projet et de son objectif
+(faire un rappel de la BIR)
 - Objectif principal
 - motivations
 - plans du rapport
@@ -9,11 +10,17 @@ Explications du projet et de son objectif
 Chapitre expliquant les notions que nous allons utiliser
 ** Notions de bases
 ** Les cliques
-** Le probleme d'enumeration des cliques maximales dans un graphe simple
+* Le probleme d'enumeration des cliques maximales dans un graphe simple
 - définition du problème
 - complexité
 
 * Algorithmes
+- petit texte pour expliquer le but et l'idée générale (iput/output)
+- pseudo-code
+- en fonction, pour étapes complexe revenir en francais dessus apres le pseudo code (avec illustration peut etre)
+- les complexités
+
+peut etre parler de facon generique du pivot avant
 ** CLIQUES
 ** BK
 
