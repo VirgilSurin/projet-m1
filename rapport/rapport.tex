@@ -18,8 +18,11 @@
     colorlinks,
     citecolor=blue,
     filecolor=black,
-    linkcolor=blue,
-    urlcolor=blue
+    linkcolor=black,
+    urlcolor=teal,
+    pdftitle={Rapport de projet de master 1 - Virgil Surin},
+    pdfauthor=Virgil Surin,
+    pdfpagemode=FullScreen
 }
 
 \graphicspath{images/}
@@ -77,10 +80,13 @@ Virgil \textsc{Surin}
 
 \section{Introduction}
 
-Dans ce rapport nous allons étudier plusieurs algorithme d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude ce base sur l'article de Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''}. \\
-L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenu par M.Conte et M.Tomita. \\
 
-Nous commencerons par un rappel des notions et notations utilisées, suivi d'une présentation des différents algorithmes implémenter pour terminer par la comparaison d'efficacité en temps de ceux-ci.
+Dans ce rapport nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude ce base sur l'article de Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''}. \\
+L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenu par M.Conte et M.Tomita. Également, ces algorithmes seront implémentés en python et en rust afin de pouvoir comparer leur performance d'un langage à un autre. \\
+
+Étudier un tel problème et surtout trouver des algorithmes efficaces pour en obtenir la réponse n'est pas sans intérêt. En effet, beaucoup de systèmes peuvent être représentés par des graphes. L'on se rend alors compte que des amats se forment, ce sont là des cliques. Il s'avère que ces cliques peuvent être considérées, selon le système étudié, comme des compartiments indépendant, peut-être des unités logiques. d'où l'utilité des les trouver efficacement. Nous pouvons observer de multiples applications des cliques dans des domaines tels que la biologie, la sociologie et bien d'autres \cite{use}.\\
+
+Nous commencerons par un rappel des notions et notations utilisées ainsi que des définitions utiles à la compréhension de ce rapport, suivi d'une présentation des différents algorithmes implémentés et pour terminer par la comparaison d'efficacité en temps et en langage de ceux-ci.
 
 \section{Les graphes}%
 \label{sec:graphes}
@@ -160,8 +166,10 @@ Par exemple, en prenant le graphe \textit{b} de la figure \ref{fig:x exemple1}, 
 \subsection{Les cliques}%
 \label{subsec:cliques}
 
-Une \textit{clique} \emph{C} est un sous-ensemble de nœuds de $ V $ tel que tous les nœuds de $ C $ sont voisins entre-eux. C'est-à-dire :
-$$ \forall v, w \in C | (v, w)\in V \ avec\  v \neq w$$
+Une \textit{clique} est définie comme suit :\\
+Soit un graphe \emph{G(V,E)} où \emph{V} est l'ensemble des noeuds de \emph{G} et \emph{E} l'ensemble des arrêtes de \emph{G}. Nous dirons que \(C \subseteq V\), un sous-ensemble de noeuds du graphe, est une clique si et seulement si tous les noeuds de \emph{C} sont voisins entre-eux.
+C'est-à-dire :
+$$ \forall v, w \in C \ | \ (v, w)\in E \ avec\  v \neq w$$
 
 \begin{figure}[h]
   \centering
@@ -262,6 +270,7 @@ Ce problème consiste, dans un graphe simple, à énumérer toutes les cliques \
   \end{center}
 \end{figure}
 
+
 Prenons par exemple le graphe en figure \ref{fig:x clique3}. Nous sommes donc intéressé d'obtenir les cliques suivantes :
 \begin{itemize}
         \item \(\{1, 2, 3\}\)
@@ -271,8 +280,8 @@ Prenons par exemple le graphe en figure \ref{fig:x clique3}. Nous sommes donc in
 Ces trois cliques sont bien les seules et uniques cliques maximales de ce graphe. De plus, la clique maximum est celles contenant les noeuds 4, 5, 6 et 7.
 Notez comme la clique \({4, 5, 6}\) n'est pas reprise, en effet celle-ci n'est pas maximale car elle peut être agrandie avec le noeud 7.
 
-\subsection{Complexité du probleme}
-Le problème d'énumération de toutes les cliques maximales dans un graphe simple est un problème appartenant à la classe NP-Complet.
+\subsection{Complexité du problème}
+Le problème d'énumération de toutes les cliques maximales dans un graphe simple est un problème appartenant à la classe NP-Complet. C'est-à-dire qu'il n'existe pas d'algorithme déterministe en temps polynomial qui permette d'énumérer toutes les cliques maximales d'un graphe.
 
 
 \section{Algorithmes}
@@ -352,8 +361,9 @@ Explications des différents input de tests.
 
 \newpage
 \begin{thebibliography}{unsrt}
-\bibitem{contetomita} Alessio Conte et Etsuji Tomita :  \textit{"On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms"} -  12/11/2021
-\bibitem{networkx} \url{https://networkx.org} - consulté le 30/12/2022 à 17h15
+\bibitem{contetomita} Alessio Conte et Etsuji Tomita :  \href{https://doi.org/10.1016/j.tcs.2021.11.005}{"On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms"} -  12/11/2021
+\bibitem{use} Santo Fortunato : \href{https://doi.org/10.1016/j.physrep.2009.11.002}{\og On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms"} - 2010
+\bibitem{networkx} \href{https://networkx.org}{NetworkX librairy} - consulté le 30/12/2022 à 17h15
 \end{thebibliography}
 
 \end{document}
