@@ -81,10 +81,10 @@ Virgil \textsc{Surin}
 \section{Introduction}
 
 
-Dans ce rapport nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude ce base sur l'article de Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''}. \\
-L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenu par M.Conte et M.Tomita. Également, ces algorithmes seront implémentés en python et en rust afin de pouvoir comparer leur performance d'un langage à un autre. \\
+Dans ce rapport nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude ce base sur l'article de Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''}.
+L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenu par M.Conte et M.Tomita. Également, ces algorithmes seront implémentés en python et en rust afin de pouvoir comparer leur performance d'un langage à un autre.
 
-Étudier un tel problème et surtout trouver des algorithmes efficaces pour en obtenir la réponse n'est pas sans intérêt. En effet, beaucoup de systèmes peuvent être représentés par des graphes. L'on se rend alors compte que des amats se forment, ce sont là des cliques. Il s'avère que ces cliques peuvent être considérées, selon le système étudié, comme des compartiments indépendant, peut-être des unités logiques. d'où l'utilité des les trouver efficacement. Nous pouvons observer de multiples applications des cliques dans des domaines tels que la biologie, la sociologie et bien d'autres \cite{use}.\\
+Étudier un tel problème et surtout trouver des algorithmes efficaces pour en obtenir la réponse n'est pas sans intérêt. En effet, beaucoup de systèmes peuvent être représentés par des graphes. L'on se rend alors compte que des amats se forment, ce sont là des cliques. Il s'avère que ces cliques peuvent être considérées, selon le système étudié, comme des compartiments indépendant, peut-être des unités logiques. d'où l'utilité des les trouver efficacement. Nous pouvons observer de multiples applications des cliques dans des domaines tels que la biologie, la sociologie et bien d'autres \cite{use}.
 
 Nous commencerons par un rappel des notions et notations utilisées ainsi que des définitions utiles à la compréhension de ce rapport, suivi d'une présentation des différents algorithmes implémentés et pour terminer par la comparaison d'efficacité en temps et en langage de ceux-ci.
 
@@ -93,14 +93,14 @@ Nous commencerons par un rappel des notions et notations utilisées ainsi que de
 
 \subsection{Notions de bases}
 
-Dans ce rapport, nous allons définir un graphe simple non orienté \emph{G(V, E)} comme étant un ensemble de nœuds \emph{V} reliés par des arêtes. Nous notons l'ensemble des arêtes comme étant l'ensemble \emph{E}. Une arêtes est définie comme un tuple $ (v, v') $ où $ v $ et $ v' $ sont les 2 nœuds réliés par l'arête. Les nœuds peuvent être étiquetés pour plus de lisibilité. \\
+Dans ce rapport, nous allons définir un graphe simple non orienté \emph{G(V, E)} comme étant un ensemble de nœuds \emph{V} reliés par des arêtes. Nous notons l'ensemble des arêtes comme étant l'ensemble \emph{E}. Une arêtes est définie comme un tuple $ (v, v') $ où $ v $ et $ v' $ sont les 2 nœuds réliés par l'arête. Les nœuds peuvent être étiquetés pour plus de lisibilité.
 
 Il y a au plus une et une seule arête entre deux même nœuds et aucune arête allant d'un nœud à lui-même. Les arêtes que nous considérons n'ont pas de sens particulier. Ainsi, l'arête joignant les nœuds \emph{x} et \emph{y} est la même que celle joignant \emph{y} à \emph{x} et sera dénotée par l'existence du tuple $(x, y) \in E$.
-Nous notons les voisins d'un nœud \emph{v} par \emph{N(v)}.\\ 
+Nous notons les voisins d'un nœud \emph{v} par \emph{N(v)}.
 
-Nous définissons l'ordre \emph{m} d'un graphe comme étant $ |V| $ et sa taille \emph{m} comme $ |E| $. \\
+Nous définissons l'ordre \emph{m} d'un graphe comme étant $ |V| $ et sa taille \emph{m} comme $ |E| $.
 
-Dans la figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \textit{a} dont l'ensemble des noeuds \(V\) est l'ensemble \(\{1, 2, 3\}\). L'ensemle des arretes \(E\) quant a lui est l'ensemble \(\{(1,2), (2,3)\}\). Le graphe \textit{a} est un graphe d'ordre 3 et de taille 2. De la meme facon, pour le graphe \textit{b} on a \(V = \{1, 2, 3, 4, 5\}\) et \(E = \{(1,2), (2,3), (4,5)\}\). \textit{b} est d'ordre 5 et de taille 3. \\
+Dans la figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \textit{a} dont l'ensemble des noeuds \(V\) est l'ensemble \(\{1, 2, 3\}\). L'ensemle des arretes \(E\) quant a lui est l'ensemble \(\{(1,2), (2,3)\}\). Le graphe \textit{a} est un graphe d'ordre 3 et de taille 2. De la meme facon, pour le graphe \textit{b} on a \(V = \{1, 2, 3, 4, 5\}\) et \(E = \{(1,2), (2,3), (4,5)\}\). \textit{b} est d'ordre 5 et de taille 3.
 
 \begin{figure}[h]
 
@@ -144,8 +144,7 @@ Dans la figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \te
 \end{figure}
 
 
-
-Soit $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG(W, E(W))} un sous-graphe de \emph{G}.\\
+Soit $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG(W, E(W))} un sous-graphe de \emph{G}.
 Par exemple, en prenant le graphe \textit{b} de la figure \ref{fig:x exemple1}, le sous-graphe \(SG(\{1, 2, 5\}, E(\{1, 2, 5\}))\) est un sous-graphe valide de \textit{b} contenant uniquement les noeuds 1, 2 et 5 (\(W\)) et l'arrete \((1,2)\) (\(E(W)\)).
 
 \begin{figure}
@@ -166,7 +165,7 @@ Par exemple, en prenant le graphe \textit{b} de la figure \ref{fig:x exemple1}, 
 \subsection{Les cliques}%
 \label{subsec:cliques}
 
-Une \textit{clique} est définie comme suit :\\
+Une \textit{clique} est définie comme suit :
 Soit un graphe \emph{G(V,E)} où \emph{V} est l'ensemble des noeuds de \emph{G} et \emph{E} l'ensemble des arrêtes de \emph{G}. Nous dirons que \(C \subseteq V\), un sous-ensemble de noeuds du graphe, est une clique si et seulement si tous les noeuds de \emph{C} sont voisins entre-eux.
 C'est-à-dire :
 $$ \forall v, w \in C \ | \ (v, w)\in E \ avec\  v \neq w$$
@@ -201,13 +200,13 @@ $$ \forall v, w \in C \ | \ (v, w)\in E \ avec\  v \neq w$$
   \label{fig:x clique1}
 \end{figure}
 
-Il est important de remarquer qu'avec cette definition d'une clique, un noeud seul n'est pas une clique. \\
+Il est important de remarquer qu'avec cette definition d'une clique, un noeud seul n'est pas une clique.
 
-La \textit{taille} d'une clique est définie par sa cardinalité, c'est à dire que la taille d'une clique \emph{C} est \(|C|\). Comme exemple, prenons la clique en bleu dans le graphe de la figure \ref{fig:x clique1} : nous avons que \(C = {1,2,3,4}\) et \(|C| = 4\). C'est donc une clique de taille 4.\\
+La \textit{taille} d'une clique est définie par sa cardinalité, c'est à dire que la taille d'une clique \emph{C} est \(|C|\). Comme exemple, prenons la clique en bleu dans le graphe de la figure \ref{fig:x clique1} : nous avons que \(C = {1,2,3,4}\) et \(|C| = 4\). C'est donc une clique de taille 4.
 
 Nous dirons qu'une clique est \textit{maximale} s'il est impossible de rajouter un nœuds de \emph{G} dans la clique tel que la propriété si dessus reste respectée.
 
-Dans la figure \ref{fig:x clique1}, la clique \textit{bleue} composee des noeuds 1, 2, 3 et 4 est egalement maximale. Par contre, la clique composee des noeuds 3 et 5 ne l'est pas car il est possible d'y rajouter le noeud 4.\\
+Dans la figure \ref{fig:x clique1}, la clique \textit{bleue} composee des noeuds 1, 2, 3 et 4 est egalement maximale. Par contre, la clique composee des noeuds 3 et 5 ne l'est pas car il est possible d'y rajouter le noeud 4.
 
 Enfin, nous définirons une clique \textit{maximum} comme étant la clique de plus grande taille. Notons que toute clique maximum sera maximale et qu'il peut y avoir plusieurs cliques maximum dans un même graphe.
 
@@ -286,19 +285,16 @@ Le problème d'énumération de toutes les cliques maximales dans un graphe simp
 
 \section{Algorithmes}
 
-\subsection{CLIQUES}
+\subsection{CLIQUE}
 
 
 Cet algorithme se base sur une exploration en profondeur afin d'énumérer toutes les cliques maximales de \emph{G}.
-CLIQUE est une procédure récursive. Il introduit un ensemble \emph{Q} vide représentant la clique courante et essaie d'étendre \emph{Q} sur base de deux sous-ensemble de noeuds \textit{SUBG} et \textit{CAND}.\\
+CLIQUE est une procédure récursive. Il introduit un ensemble \emph{Q} vide représentant la clique courante et essaie d'étendre \emph{Q} sur base de deux sous-ensemble de noeuds \textit{SUBG} et \textit{CAND}.
 
-Initialiement, $ SUBG \leftarrow V $ et $ CAND \leftarrow V $. L'objectif est d'énumérer toutes les cliques maximales dans le sous-graphe induit par \emph{SUBG} en étendant la clique courante \emph{Q} avec des noeuds candidats dans \emph{CAND}. \\
+Initialiement, $ SUBG \leftarrow V $ et $ CAND \leftarrow V $. L'objectif est d'énumérer toutes les cliques maximales dans le sous-graphe induit par \emph{SUBG} en étendant la clique courante \emph{Q} avec des noeuds candidats dans \emph{CAND}.
 
 Soit $ Q = \{p_1, p_2, ..., p_d\} $ la clique courante.
-Alors $ SUBG = V \cap N(p_1) \cap N(p_2) \cap ... \cap N(p_d)$, c'est à dire l'ensemble des nœuds voisins de tout
-nœud appartenant à \emph{Q}. L'algorithme selectionne alors  un noeud $ p \in SUBG $ et l'ajoute à \emph{Q} et
-ceci pour tout nœud dans \emph{SUBG}. Cela egendre un appel récursif avec $ SUBG_p = SUBG \cap N(p) $ et $ CANDp = CAND \cap N(p) $. \emph{p} sera retiré de $ CAND $ après l'exécution de l'appel récursif lors du \textit{backtracking}. \\
-
+Alors $ SUBG = V \cap N(p_1) \cap N(p_2) \cap ... \cap N(p_d)$, c'est à dire l'ensemble des nœuds voisins de tout nœud appartenant à \emph{Q}. L'algorithme selectionne alors  un noeud $ p \in SUBG $ et l'ajoute à \emph{Q} et ceci pour tout nœud dans \emph{SUBG}. Cela egendre un appel récursif avec $ SUBG_p = SUBG \cap N(p) $ et $ CANDp = CAND \cap N(p) $. \emph{p} sera retiré de $ CAND $ après l'exécution de l'appel récursif lors du \textit{backtracking}.
 
 Afin de ne pas engendrer trop d'appel récursif, nous pouvons choisir
 inteligemment un noeud \textit{u} qui nous appèlerons le \textit{pivot}. Il existe plusieurs facon de choisir
@@ -307,7 +303,7 @@ ce pivot. Conte et Tomita\cite{contetomita} décrivent un bon pivot \emph{u} com
 qui est intéressant car toute clique maximale $ Q' $ dans $ SUBG \cap N(u) $ n'est pas maximale dans
 $ G(SUBG) $ car il est possible d'ajouter $ u $ à cette clique. Ainsi, toute clique maximale contien soit
 \textit{u} soit un noeud dans $ SUBG \setminus N(u)$. Il n'est donc pas nécessaire d'explorer les voisins de
-$ u $ dans ce cas. \\
+$ u $ dans ce cas.
 Cela explique pourquoi $ u $ est un bon pivot, car maximiser $ | CAND \cap N(u) | $ va minimiser
 $ CAND \setminus N(u)$ et donc minimiser le nombre d'appel.
 
@@ -341,21 +337,22 @@ Ci-dessous le pseudo-code de l'algorithme décrit précédement.
 
 La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $\cite{contetomita}.
 
-\section{Tests}%
-\label{sec:tests}
-Cette section est dédiée aux tests de performances réalisé dans le cadre de ce projet. Les différents elgorithmes testés sont les suivants
+Une implémentation de l'algorithme CLIQUE est disponible en python ainsi que des variantes avec d'autres pivots également présentés dans l'article.
+% \section{Tests}%
+% \label{sec:tests}
+% Cette section est dédiée aux tests de performances réalisé dans le cadre de ce projet. Les différents elgorithmes testés sont les suivants
 
-\subsection{Méthodologie}%
-\label{subsec:methodo}
-Explication de la méthodo pour les temps
+% \subsection{Méthodologie}%
+% \label{subsec:methodo}
+% Explication de la méthodo pour les temps
 
-\subsection{Tests sets}%
-\label{subsec:sets}
+% \subsection{Tests sets}%
+% \label{subsec:sets}
 
-Explications des différents input de tests.
+% Explications des différents input de tests.
 
 
-\section{Conclusion}
+% \section{Conclusion}
 
 % TODO
 

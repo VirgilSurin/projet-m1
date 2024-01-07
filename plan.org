@@ -1,6 +1,7 @@
 #+title: Plan
 
-* Introduction
+* DONE Introduction
+CLOSED: [2024-01-03 mer 20:02]
 Explications du projet et de son objectif
 (faire un rappel de la BIR)
 - Objectif principal
@@ -8,14 +9,17 @@ Explications du projet et de son objectif
 - plans du rapport
 * Les graphes
 Chapitre expliquant les notions que nous allons utiliser
-** Notions de bases
-** Les cliques
-* Le probleme d'enumeration des cliques maximales dans un graphe simple
+** DONE Notions de bases
+CLOSED: [2024-01-03 mer 20:02]
+** DONE Les cliques
+CLOSED: [2024-01-03 mer 20:02]
+* DONE Le probleme d'enumeration des cliques maximales dans un graphe simple
+CLOSED: [2024-01-03 mer 20:03]
 - définition du problème
 - complexité
 
-* Algorithmes
-- petit texte pour expliquer le but et l'idée générale (iput/output)
+* TODO Algorithmes
+- petit texte pour expliquer le but et l'idée générale (input/output)
 - pseudo-code
 - en fonction, pour étapes complexe revenir en francais dessus apres le pseudo code (avec illustration peut etre)
 - les complexités
