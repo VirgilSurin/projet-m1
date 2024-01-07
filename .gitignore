@@ -12,3 +12,5 @@ domtutor-validator/venv
 /rapport/.auctex-auto/
 /rapport/rapport.fdb_latexmk
 /rapport/rapport.fls
+/rapport/rapport.bbl
+/rapport/rapport.blg

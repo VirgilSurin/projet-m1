@@ -1,11 +1,15 @@
-\documentclass[a4paper, 12pt]{article}
+\documentclass[12pt,a4paper]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[francais]{babel}
 \usepackage[pdftex]{graphicx}
 \usepackage{amsmath}
-\usepackage{amssymb} 
+\usepackage{amssymb}
+\usepackage{float}
 \usepackage{algorithm} 
 \usepackage{algpseudocode}
+\edef\restoreparindent{\parindent=\the\parindent\relax}
+\usepackage{parskip}
+\restoreparindent
 \usepackage{tikz}
 \usetikzlibrary{arrows, automata}
 \usepackage{subcaption}
@@ -29,49 +33,49 @@
 
 \begin{document}
 \begin{titlepage}
-\begin{center}
+  \begin{center}
 
-{\Large Université de Mons}\\[1ex]
-{\Large Faculté des sciences}\\[1ex]
-{\Large Département d'Informatique}\\[2.5cm]
+    {\Large Université de Mons}\\[1ex]
+    {\Large Faculté des sciences}\\[1ex]
+    {\Large Département d'Informatique}\\[2.5cm]
 
-\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
-% Title
-\HRule \\[0.3cm]
-{ \LARGE \bfseries Étude comparative d'algorithme pour énumérer les cliques maximales d'un graphe \\[0.3cm]}
-{ \LARGE \bfseries Rapport préliminaire de projet de Master \\[0.1cm]} % Commenter si pas besoin
-\HRule \\[1.5cm]
+    \newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
+    % Title
+    \HRule \\[0.3cm]
+    { \LARGE \bfseries Étude comparative d'algorithme pour énumérer les cliques maximales d'un graphe \\[0.3cm]}
+    { \LARGE \bfseries Rapport préliminaire de projet de Master \\[0.1cm]} % Commenter si pas besoin
+    \HRule \\[1.5cm]
 
-% Author and supervisor
-\begin{minipage}[t]{0.45\textwidth}
-\begin{flushleft} \large
-\emph{Directeur:}\\
-Hadrien \textsc{Mélot}\\
-\emph{Co-directeur:}\\
-Sébastien \textsc{Bonte}\\
-\end{flushleft}
-\end{minipage}
-\begin{minipage}[t]{0.45\textwidth}
-\begin{flushright} \large
-\emph{Auteur:} \\
-Virgil \textsc{Surin}
-\end{flushright}
-\end{minipage}\\[2ex]
+    % Author and supervisor
+    \begin{minipage}[t]{0.45\textwidth}
+      \begin{flushleft} \large
+        \emph{Directeur:}\\
+        Hadrien \textsc{Mélot}\\
+        \emph{Co-directeur:}\\
+        Sébastien \textsc{Bonte}\\
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}[t]{0.45\textwidth}
+      \begin{flushright} \large
+        \emph{Auteur:} \\
+        Virgil \textsc{Surin}
+      \end{flushright}
+    \end{minipage}\\[2ex]
 
-\vfill
+    \vfill
 
-% Bottom of the page
-\begin{center}
-\begin{tabular}[t]{c c c}
-\includegraphics[height=1.5cm]{logoumons.jpg} &
-\hspace{0.3cm} &
-\includegraphics[height=1.5cm]{logofs.jpg}
-\end{tabular}
-\end{center}~\\
- 
-{\large Année académique 2022-2023}
+    % Bottom of the page
+    \begin{center}
+      \begin{tabular}[t]{c c c}
+        \includegraphics[height=1.5cm]{logoumons.jpg} &
+                                                        \hspace{0.3cm} &
+                                                                         \includegraphics[height=1.5cm]{logofs.jpg}
+      \end{tabular}
+    \end{center}~\\
 
-\end{center}
+    {\large Année académique 2022-2023}
+
+  \end{center}
 \end{titlepage}
 
 \tableofcontents
@@ -82,9 +86,10 @@ Virgil \textsc{Surin}
 
 
 Dans ce rapport nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude ce base sur l'article de Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''}.
+
 L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenu par M.Conte et M.Tomita. Également, ces algorithmes seront implémentés en python et en rust afin de pouvoir comparer leur performance d'un langage à un autre.
 
-Étudier un tel problème et surtout trouver des algorithmes efficaces pour en obtenir la réponse n'est pas sans intérêt. En effet, beaucoup de systèmes peuvent être représentés par des graphes. L'on se rend alors compte que des amats se forment, ce sont là des cliques. Il s'avère que ces cliques peuvent être considérées, selon le système étudié, comme des compartiments indépendant, peut-être des unités logiques. d'où l'utilité des les trouver efficacement. Nous pouvons observer de multiples applications des cliques dans des domaines tels que la biologie, la sociologie et bien d'autres \cite{use}.
+Étudier un tel problème et surtout trouver des algorithmes efficaces pour en obtenir la réponse n'est pas sans intérêt. En effet, beaucoup de systèmes peuvent être représentés par des graphes. L'on se rend alors compte que des amats se forment, ce sont là des cliques. Il s'avère que ces cliques peuvent être considérées, selon le système étudié, comme des compartiments indépendant, peut-être des unités logiques. d'où l'utilité des les trouver efficacement. Nous pouvons observer de multiples applications des cliques dans des domaines tels que la biologie, la sociologie et bien d'autres \cite{FORTUNATO201075}.
 
 Nous commencerons par un rappel des notions et notations utilisées ainsi que des définitions utiles à la compréhension de ce rapport, suivi d'une présentation des différents algorithmes implémentés et pour terminer par la comparaison d'efficacité en temps et en langage de ceux-ci.
 
@@ -103,7 +108,6 @@ Nous définissons l'ordre \emph{m} d'un graphe comme étant $ |V| $ et sa taille
 Dans la figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \textit{a} dont l'ensemble des noeuds \(V\) est l'ensemble \(\{1, 2, 3\}\). L'ensemle des arretes \(E\) quant a lui est l'ensemble \(\{(1,2), (2,3)\}\). Le graphe \textit{a} est un graphe d'ordre 3 et de taille 2. De la meme facon, pour le graphe \textit{b} on a \(V = \{1, 2, 3, 4, 5\}\) et \(E = \{(1,2), (2,3), (4,5)\}\). \textit{b} est d'ordre 5 et de taille 3.
 
 \begin{figure}[h]
-
   \begin{subfigure}[b]{0.50\textwidth}
     \centering
         \begin{tikzpicture}
@@ -298,7 +302,7 @@ Alors $ SUBG = V \cap N(p_1) \cap N(p_2) \cap ... \cap N(p_d)$, c'est à dire l'
 
 Afin de ne pas engendrer trop d'appel récursif, nous pouvons choisir
 inteligemment un noeud \textit{u} qui nous appèlerons le \textit{pivot}. Il existe plusieurs facon de choisir
-ce pivot. Conte et Tomita\cite{contetomita} décrivent un bon pivot \emph{u} comme étant un noeud de
+ce pivot. Conte et Tomita\cite{CONTE20221} décrivent un bon pivot \emph{u} comme étant un noeud de
 \emph{SUBG} qui maximise $ | CAND \cap N(u) |$. Un tel pivot va ainsi minimiser $ |CAND \setminus N(u)| $, ce
 qui est intéressant car toute clique maximale $ Q' $ dans $ SUBG \cap N(u) $ n'est pas maximale dans
 $ G(SUBG) $ car il est possible d'ajouter $ u $ à cette clique. Ainsi, toute clique maximale contien soit
@@ -307,11 +311,10 @@ $ u $ dans ce cas.
 Cela explique pourquoi $ u $ est un bon pivot, car maximiser $ | CAND \cap N(u) | $ va minimiser
 $ CAND \setminus N(u)$ et donc minimiser le nombre d'appel.
 
-
 Ci-dessous le pseudo-code de l'algorithme décrit précédement.
-\begin{algorithm}
-  \caption{CLIQUES}
-  \textbf{Input}: un graphe $G = (V,E)$\\
+\begin{algorithm}[H]
+  \textbf{Input}: un graphe $G = (V,E)$
+
   \textbf{Output}: toutes les cliques maximales de $G$
   \begin{algorithmic}[1]
     \Procedure{CLIQUES}{$SUBG, CAND$}
@@ -333,11 +336,22 @@ Ci-dessous le pseudo-code de l'algorithme décrit précédement.
     \EndProcedure
     \State \Call{Cliques}{$V,V$}
   \end{algorithmic}
+  \caption{\label{fig:cliques} Algorithme CLIQUE}
 \end{algorithm}
 
-La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $\cite{contetomita}.
+La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $\cite{CONTE20221}.
 
 Une implémentation de l'algorithme CLIQUE est disponible en python ainsi que des variantes avec d'autres pivots également présentés dans l'article.
+
+\section{Plannification}%
+\label{sec:plan}
+
+Une implémentation du code en python est déjà fournie et à l'avenir, une implémentation en Rust sera faite afin de pouvoir comparer l'exécution d'un même algorithme sur deux langages différents. En parlant de comparaison, des tests de performances sur les différents algorithmes présenter dans l'article sera réalisé afin de confirmer les résultats des auteurs de l'article en question.
+
+D'un point de vue rédaction, il faut développer la description des différents algorithmes (et surtout tous les explicités) ainsi que de présenter les sets de données qui servironts aux tests et la méthodologie. Ceci incluant une description du matériel utilisé mais aussi la façon dont les performances vont être mesurées.
+
+
+
 % \section{Tests}%
 % \label{sec:tests}
 % Cette section est dédiée aux tests de performances réalisé dans le cadre de ce projet. Les différents elgorithmes testés sont les suivants
@@ -356,12 +370,8 @@ Une implémentation de l'algorithme CLIQUE est disponible en python ainsi que de
 
 % TODO
 
-\newpage
-\begin{thebibliography}{unsrt}
-\bibitem{contetomita} Alessio Conte et Etsuji Tomita :  \href{https://doi.org/10.1016/j.tcs.2021.11.005}{"On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms"} -  12/11/2021
-\bibitem{use} Santo Fortunato : \href{https://doi.org/10.1016/j.physrep.2009.11.002}{\og On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms"} - 2010
-\bibitem{networkx} \href{https://networkx.org}{NetworkX librairy} - consulté le 30/12/2022 à 17h15
-\end{thebibliography}
+\bibliographystyle{plain}
+\bibliography{biblio}
 
 \end{document}
 
