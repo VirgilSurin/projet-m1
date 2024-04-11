@@ -1,56 +1,136 @@
-from sys import stderr
-import sys
-import deepdiff as diff
+import time
 import networkx as nx
+import matplotlib.pyplot as plt
+from tqdm import tqdm
 from CLIQUES import CLIQUES
 from BK import BK
 from BKP_M import BKP_M
 from BKP_R import BKP_R
 from utils import *
 
-def test(fn, filename: str):
-    with open(f"./samples/{filename}.g6", "r") as f:
-        line = f.readline().strip()
-        while line:
-            # correct answer given by NetworkX
-            nx_G = nx.from_graph6_bytes(bytes(line, "utf-8"))
-            nx_ans = nx.find_cliques_recursive(nx_G)
-            nx_res = []
-            for clique in nx_ans:
-                clique.sort()
-                nx_res.append(" ".join(map(str, clique)))
 
-            G = decode_g6(line.encode())
-            my_ans = []
-            fn(set(G.adj.keys()), set(G.adj.keys()), [], G, my_ans)
-            my_res = []
-            for clique in my_ans:
-                c = clique.split(" ")
-                c.sort()
-                my_res.append(" ".join(map(str, c)))
-                
-            nx_res.sort()
-            my_res.sort()
-            assert nx_res == my_res, f"==ERROR==\nFunction: {fn}\n in {filename}, graph: {line}\nexpected: {nx_res}\ngot:      {my_res}\n{diff.DeepDiff(nx_res, my_res)}"
-            line = f.readline().strip()
+def bench_total_time(order: int, algo):
+    input = open(f'./samples/graph{order}.g6', 'r')
+    alg = ""
+    if "CLIQUES" in str(algo):
+        alg = "CLIQUES"
+    elif "BKP_M" in str(algo):
+        alg = "BKP_M"
+    elif "BKP_R" in str(algo):
+        alg = "BKP_R"
+    elif "BK" in str(algo):
+        alg = "BK"
+    out = open(f'./out/total_res_{str(alg)}_{order}.out', 'w')
+    lines = input.readlines()
+    input.close()
+    for i in tqdm(range(len(lines))):
+        g6 = lines[i].strip()
+        G = decode_g6(g6.encode())
+        res = []
+        start = time.perf_counter()
+        algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res)
+        end = time.perf_counter()
+        out.write(f'{end - start:0.6f}\n')
 
-if __name__ == "__main__":
-    # test CLIQUE
-    print("Testing CLIQUES")
-    test(CLIQUES, "graph6")
-    test(CLIQUES, "graph7")
+def clique_delay(order: int, algo):
+    input = open(f'./samples/graph{order}.g6', 'r')
+    alg = ""
+    if "CLIQUES" in str(algo):
+        alg = "CLIQUES"
+    elif "BKP_M" in str(algo):
+        alg = "BKP_M"
+    elif "BKP_R" in str(algo):
+        alg = "BKP_R"
+    elif "BK" in str(algo):
+        alg = "BK"
+    out = open(f'./out/delay_res_{str(alg)}_{order}.out', 'w')
+    lines = input.readlines()
+    input.close()
+    for i in tqdm(range(len(lines))):
+        g6 = lines[i].strip()
+        G = decode_g6(g6.encode())
+        res = []
+        delay = [time.perf_counter()]
+        algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res, delay)
+        for i in range(len(delay) - 1):
+            time_taken = delay[i+1] - delay[i]
+            out.write(f'{time_taken:0.6f}\n')
 
-    # test BK
-    print("Testing BK")
-    test(BK, "graph6")
-    test(BK, "graph7")
+def total_time_main():
+    print("BENCHMARK")
+    print("=========\n\n")
+    bench_total_time(4, CLIQUES)
+    bench_total_time(5, CLIQUES)
+    bench_total_time(6, CLIQUES)
+    bench_total_time(7, CLIQUES)
+    bench_total_time(8, CLIQUES)
+    bench_total_time(9, CLIQUES)
+    bench_total_time(10, CLIQUES)
 
-    # test BKP_M
-    print("Testing BKP_M")
-    test(BKP_M, "graph6")
-    test(BKP_M, "graph7")
+    print("=========\n\n")
+    bench_total_time(4, BK)
+    bench_total_time(5, BK)
+    bench_total_time(6, BK)
+    bench_total_time(7, BK)
+    bench_total_time(8, BK)
+    bench_total_time(9, BK)
+    bench_total_time(10, BK)
 
-    # test BKP_R
-    print("Testing BKP_R")
-    test(BKP_R, "graph6")
-    test(BKP_R, "graph7")
+    print("=========\n\n")
+    bench_total_time(4, BKP_M)
+    bench_total_time(5, BKP_M)
+    bench_total_time(6, BKP_M)
+    bench_total_time(7, BKP_M)
+    bench_total_time(8, BKP_M)
+    bench_total_time(9, BKP_M)
+    bench_total_time(10, BKP_M)
+
+    print("=========\n\n")
+    bench_total_time(4, BKP_R)
+    bench_total_time(5, BKP_R)
+    bench_total_time(6, BKP_R)
+    bench_total_time(7, BKP_R)
+    bench_total_time(8, BKP_R)
+    bench_total_time(9, BKP_R)
+    bench_total_time(10, BKP_R)
+
+def delay_main():
+    print("BENCHMARK")
+    print("=========\n\n")
+    clique_delay(4, CLIQUES)
+    clique_delay(5, CLIQUES)
+    clique_delay(6, CLIQUES)
+    clique_delay(7, CLIQUES)
+    clique_delay(8, CLIQUES)
+    clique_delay(9, CLIQUES)
+    clique_delay(10, CLIQUES)
+
+    print("=========\n\n")
+    clique_delay(4, BK)
+    clique_delay(5, BK)
+    clique_delay(6, BK)
+    clique_delay(7, BK)
+    clique_delay(8, BK)
+    clique_delay(9, BK)
+    clique_delay(10, BK)
+
+    print("=========\n\n")
+    clique_delay(4, BKP_M)
+    clique_delay(5, BKP_M)
+    clique_delay(6, BKP_M)
+    clique_delay(7, BKP_M)
+    clique_delay(8, BKP_M)
+    clique_delay(9, BKP_M)
+    clique_delay(10, BKP_M)
+
+    print("=========\n\n")
+    clique_delay(4, BKP_R)
+    clique_delay(5, BKP_R)
+    clique_delay(6, BKP_R)
+    clique_delay(7, BKP_R)
+    clique_delay(8, BKP_R)
+    clique_delay(9, BKP_R)
+    clique_delay(10, BKP_R)
+if __name__ == '__main__':
+    # total_time_main()
+    delay_main()

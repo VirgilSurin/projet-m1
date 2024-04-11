@@ -4,6 +4,9 @@ class Graph:
         self.order = order
         self.adj = {}
 
+    def __str__(self) -> str:
+        return f"n : {self.order}"
+
     def add_edge(self, u, v):
         if u not in self.adj:
             self.adj[u] = {v}
@@ -17,7 +20,6 @@ class Graph:
     def add_nodes(self, nodes):
         for node in nodes:
             self.adj[node] = set()
-
 
 def decode_g6(bytes_in):
     """

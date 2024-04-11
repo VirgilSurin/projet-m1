@@ -15,3 +15,4 @@ domtutor-validator/venv
 /rapport/rapport.bbl
 /rapport/rapport.blg
 *.zip
+/code/__pycache__/

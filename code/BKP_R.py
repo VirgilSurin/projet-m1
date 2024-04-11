@@ -1,9 +1,10 @@
 import random
+import time
 from utils import *
 
 
 # BKP algorithm
-def BKP_R(SUBG: set, CAND: set, Q: list, G: Graph, result: list):
+def BKP_R(SUBG: set, CAND: set, Q: list, G: Graph, result: list, delay: list):
     """
     :param SUBG: set of vertices in the current subgraph
     :param CAND: set of vertices in the current candidate set
@@ -19,6 +20,7 @@ Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
     """
     if len(SUBG) == 0:
         result.append(" ".join(map(str, Q)))
+        delay.append(time.perf_counter())
         # print(" ".join(map(str, Q)))
     else:
         u = random.choice(list(SUBG))
@@ -27,7 +29,7 @@ Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
             Q.append(p)
             SUBG_p = SUBG & p_neighbors
             CAND_p = CAND & p_neighbors
-            BKP_R(SUBG_p, CAND_p, Q, G, result)
+            BKP_R(SUBG_p, CAND_p, Q, G, result, delay)
             Q.pop()
             CAND.remove(p)
                 
@@ -36,5 +38,4 @@ if __name__ == '__main__':
     g6 = input()
     G = decode_g6(g6.encode())
     res = []
-    BKP_R(set(G.adj.keys()), set(G.adj.keys()), [], G, res)
-        
+    # BKP_R(set(G.adj.keys()), set(G.adj.keys()), [], G, res)

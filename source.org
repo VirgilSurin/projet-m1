@@ -1,0 +1,57 @@
+#+title: Source
+
+* Graphs sources
+- https://snap.stanford.edu/data/gemsec-Facebook.html
+    @inproceedings{rozemberczki2019gemsec,
+    title={GEMSEC: Graph Embedding with Self Clustering},
+    author={Rozemberczki, Benedek and Davies, Ryan and Sarkar, Rik and Sutton, Charles},
+    booktitle={Proceedings of the 2019 IEEE/ACM International Conference on Advances in Social Networks Analysis and Mining 2019},
+    pages={65-72},
+    year={2019},
+    organization={ACM}
+    }
+- https://snap.stanford.edu/data/gemsec-Deezer.html
+      @inproceedings{rozemberczki2019gemsec,
+    title={GEMSEC: Graph Embedding with Self Clustering},
+    author={Rozemberczki, Benedek and Davies, Ryan and Sarkar, Rik and Sutton, Charles},
+    booktitle={Proceedings of the 2019 IEEE/ACM International Conference on Advances in Social Networks Analysis and Mining 2019},
+    pages={65-72},
+    year={2019},
+    organization={ACM}
+    }
+- https://snap.stanford.edu/data/twitch-social-networks.htmlhttps://snap.stanford.edu/data/twitch-social-networks.htmlhttps://snap.stanford.edu/data/twitch-social-networks.htmlhttps://snap.stanford.edu/data/twitch-social-networks.html
+            @misc{rozemberczki2019multiscale,
+            title={Multi-scale Attributed Node Embedding},
+            author={Benedek Rozemberczki and Carl Allen and Rik Sarkar},
+            year={2019},
+            eprint={1909.13021},
+            archivePrefix={arXiv},
+            primaryClass={cs.LG}
+        }
+- https://snap.stanford.edu/data/facebook-large-page-page-network.html
+  @misc{rozemberczki2019multiscale,
+            title={Multi-scale Attributed Node Embedding},
+            author={Benedek Rozemberczki and Carl Allen and Rik Sarkar},
+            year={2019},
+            eprint={1909.13021},
+            archivePrefix={arXiv},
+            primaryClass={cs.LG}
+        }
+- https://snap.stanford.edu/data/github-social.html
+   @misc{rozemberczki2019multiscale,
+            title={Multi-scale Attributed Node Embedding},
+            author={Benedek Rozemberczki and Carl Allen and Rik Sarkar},
+            year={2019},
+            eprint={1909.13021},
+            archivePrefix={arXiv},
+            primaryClass={cs.LG}
+        }
+- https://snap.stanford.edu/data/feather-deezer-social.html
+  @inproceedings{feather,
+            title={{Characteristic Functions on Graphs: Birds of a Feather, from Statistical Descriptors to Parametric Models}},
+            author={Benedek Rozemberczki and Rik Sarkar},
+            year={2020},
+            pages = {1325–1334},
+            booktitle={Proceedings of the 29th ACM International Conference on Information and Knowledge Management (CIKM '20)},
+            organization={ACM},
+          }

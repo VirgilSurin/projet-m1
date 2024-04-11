@@ -42,8 +42,8 @@
     \newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
     % Title
     \HRule \\[0.3cm]
-    { \LARGE \bfseries Étude comparative d'algorithme pour énumérer les cliques maximales d'un graphe \\[0.3cm]}
-    { \LARGE \bfseries Rapport préliminaire de projet de Master \\[0.1cm]} % Commenter si pas besoin
+    { \LARGE \bfseries Étude comparative d'algorithmes pour énumérer les cliques d'un graphe \\[0.3cm]}
+    % { \LARGE \bfseries Rapport préliminaire de projet de Master \\[0.1cm]} % Commenter si pas besoin
     \HRule \\[1.5cm]
 
     % Author and supervisor
@@ -85,11 +85,11 @@
 \section{Introduction}
 
 
-Dans ce rapport nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude ce base sur l'article de Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''}.
+Dans ce rapport nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude se base principalement sur l'article d'Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''}.
 
-L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenu par M.Conte et M.Tomita. Également, ces algorithmes seront implémentés en python et en rust afin de pouvoir comparer leur performance d'un langage à un autre.
+L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenus par M.Conte et M.Tomita. Également, ces algorithmes seront implémentés en Python et en Rust afin de valider le fain de temps de Rust par rapport à Python.
 
-Étudier un tel problème et surtout trouver des algorithmes efficaces pour en obtenir la réponse n'est pas sans intérêt. En effet, beaucoup de systèmes peuvent être représentés par des graphes. L'on se rend alors compte que des amats se forment, ce sont là des cliques. Il s'avère que ces cliques peuvent être considérées, selon le système étudié, comme des compartiments indépendant, peut-être des unités logiques. d'où l'utilité des les trouver efficacement. Nous pouvons observer de multiples applications des cliques dans des domaines tels que la biologie, la sociologie et bien d'autres \cite{FORTUNATO201075}.
+Étudier un tel problème et surtout trouver des algorithmes efficaces pour en obtenir la réponse n'est pas sans intérêt. En effet, beaucoup de systèmes peuvent être représentés par des graphes. L'on se rend alors compte que des amats se forment, ce sont là des cliques. Il s'avère que ces cliques peuvent être considérées, selon le système étudié, comme des compartiments indépendants, peut-être des unités logiques. d'où l'utilité des les trouver efficacement. Nous pouvons observer de multiples applications des cliques dans des domaines tels que la biologie, la sociologie et bien d'autres \cite{FORTUNATO201075}.
 
 Nous commencerons par un rappel des notions et notations utilisées ainsi que des définitions utiles à la compréhension de ce rapport, suivi d'une présentation des différents algorithmes implémentés et pour terminer par la comparaison d'efficacité en temps et en langage de ceux-ci.
 
@@ -98,14 +98,18 @@ Nous commencerons par un rappel des notions et notations utilisées ainsi que de
 
 \subsection{Notions de bases}
 
-Dans ce rapport, nous allons définir un graphe simple non orienté \emph{G(V, E)} comme étant un ensemble de nœuds \emph{V} reliés par des arêtes. Nous notons l'ensemble des arêtes comme étant l'ensemble \emph{E}. Une arêtes est définie comme un tuple $ (v, v') $ où $ v $ et $ v' $ sont les 2 nœuds réliés par l'arête. Les nœuds peuvent être étiquetés pour plus de lisibilité.
+Dans ce rapport, nous allons définir un graphe simple non orienté \emph{G=V, E} comme étant un ensemble de nœuds \emph{V} reliés par des arêtes. Nous notons l'ensemble des arêtes comme étant l'ensemble \emph{E}. Une arêtes est définie comme un tuple $ (v, v') $ où $ v $ et $ v' $ sont les 2 nœuds réliés par l'arête. Les nœuds peuvent être étiquetés pour plus de lisibilité.
 
-Il y a au plus une et une seule arête entre deux même nœuds et aucune arête allant d'un nœud à lui-même. Les arêtes que nous considérons n'ont pas de sens particulier. Ainsi, l'arête joignant les nœuds \emph{x} et \emph{y} est la même que celle joignant \emph{y} à \emph{x} et sera dénotée par l'existence du tuple $(x, y) \in E$.
-Nous notons les voisins d'un nœud \emph{v} par \emph{N(v)}.
+Nous considérons des graphes simples non dirigés, c'est à dire qu'il y a au plus une et une seule arête entre deux nœuds et aucune arête allant d'un nœud à lui-même. Les arêtes que nous considérons n'ont pas de sens particulier. Ainsi, l'arête joignant les nœuds \emph{x} et \emph{y} est la même que celle joignant \emph{y} à \emph{x} et sera dénotée par l'existence du tuple $(x, y) \in E$.
 
-Nous définissons l'ordre \emph{m} d'un graphe comme étant $ |V| $ et sa taille \emph{m} comme $ |E| $.
+Soit \emph{G=V, E} Nous définirons les voisins d'un noeud \emph{v} comme l'ensemble des noeuds directement relié à \emph{v} par une arrete. Nous noterons l'ensemble des voisins de \emph{v} comme \emph{N(v)} définit formellement comme suit:
+\begin{equation}
+N(v) = { v' | (v, v') \in E }
+\end{equation}
 
-Dans la figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \textit{a} dont l'ensemble des noeuds \(V\) est l'ensemble \(\{1, 2, 3\}\). L'ensemle des arretes \(E\) quant a lui est l'ensemble \(\{(1,2), (2,3)\}\). Le graphe \textit{a} est un graphe d'ordre 3 et de taille 2. De la meme facon, pour le graphe \textit{b} on a \(V = \{1, 2, 3, 4, 5\}\) et \(E = \{(1,2), (2,3), (4,5)\}\). \textit{b} est d'ordre 5 et de taille 3.
+Nous définissons l'ordre \emph{n} d'un graphe comme étant $ |V| $ et sa taille \emph{m} comme $ |E| $.
+
+Dans la Figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \textit{a} dont l'ensemble des noeuds \(V\) est l'ensemble \(\{1, 2, 3\}\). L'ensemle des arretes \(E\) quant a lui est l'ensemble \(\{(1,2), (2,3)\}\). Le graphe \textit{a} est un graphe d'ordre 3 et de taille 2. De la meme facon, pour le graphe \textit{b} on a \(V = \{1, 2, 3, 4, 5\}\) et \(E = \{(1,2), (2,3), (4,5)\}\). \textit{b} est d'ordre 5 et de taille 3.
 
 \begin{figure}[h]
   \begin{subfigure}[b]{0.50\textwidth}
@@ -149,7 +153,7 @@ Dans la figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \te
 
 
 Soit $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG(W, E(W))} un sous-graphe de \emph{G}.
-Par exemple, en prenant le graphe \textit{b} de la figure \ref{fig:x exemple1}, le sous-graphe \(SG(\{1, 2, 5\}, E(\{1, 2, 5\}))\) est un sous-graphe valide de \textit{b} contenant uniquement les noeuds 1, 2 et 5 (\(W\)) et l'arrete \((1,2)\) (\(E(W)\)).
+Par exemple, en prenant le graphe \textit{b} de la Figure \ref{fig:x exemple1}, le sous-graphe \(SG(\{1, 2, 5\}, E(\{1, 2, 5\}))\) est un sous-graphe valide de \textit{b} contenant uniquement les noeuds 1, 2 et 5 (\(W\)) et l'arrete \((1,2)\) (\(E(W)\)).
 
 \begin{figure}
   \centering
@@ -172,7 +176,9 @@ Par exemple, en prenant le graphe \textit{b} de la figure \ref{fig:x exemple1}, 
 Une \textit{clique} est définie comme suit :
 Soit un graphe \emph{G(V,E)} où \emph{V} est l'ensemble des noeuds de \emph{G} et \emph{E} l'ensemble des arrêtes de \emph{G}. Nous dirons que \(C \subseteq V\), un sous-ensemble de noeuds du graphe, est une clique si et seulement si tous les noeuds de \emph{C} sont voisins entre-eux.
 C'est-à-dire :
-$$ \forall v, w \in C \ | \ (v, w)\in E \ avec\  v \neq w$$
+\begin{equation}
+\forall v, w \in C \ | \ (v, w)\in E \ avec\  v \neq w
+\end{equation}
 
 \begin{figure}[h]
   \centering
@@ -206,11 +212,11 @@ $$ \forall v, w \in C \ | \ (v, w)\in E \ avec\  v \neq w$$
 
 Il est important de remarquer qu'avec cette definition d'une clique, un noeud seul n'est pas une clique.
 
-La \textit{taille} d'une clique est définie par sa cardinalité, c'est à dire que la taille d'une clique \emph{C} est \(|C|\). Comme exemple, prenons la clique en bleu dans le graphe de la figure \ref{fig:x clique1} : nous avons que \(C = {1,2,3,4}\) et \(|C| = 4\). C'est donc une clique de taille 4.
+La \textit{taille} d'une clique est définie par sa cardinalité, c'est à dire que la taille d'une clique \emph{C} est \(|C|\). Comme exemple, prenons la clique en bleu dans le graphe de la Figure \ref{fig:x clique1} : nous avons que \(C = {1,2,3,4}\) et \(|C| = 4\). C'est donc une clique de taille 4.
 
 Nous dirons qu'une clique est \textit{maximale} s'il est impossible de rajouter un nœuds de \emph{G} dans la clique tel que la propriété si dessus reste respectée.
 
-Dans la figure \ref{fig:x clique1}, la clique \textit{bleue} composee des noeuds 1, 2, 3 et 4 est egalement maximale. Par contre, la clique composee des noeuds 3 et 5 ne l'est pas car il est possible d'y rajouter le noeud 4.
+Dans la Figure \ref{fig:x clique1}, la clique \textit{bleue} composee des noeuds 1, 2, 3 et 4 est egalement maximale. Par contre, la clique composee des noeuds 3 et 5 ne l'est pas car il est possible d'y rajouter le noeud 4.
 
 Enfin, nous définirons une clique \textit{maximum} comme étant la clique de plus grande taille. Notons que toute clique maximum sera maximale et qu'il peut y avoir plusieurs cliques maximum dans un même graphe.
 
@@ -238,7 +244,7 @@ Enfin, nous définirons une clique \textit{maximum} comme étant la clique de pl
 \end{center}
 \end{figure}
 
-Regardons la figure \ref{fig:x clique2}. $ \{3, 4, 5\}$ (en bleu) est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum). Par contre, la clique composée des noéuds 1 et 2, bien qu'étant maximale (en effet, aucun autre noeud du graphe ne peut être ajouté à cette clique) n'est pas maximum car elle ne contient que 2 noeuds là où la clique précédemment mentionnée (celle en bleu sur la figure \ref{fig:x clique2}) est plus grande vu qu'elle contient 3 noeuds.
+Regardons la Figure \ref{fig:x clique2}. $ \{3, 4, 5\}$ (en bleu) est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum). Par contre, la clique composée des noéuds 1 et 2, bien qu'étant maximale (en effet, aucun autre noeud du graphe ne peut être ajouté à cette clique) n'est pas maximum car elle ne contient que 2 noeuds là où la clique précédemment mentionnée (celle en bleu sur la figure \ref{fig:x clique2}) est plus grande vu qu'elle contient 3 noeuds.
 
 \section{Le problème d'énumération des cliques dans un graphe}
 Ce problème consiste, dans un graphe simple, à énumérer toutes les cliques \textbf{maximales} de celui-ci. L'ordre dans lequel celles-ci sont listées n'est pas important.
@@ -274,7 +280,7 @@ Ce problème consiste, dans un graphe simple, à énumérer toutes les cliques \
 \end{figure}
 
 
-Prenons par exemple le graphe en figure \ref{fig:x clique3}. Nous sommes donc intéressé d'obtenir les cliques suivantes :
+Prenons par exemple le graphe en Figure \ref{fig:x clique3}. Nous sommes donc intéressé d'obtenir les cliques suivantes :
 \begin{itemize}
         \item \(\{1, 2, 3\}\)
         \item \(\{5, 4, 3\}\)
@@ -341,12 +347,12 @@ Ci-dessous le pseudo-code de l'algorithme décrit précédement.
 
 La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $\cite{CONTE20221}.
 
-Une implémentation de l'algorithme CLIQUE est disponible en python ainsi que des variantes avec d'autres pivots également présentés dans l'article.
+Une implémentation de l'algorithme CLIQUE est disponible en Python ainsi que des variantes avec d'autres pivots également présentés dans l'article.
 
 \section{Plannification}%
 \label{sec:plan}
 
-Une implémentation du code en python est déjà fournie et à l'avenir, une implémentation en Rust sera faite afin de pouvoir comparer l'exécution d'un même algorithme sur deux langages différents. En parlant de comparaison, des tests de performances sur les différents algorithmes présenter dans l'article sera réalisé afin de confirmer les résultats des auteurs de l'article en question.
+Une implémentation du code en Python est déjà fournie et à l'avenir, une implémentation en Rust sera faite afin de pouvoir comparer l'exécution d'un même algorithme sur deux langages différents. En parlant de comparaison, des tests de performances sur les différents algorithmes présenter dans l'article sera réalisé afin de confirmer les résultats des auteurs de l'article en question.
 
 D'un point de vue rédaction, il faut développer la description des différents algorithmes (et surtout tous les explicités) ainsi que de présenter les sets de données qui servironts aux tests et la méthodologie. Ceci incluant une description du matériel utilisé mais aussi la façon dont les performances vont être mesurées.
 
