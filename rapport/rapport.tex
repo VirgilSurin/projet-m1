@@ -28,54 +28,97 @@
     pdfauthor=Virgil Surin,
     pdfpagemode=FullScreen
 }
-
+\tikzset{every picture/.style={scale=1,auto=center,every node/.style={circle,fill=blue!20}}}
 \graphicspath{images/}
 
 \begin{document}
+
+% \begin{titlepage}
+%   \begin{center}
+
+%     {\Large Université de Mons}\\[1ex]
+%     {\Large Faculté des sciences}\\[1ex]
+%     {\Large Département d'Informatique}\\[2.5cm]
+
+%     \newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
+%     % Title
+%     \HRule \\[0.3cm]
+%     { \LARGE \bfseries Étude comparative d'algorithmes pour énumérer les cliques d'un graphe \\[0.3cm]}
+%     % { \LARGE \bfseries Rapport préliminaire de projet de Master \\[0.1cm]} % Commenter si pas besoin
+%     \HRule \\[1.5cm]
+
+%     % Author and supervisor
+%     \begin{minipage}[t]{0.45\textwidth}
+%       \begin{flushleft} \large
+%         \emph{Directeur:}\\
+%         Hadrien \textsc{Mélot}\\
+%         \emph{Co-directeur:}\\
+%         Sébastien \textsc{Bonte}\\
+%       \end{flushleft}
+%     \end{minipage}
+%     \begin{minipage}[t]{0.45\textwidth}
+%       \begin{flushright} \large
+%         \emph{Auteur:} \\
+%         Virgil \textsc{Surin}
+%       \end{flushright}
+%     \end{minipage}\\[2ex]
+
+%     \vfill
+
+%     % Bottom of the page
+%     \begin{center}
+%       \begin{tabular}[t]{c c c}
+%         \includegraphics[height=1.5cm]{logoumons.jpg} &
+%                                                         \hspace{0.3cm} &
+%                                                                          \includegraphics[height=1.5cm]{logofs.jpg}
+%       \end{tabular}
+%     \end{center}~\\
+
+%     {\large Année académique 2023-2024}
+
+%   \end{center}
+% \end{titlepage}
 \begin{titlepage}
   \begin{center}
-
-    {\Large Université de Mons}\\[1ex]
-    {\Large Faculté des sciences}\\[1ex]
-    {\Large Département d'Informatique}\\[2.5cm]
-
-    \newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
-    % Title
-    \HRule \\[0.3cm]
-    { \LARGE \bfseries Étude comparative d'algorithmes pour énumérer les cliques d'un graphe \\[0.3cm]}
-    % { \LARGE \bfseries Rapport préliminaire de projet de Master \\[0.1cm]} % Commenter si pas besoin
-    \HRule \\[1.5cm]
-
-    % Author and supervisor
-    \begin{minipage}[t]{0.45\textwidth}
-      \begin{flushleft} \large
-        \emph{Directeur:}\\
-        Hadrien \textsc{Mélot}\\
-        \emph{Co-directeur:}\\
-        Sébastien \textsc{Bonte}\\
-      \end{flushleft}
-    \end{minipage}
-    \begin{minipage}[t]{0.45\textwidth}
-      \begin{flushright} \large
-        \emph{Auteur:} \\
-        Virgil \textsc{Surin}
-      \end{flushright}
-    \end{minipage}\\[2ex]
-
-    \vfill
-
-    % Bottom of the page
-    \begin{center}
-      \begin{tabular}[t]{c c c}
-        \includegraphics[height=1.5cm]{logoumons.jpg} &
-                                                        \hspace{0.3cm} &
-                                                                         \includegraphics[height=1.5cm]{logofs.jpg}
-      \end{tabular}
-    \end{center}~\\
-
-    {\large Année académique 2022-2023}
-
+    \textnormal{\Large{Universit\'e de Mons}}\\[0.3em]
+    \textnormal{\Large{Facult\'e des Sciences}}\\[0.3em]
   \end{center}
+  \vspace*{3cm}
+  \begin{center}
+    \fbox{
+      \begin{minipage}{0.9\textwidth}
+        \centering
+        \vspace*{0.5cm}\textbf{\LARGE{Étude comparative d'algorithmes\\}}
+        \textbf{\LARGE{d'énumération de cliques d'un graphe }}\vspace*{0.5cm}
+      \end{minipage}
+    }
+  \end{center}
+  \vspace*{2cm}
+
+  \begin{minipage}[t]{0.45\textwidth}
+    \begin{flushleft} \large
+      \emph{Directeur:}\\
+      Hadrien \textsc{Mélot}\\
+      \emph{Co-directeur:}\\
+      Sébastien \textsc{Bonte}\\
+    \end{flushleft}
+  \end{minipage}
+  \begin{minipage}[t]{0.45\textwidth}
+    \begin{flushright} \large
+      \emph{Auteur:} \\
+      Virgil \textsc{Surin} \\
+    \end{flushright}
+  \end{minipage}\\[2ex]
+
+  \vspace*{2cm}
+  \begin{center}
+    \includegraphics[height=1.7cm]{logoumons.jpg}
+    \hspace{1cm}
+    \includegraphics[height=1.7cm]{logofs.jpg}
+    \\[1em]
+    Ann\'ee acad\'emique 2023-2024
+  \end{center}
+
 \end{titlepage}
 
 \tableofcontents
@@ -102,12 +145,7 @@ Dans ce rapport, nous allons définir un graphe simple non orienté \emph{G=V, E
 
 Nous considérons des graphes simples non dirigés, c'est à dire qu'il y a au plus une et une seule arête entre deux nœuds et aucune arête allant d'un nœud à lui-même. Les arêtes que nous considérons n'ont pas de sens particulier. Ainsi, l'arête joignant les nœuds \emph{x} et \emph{y} est la même que celle joignant \emph{y} à \emph{x} et sera dénotée par l'existence du tuple $(x, y) \in E$.
 
-Soit \emph{G=V, E} Nous définirons les voisins d'un noeud \emph{v} comme l'ensemble des noeuds directement relié à \emph{v} par une arrete. Nous noterons l'ensemble des voisins de \emph{v} comme \emph{N(v)} définit formellement comme suit:
-\begin{equation}
-N(v) = { v' | (v, v') \in E }
-\end{equation}
-
-Nous définissons l'ordre \emph{n} d'un graphe comme étant $ |V| $ et sa taille \emph{m} comme $ |E| $.
+L'ordre \emph{n} d'un graphe est défini comme étant $ |V| $ et sa taille \emph{m} comme $ |E| $.
 
 Dans la Figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \textit{a} dont l'ensemble des noeuds \(V\) est l'ensemble \(\{1, 2, 3\}\). L'ensemle des arretes \(E\) quant a lui est l'ensemble \(\{(1,2), (2,3)\}\). Le graphe \textit{a} est un graphe d'ordre 3 et de taille 2. De la meme facon, pour le graphe \textit{b} on a \(V = \{1, 2, 3, 4, 5\}\) et \(E = \{(1,2), (2,3), (4,5)\}\). \textit{b} est d'ordre 5 et de taille 3.
 
@@ -115,11 +153,10 @@ Dans la Figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \te
   \begin{subfigure}[b]{0.50\textwidth}
     \centering
         \begin{tikzpicture}
-          \tikzstyle{vertex}=[circle,fill=black!10]
 
-          \node[vertex](v1) at (0, 0){1};
-          \node[vertex](v2) at (0, 2){2};
-          \node[vertex](v3) at (2, 2){3};
+          \node (v1) at (0, 0){1};
+          \node (v2) at (0, 2){2};
+          \node (v3) at (2, 2){3};
 
           \draw[-](v1)--(v2);
           \draw[-](v2)--(v3);
@@ -131,13 +168,12 @@ Dans la Figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \te
   \begin{subfigure}[b]{0.50\textwidth}
     \centering
         \begin{tikzpicture}
-          \tikzstyle{vertex}=[circle,fill=black!10]
 
-          \node[vertex](v1) at (0, 0){1};
-          \node[vertex](v2) at (1, 2){2};
-          \node[vertex](v3) at (3, 2){3};
-          \node[vertex](v4) at (2, 0){4};
-          \node[vertex](v5) at (4, 1){5};
+          \node (v1) at (0, 0){1};
+          \node (v2) at (1, 2){2};
+          \node (v3) at (3, 2){3};
+          \node (v4) at (2, 0){4};
+          \node (v5) at (4, 1){5};
 
           \draw[-](v1)--(v2);
           \draw[-](v2)--(v3);
@@ -147,22 +183,29 @@ Dans la Figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \te
         \caption{}
         \label{fig:x g2}
   \end{subfigure}
-  \caption{Deux graphes (\textit{a} et \textit{b})}
+  \caption{Deux graphes}
   \label{fig:x exemple1}
 \end{figure}
 
+Soit \emph{G=V, E} Nous définirons les voisins d'un noeud \emph{v} comme l'ensemble des noeuds directement relié à \emph{v} par une arrete. Nous noterons l'ensemble des voisins de \emph{v} comme \emph{N(v)} définit formellement comme suit:
+\begin{equation}
+N(v) = { v' | (v, v') \in E }
+\end{equation}
+Prenons le noeud \emph{2} du graphe \emph{b} de la Figure \ref{fig:x exemple1}. L'ensemble des voisins de ce noeud est l'ensemble \(N = {1, 3}\).
 
-Soit $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG(W, E(W))} un sous-graphe de \emph{G}.
-Par exemple, en prenant le graphe \textit{b} de la Figure \ref{fig:x exemple1}, le sous-graphe \(SG(\{1, 2, 5\}, E(\{1, 2, 5\}))\) est un sous-graphe valide de \textit{b} contenant uniquement les noeuds 1, 2 et 5 (\(W\)) et l'arrete \((1,2)\) (\(E(W)\)).
+
+Soit \emph{G = V, E}, un sous-graphe induit de \emph{G}, noté \(SG = W, E(W)\), est un graphe construit à partir d'un sous-ensemble de noeud de \emph{V} où $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG=W, E(W)}..
+Notez que dans un sous-graphe induit, nous ne conservons pas les arrêtes dont une extrémité ne se trouve pas dans \emph{W}.
+
+Par exemple, en prenant le graphe \textit{b} de la Figure \ref{fig:x exemple1}, le sous-graphe \(SG=\{1, 2, 5\}, E(\{1, 2, 5\})\) est un sous-graphe valide de \textit{b} contenant uniquement les noeuds 1, 2 et 5 (\(W\)) et l'arrete \((1,2)\) (\(E(W)\)).
 
 \begin{figure}
   \centering
   \begin{tikzpicture}
-    \tikzstyle{vertex}=[circle,fill=black!10]
 
-    \node[vertex](v1) at (0, 0){1};
-    \node[vertex](v2) at (1, 2){2};
-    \node[vertex](v5) at (4, 1){5};
+    \node (v1) at (0, 0){1};
+    \node (v2) at (1, 2){2};
+    \node (v5) at (4, 1){5};
 
     \draw[-](v1)--(v2);
 
@@ -174,31 +217,30 @@ Par exemple, en prenant le graphe \textit{b} de la Figure \ref{fig:x exemple1}, 
 \label{subsec:cliques}
 
 Une \textit{clique} est définie comme suit :
-Soit un graphe \emph{G(V,E)} où \emph{V} est l'ensemble des noeuds de \emph{G} et \emph{E} l'ensemble des arrêtes de \emph{G}. Nous dirons que \(C \subseteq V\), un sous-ensemble de noeuds du graphe, est une clique si et seulement si tous les noeuds de \emph{C} sont voisins entre-eux.
+soit un graphe \emph{G=V,E}. Nous dirons que \(C \subseteq V\), un sous-ensemble de noeuds du graphe, est une clique si et seulement si tous les noeuds de \emph{C} sont voisins entre-eux.
 C'est-à-dire :
-\begin{equation}
+\begin{equation}\label{clique}
 \forall v, w \in C \ | \ (v, w)\in E \ avec\  v \neq w
 \end{equation}
 
 \begin{figure}[h]
   \centering
   \begin{tikzpicture}
-    \tikzstyle{vertex}=[circle,fill=black!10]
 
-    \node[blue, vertex](v1) at (0, 0){1};
-    \node[blue, vertex](v2) at (0, 2){2};
-    \node[blue, vertex](v3) at (2, 2){3};
-    \node[blue, vertex](v4) at (3, 0){4};
-    \node[vertex](v5) at (4, 2){5};
-    \node[vertex](v6) at (6, 1.5){6};
-    \node[vertex](v7) at (5, 0){7};
+    \node[fill=red!20](v1) at (0, 0){1};
+    \node[fill=red!20](v2) at (0, 2){2};
+    \node[fill=red!20](v3) at (2, 2){3};
+    \node[fill=red!20](v4) at (3, 0){4};
+    \node (v5) at (4, 2){5};
+    \node (v6) at (6, 1.5){6};
+    \node (v7) at (5, 0){7};
 
-    \draw[blue, ultra thick](v1)--(v2);
-    \draw[blue, ultra thick](v2)--(v3);
-    \draw[blue, ultra thick](v1)--(v3);
-    \draw[blue, ultra thick](v1)--(v4);
-    \draw[blue, ultra thick](v2)--(v4);
-    \draw[blue, ultra thick](v3)--(v4);
+    \draw[red, ultra thick](v1)--(v2);
+    \draw[red, ultra thick](v2)--(v3);
+    \draw[red, ultra thick](v1)--(v3);
+    \draw[red, ultra thick](v1)--(v4);
+    \draw[red, ultra thick](v2)--(v4);
+    \draw[red, ultra thick](v3)--(v4);
     \draw[-](v3)--(v5);
     \draw[-](v4)--(v5);
     \draw[-](v5)--(v6);
@@ -206,37 +248,36 @@ C'est-à-dire :
     \draw[-](v4)--(v7);
     \draw[-](v6)--(v7);
   \end{tikzpicture}
-  \caption{Un graphe, en bleu une clique de ce graphe}
+  \caption{Un graphe, en rouge une clique de ce graphe}
   \label{fig:x clique1}
 \end{figure}
 
-Il est important de remarquer qu'avec cette definition d'une clique, un noeud seul n'est pas une clique.
+Il est important de remarquer qu'avec cette définition d'une clique, un noeud seul n'est pas une clique.
 
-La \textit{taille} d'une clique est définie par sa cardinalité, c'est à dire que la taille d'une clique \emph{C} est \(|C|\). Comme exemple, prenons la clique en bleu dans le graphe de la Figure \ref{fig:x clique1} : nous avons que \(C = {1,2,3,4}\) et \(|C| = 4\). C'est donc une clique de taille 4.
+La \textit{taille} d'une clique est définie par sa cardinalité, c'est à dire que la taille d'une clique \emph{C} est \(|C|\). Comme exemple, prenons la clique en rouge dans le graphe de la Figure \ref{fig:x clique1} : nous avons que \(C = \{1,2,3,4\}\) et \(|C| = 4\). C'est donc une clique de taille 4.
 
-Nous dirons qu'une clique est \textit{maximale} s'il est impossible de rajouter un nœuds de \emph{G} dans la clique tel que la propriété si dessus reste respectée.
+Nous dirons qu'une clique est \textit{maximale} s'il est impossible de rajouter un nœuds de \emph{G} dans la clique tel que la propriété \eqref{clique} reste respectée.
 
-Dans la Figure \ref{fig:x clique1}, la clique \textit{bleue} composee des noeuds 1, 2, 3 et 4 est egalement maximale. Par contre, la clique composee des noeuds 3 et 5 ne l'est pas car il est possible d'y rajouter le noeud 4.
+Dans la Figure \ref{fig:x clique1}, la clique \textit{bleue} composée des noeuds 1, 2, 3 et 4 est egalement maximale. Par contre, la clique composée des noeuds 3 et 5 ne l'est pas car il est possible d'y rajouter le noeud 4.
 
-Enfin, nous définirons une clique \textit{maximum} comme étant la clique de plus grande taille. Notons que toute clique maximum sera maximale et qu'il peut y avoir plusieurs cliques maximum dans un même graphe.
+Enfin, nous définirons une clique \textit{maximum} comme étant une clique de taille maximum. Notons que toute clique maximum sera maximale et qu'il peut y avoir plusieurs cliques maximum dans un même graphe.
 
 \begin{figure}[h]
   \begin{center}
 \begin{tikzpicture}
-  \tikzstyle{vertex}=[circle,fill=black!10]
 
-  \node[vertex](v1) at (0, 0){1};
-  \node[vertex](v2) at (0, 2){2};
-  \node[blue, vertex](v3) at (2, 2){3};
-  \node[blue, vertex](v4) at (3, 0){4};
-  \node[blue, vertex](v5) at (4, 2){5};
-  \node[vertex](v6) at (6, 1){6};
+  \node (v1) at (0, 0){1};
+  \node (v2) at (0, 2){2};
+  \node[fill=red!20](v3) at (2, 2){3};
+  \node[fill=red!20](v4) at (3, 0){4};
+  \node[fill=red!20](v5) at (4, 2){5};
+  \node (v6) at (6, 1){6};
   
   \draw[-](v1)--(v2);
   \draw[-](v2)--(v3);
-  \draw[blue, ultra thick](v3)--(v4);
-  \draw[blue, ultra thick](v3)--(v5);
-  \draw[blue, ultra thick](v4)--(v5);
+  \draw[red, ultra thick](v3)--(v4);
+  \draw[red, ultra thick](v3)--(v5);
+  \draw[red, ultra thick](v4)--(v5);
   \draw[-](v5)--(v6);
 \end{tikzpicture}
 \caption{Un graphe}
@@ -244,23 +285,26 @@ Enfin, nous définirons une clique \textit{maximum} comme étant la clique de pl
 \end{center}
 \end{figure}
 
-Regardons la Figure \ref{fig:x clique2}. $ \{3, 4, 5\}$ (en bleu) est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum). Par contre, la clique composée des noéuds 1 et 2, bien qu'étant maximale (en effet, aucun autre noeud du graphe ne peut être ajouté à cette clique) n'est pas maximum car elle ne contient que 2 noeuds là où la clique précédemment mentionnée (celle en bleu sur la figure \ref{fig:x clique2}) est plus grande vu qu'elle contient 3 noeuds.
+Regardons la Figure \ref{fig:x clique2}. $ \{3, 4, 5\}$ (en rouge) est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum). Par contre, la clique composée des noéuds 1 et 2, bien qu'étant maximale (en effet, aucun autre noeud du graphe ne peut être ajouté à cette clique) n'est pas maximum car elle ne contient que 2 noeuds là où la clique précédemment mentionnée (celle en rouge sur la figure \ref{fig:x clique2}) est plus grande vu qu'elle contient 3 noeuds.
 
 \section{Le problème d'énumération des cliques dans un graphe}
+
+\subsection{Définition}%
+\label{subsec:def_prob}
+
 Ce problème consiste, dans un graphe simple, à énumérer toutes les cliques \textbf{maximales} de celui-ci. L'ordre dans lequel celles-ci sont listées n'est pas important.
 
 \begin{figure}[h]
   \begin{center}
     \begin{tikzpicture}
-      \tikzstyle{vertex}=[circle,fill=black!10]
 
-      \node[vertex](v1) at (0, 1){1};
-      \node[vertex](v2) at (0, 3){2};
-      \node[vertex](v3) at (2, 2){3};
-      \node[vertex](v4) at (4, 0){4};
-      \node[vertex](v5) at (4, 2){5};
-      \node[vertex](v6) at (6, 3){6};
-      \node[vertex](v7) at (6, 1){7};
+      \node (v1) at (0, 1){1};
+      \node (v2) at (0, 3){2};
+      \node (v3) at (2, 2){3};
+      \node (v4) at (4, 0){4};
+      \node (v5) at (4, 2){5};
+      \node (v6) at (6, 3){6};
+      \node (v7) at (6, 1){7};
 
       \draw[-](v1)--(v2);
       \draw[-](v1)--(v3);
@@ -290,34 +334,206 @@ Ces trois cliques sont bien les seules et uniques cliques maximales de ce graphe
 Notez comme la clique \({4, 5, 6}\) n'est pas reprise, en effet celle-ci n'est pas maximale car elle peut être agrandie avec le noeud 7.
 
 \subsection{Complexité du problème}
-Le problème d'énumération de toutes les cliques maximales dans un graphe simple est un problème appartenant à la classe NP-Complet. C'est-à-dire qu'il n'existe pas d'algorithme déterministe en temps polynomial qui permette d'énumérer toutes les cliques maximales d'un graphe.
+% TODO: do this
+L'énumération des cliques maximales dans un graphe simple est un problème fondamental en théorie des graphes et en informatique théorique. Ce problème consiste à identifier toutes les cliques maximales d'un graphe, c'est-à-dire les sous-graphes complets qui ne peuvent être étendus par l'ajout d'un sommet adjacent. Bien que le problème soit simple à énoncer, sa complexité algorithmique est élevée et pose des défis importants. Ce problème est un problème \(\mathcal{N}\mathcal{P}\text{-Difficile}\).
+
+Le nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximise le nombre de cliques maximales sont nommés graphe de Moon-Moser ou graphe de Turán (voir Figure \ref{fig:moon-moser}).
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Define the positions of the nodes
+        \node (n1) at (1, 0) {1};
+        \node (n2) at (3, 0) {2};
+        \node (n3) at (-0, 1.5) {3};
+        \node (n4) at (4, 1.5) {4};
+        \node (n5) at (1, 3) {5};
+        \node (n6) at (3, 3) {6};
+
+        % Draw the edges
+        \foreach \from/\to in {n1/n2, n1/n3, n1/n4, n1/n5, n2/n3, n2/n4, n2/n6, n3/n5, n3/n6, n4/n5, n4/n6, n5/n6}
+        \draw (\from) -- (\to);
+    \end{tikzpicture}
+    \caption{Graphe de Moon-Moser d'ordre 6}
+    \label{fig:moon-moser}
+\end{figure}
+
+Nous allons ici présenter un algorithmes qui atteint une complexité dans le pire des cas de \(O(3^{3/n})\)\cite{CONTE20221}, correspondant ainsi au nombre de cliques qu'il faut énumérer (dans le pire des cas).
+
+\section{Idée générale}%
+\label{sec:idee}
+
+\subsection{Explication}%
+\label{subsec:explication}
+
+Dans cette section nous allons aborder et expliquer l'idée générale commune à chacun des algorithmes présentés dans \ref{sec:algo}.
+
+Le but de ces algorithmes est d'énumérer toutes les cliques maximales dans un graphe \emph{G = (V, E)}.
+
+L'idée est de passer par une recherche en profondeur. L'algorithme commence avec un ensemble de tous les sommets du graphe et explore récursivement toutes les combinaisons possibles de sommets pour former des cliques en appliquant des techniques d'élagages afin de ne pas considérer de duplicata.
+
+Pour ce faire, notre procédure défini trois ensembles de sommets :
+\begin{itemize}
+  \item \emph{Q}, la clique en train d'être énumérée
+  \item \emph{SUBG}, qui représente les sommets restants à explorer (notez que \emph{SUBG} est un sous-graphe induit de \emph{G}).
+  \item \emph{CAND}, qui contient les sommets qui peuvent être ajoutés à \emph{Q} (les candidats). \emph{CAND} est entièrement contenue dans \emph{SUBG}.
+\end{itemize}
+À chaque étape de la recherche, un sommet \emph{p} est sélectionné et ajouté à \emph{Q}.  Ensuite, nous réduisons \emph{SUBG} à \emph{SUBG} \(\cap\) \emph{N(p)} et \emph{CAND} à \emph{CAND} \(\cap\) \emph{N(p)}. Lorsque nous remontons dans la recherches (backtracking), nous retirons \emph{p} des \emph{CAND}idats mais pas de \emph{SUBG}. Ainsi les cliques contenues dans \emph{CAND} n'auront pas de doublons (vu que nous ne cherchons que les maximales, lorsque nous trouvons une clique maximale avec \emph{p} il n'est pas nécessaire de chercher une autre clique maximale contenant \emph{p} car elles ont déjà toutes été trouvées lors de l'exploration des cliques contenant \emph{p})
+
+Lorsque \emph{SUBG} est vide, cela veut dire que nous avons trouvé une clique maximale car il n'y a plus de sommet à explorer.
+
+\subsection{Le pivotage}%
+\label{subsec:pivotage}
 
 
-\section{Algorithmes}
-
-\subsection{CLIQUE}
+Afin d'optimiser la recherche en profondeur nous choisissons, avant de choisir un sommet \emph{p}, un noeud pivot \emph{u} qui permettra d'élaguer la recherche. Car chaque clique maximale \emph{Q'} dans \emph{SUBG} \(\cap\) \emph{N(u)} n'est en réalité pas maximale dans \emph{SUBG} vu que \emph{Q'} \(\cup \{u\}\) est une clique plus grande dans \emph{SUBG}. Ainsi nous pouvons couper l'exploration de tous les sommets dans \emph{N(u)}.
 
 
-Cet algorithme se base sur une exploration en profondeur afin d'énumérer toutes les cliques maximales de \emph{G}.
-CLIQUE est une procédure récursive. Il introduit un ensemble \emph{Q} vide représentant la clique courante et essaie d'étendre \emph{Q} sur base de deux sous-ensemble de noeuds \textit{SUBG} et \textit{CAND}.
+La stratégie de pivot est une technique utilisée pour réduire le nombre de récursions nécessaires en sélectionnant un sommet pivot et en explorant ses voisins. Voici comment cette stratégie fonctionne :
 
-Initialiement, $ SUBG \leftarrow V $ et $ CAND \leftarrow V $. L'objectif est d'énumérer toutes les cliques maximales dans le sous-graphe induit par \emph{SUBG} en étendant la clique courante \emph{Q} avec des noeuds candidats dans \emph{CAND}.
+L'algorithme commence par sélectionner un pivot, noté \( u \), dans \emph{SUBG}. Nous discuterons de plusieurs stratégies pour choisir ce pivot plus tard.
 
-Soit $ Q = \{p_1, p_2, ..., p_d\} $ la clique courante.
-Alors $ SUBG = V \cap N(p_1) \cap N(p_2) \cap ... \cap N(p_d)$, c'est à dire l'ensemble des nœuds voisins de tout nœud appartenant à \emph{Q}. L'algorithme selectionne alors  un noeud $ p \in SUBG $ et l'ajoute à \emph{Q} et ceci pour tout nœud dans \emph{SUBG}. Cela egendre un appel récursif avec $ SUBG_p = SUBG \cap N(p) $ et $ CANDp = CAND \cap N(p) $. \emph{p} sera retiré de $ CAND $ après l'exécution de l'appel récursif lors du \textit{backtracking}.
+Une clique maximale \( Q' \) dans \( \text{SUBG} \cap N(u) \) n'est pas maximale dans \( \text{SUBG} \), car \( Q' \cup \{u\} \) est une clique plus grande dans \( \text{SUBG} \) étant donné que tous les sommets de \(Q'\) sont voisins de \emph{u}. Ainsi, toute clique maximale contient soit \( u \), soit au moins un sommet de \( \text{SUBG} \setminus N(u) \). Cela signifie que nous pouvons ignorer l'expansion de tous les sommets dans \( N(u) \) et n'explorer que ceux dans \( \text{SUBG} \setminus N(u) \).
 
-Afin de ne pas engendrer trop d'appel récursif, nous pouvons choisir
-inteligemment un noeud \textit{u} qui nous appèlerons le \textit{pivot}. Il existe plusieurs facon de choisir
-ce pivot. Conte et Tomita\cite{CONTE20221} décrivent un bon pivot \emph{u} comme étant un noeud de
-\emph{SUBG} qui maximise $ | CAND \cap N(u) |$. Un tel pivot va ainsi minimiser $ |CAND \setminus N(u)| $, ce
-qui est intéressant car toute clique maximale $ Q' $ dans $ SUBG \cap N(u) $ n'est pas maximale dans
-$ G(SUBG) $ car il est possible d'ajouter $ u $ à cette clique. Ainsi, toute clique maximale contien soit
-\textit{u} soit un noeud dans $ SUBG \setminus N(u)$. Il n'est donc pas nécessaire d'explorer les voisins de
-$ u $ dans ce cas.
-Cela explique pourquoi $ u $ est un bon pivot, car maximiser $ | CAND \cap N(u) | $ va minimiser
-$ CAND \setminus N(u)$ et donc minimiser le nombre d'appel.
+Voici un exemple détaillé.
 
-Ci-dessous le pseudo-code de l'algorithme décrit précédement.
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \node (n1) at (0, 0) {1};
+            \node (n2) at (0, 2) {2};
+            \node (n3) at (2, 2) {3};
+            \node (n4) at (3, 0) {4};
+            \node (n5) at (4, 2) {5};
+            \node (n6) at (4, 0) {6};
+            \node (n7) at (5, 1) {7};
+
+            \foreach \from/\to in {n1/n2, n2/n3, n1/n3, n1/n4, n3/n4, n3/n5, n4/n5, n4/n6, n5/n6, n5/n7}
+              \draw (\from) -- (\to);
+        \end{tikzpicture}
+        \caption{SUBG}
+        \label{fig:initial}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \node (n1) at (0, 0) {1};
+            \node (n2) at (0, 2) {2};
+            \node (n3) at (2, 2) {3};
+            \node (n4) at (3, 0) {4};
+            \node (n5) at (4, 2) {5};
+            \node (n6) at (4, 0) {6};
+            \node (n7) at (5, 1) {7};
+
+            \foreach \from/\to in {n1/n2, n2/n3}
+              \draw[red!20, ultra thick] (\from) -- (\to);
+            \foreach \from/\to in {n3/n5, n4/n5, n1/n3, n1/n4, n3/n4, n5/n6, n4/n6, n5/n7}
+              \draw (\from) -- (\to);
+            \node[fill=red!20] at (0, 2) {2};
+        \end{tikzpicture}
+        \caption{Sélection du pivot (2)}
+        \label{fig:pivot}
+    \end{subfigure}
+    \vfill
+    \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \node (n4) at (0, 0) {4};
+            \node (n5) at (1, 2) {5};
+            \node (n6) at (1, 0) {6};
+            \node (n7) at (2, 1) {7};
+            \foreach \from/\to in {n4/n5, n5/n6, n4/n6, n5/n7}
+              \draw (\from) -- (\to);
+        \end{tikzpicture}
+        \caption{\(\text{SUBG} \backslash N(u)\) }
+        \label{fig:subgraph1}
+    \end{subfigure}
+    \caption{Étapes de l'algorithme d'énumération des cliques maximales avec pivot}
+    \label{fig:cliques_algorithm}
+\end{figure}
+
+L'algorithme commence par sélectionner un pivot. Supposons que nous choisissons le sommet 2.
+Clairement, toute clique maximale dans \(\text{SUBG} \cap N(u)\) ne sera pas maximale si l'on tient en compte le noeud \emph{u}.
+
+L'utilisation d'un pivot est cruciale car elle permet de réduire le nombre d'appel récursif.
+% \begin{figure}[h]
+%   \begin{center}
+%     \begin{tikzpicture}
+%
+%       \node[vertex, fill=gray!80](v1) at (0, 0){1};
+%       \node[vertex, fill=gray!80](v2) at (0, 2){2};
+%       \node[vertex, fill=gray!80](v3) at (2, 0){3};
+%       \node[vertex, fill=gray!80](v4) at (2, 2){4};
+%       \node (v5) at (4, 1){5};
+
+%       \draw[-](v1)--(v2);
+%       \draw[-](v1)--(v3);
+%       \draw[-](v1)--(v4);
+%       \draw[-](v2)--(v3);
+%       \draw[-](v2)--(v4);
+%       \draw[-](v3)--(v4);
+%       \draw[-](v5)--(v4);
+%       \draw[-](v5)--(v3);
+%     \end{tikzpicture}
+%     \caption{Illustration du pivot}
+%     \label{fig:x algo1}
+%   \end{center}
+% \end{figure}
+
+
+% Soit $ Q = \{p_1, p_2, ..., p_d\} $ la clique courante.
+% Alors $ SUBG = V \cap N(p_1) \cap N(p_2) \cap ... \cap N(p_d)$, c'est à dire l'ensemble des nœuds voisins de tout nœud appartenant à \emph{Q}. L'algorithme selectionne alors  un noeud $ p \in SUBG $ et l'ajoute à \emph{Q} et ceci pour tout nœud dans \emph{SUBG}. Cela egendre un appel récursif avec $ SUBG_p = SUBG \cap N(p) $ et $ CANDp = CAND \cap N(p) $. \emph{p} sera retiré de $ CAND $ après l'exécution de l'appel récursif lors du \textit{backtracking}.
+
+% Afin de ne pas engendrer trop d'appel récursif, nous pouvons choisir inteligemment un noeud \textit{u} qui nous appèlerons le \textit{pivot}. Il existe plusieurs facon de choisir
+% ce pivot. Conte et Tomita\cite{CONTE20221} décrivent un bon pivot \emph{u} comme étant un noeud de
+% \emph{SUBG} qui maximise $ | CAND \cap N(u) |$. Un tel pivot va ainsi minimiser $ |CAND \setminus N(u)| $, ce
+% qui est intéressant car toute clique maximale $ Q' $ dans $ SUBG \cap N(u) $ n'est pas maximale dans
+% $ G(SUBG) $ car il est possible d'ajouter $ u $ à cette clique. Ainsi, toute clique maximale contien soit
+% \textit{u} soit un noeud dans $ SUBG \setminus N(u)$. Il n'est donc pas nécessaire d'explorer les voisins de
+% $ u $ dans ce cas.
+% Cela explique pourquoi $ u $ est un bon pivot, car maximiser $ | CAND \cap N(u) | $ va minimiser
+% $ CAND \setminus N(u)$ et donc minimiser le nombre d'appel.
+
+\subsection{Pseudo-code commun}%
+\label{subsec:algo}
+
+Ci-dessous ce trouve le pseudo code générique des différents algorithmes que nous présentons. Il s'agit là de leur squelette commun. La partie sur le choix du pivot est volontairement laissée floue et sera précisée dans les sous-sections respectives de chacun des algorithmes.
+
+\begin{algorithm}[H]
+  \textbf{Input}: un graphe $G = (V,E)$
+
+  \textbf{Output}: toutes les cliques maximales de $G$
+  \begin{algorithmic}[1]
+    \Procedure{ALG}{$SUBG, CAND$}
+      \If{$SUBG = \emptyset$} \Comment{$Q$ est une clique maximale}
+        \State \textbf{print} ($ Q $)
+      \Else
+        \State $u \gets$ un noeud pivot de \emph{SUBG}
+        \While{ il reste des noeuds candidats}
+          \State $p \gets$ un noeud dans $CAND \setminus N(u)$
+          \State $ Q \cup p $ \Comment{on ajoute \emph{p} à $Q$}
+          \State // Mise à jour des paramètres
+          \State $SUBG_p \gets SUBG \cap N(p)$
+          \State $CAND_p \gets CAND \cap N(p)$
+          \State \Call{Cliques}{$SUBG_p, CAND_p$}
+          \State $CAND \gets CAND \setminus {p}$
+          \State $ Q \setminus p $ \Comment{on retire \emph{p} de $Q$}
+        \EndWhile
+      \EndIf
+    \EndProcedure
+    \State \Call{ALG}{$V,V$}
+  \end{algorithmic}
+  \caption{\label{fig:alg} Squelette de base}
+\end{algorithm}
+
+% TODO: expliquer les différentes lignes du code
+
+Nous allons maintenant présenter les spécificités de chaque algorithmes. Pour rappel, ils se différencient dans le choix d'un noeud pivot à un moment de leur exécution.
+\section{CLIQUE}
+\label[sec:clique]
+
 \begin{algorithm}[H]
   \textbf{Input}: un graphe $G = (V,E)$
 
@@ -349,34 +565,42 @@ La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $\cite{CONTE2
 
 Une implémentation de l'algorithme CLIQUE est disponible en Python ainsi que des variantes avec d'autres pivots également présentés dans l'article.
 
-\section{Plannification}%
-\label{sec:plan}
+\section{Bron-Kerbosch}%
+\label{sec:bk1}
 
-Une implémentation du code en Python est déjà fournie et à l'avenir, une implémentation en Rust sera faite afin de pouvoir comparer l'exécution d'un même algorithme sur deux langages différents. En parlant de comparaison, des tests de performances sur les différents algorithmes présenter dans l'article sera réalisé afin de confirmer les résultats des auteurs de l'article en question.
+\subsection{Sans pivot}%
+\label{subsec:bk}
 
-D'un point de vue rédaction, il faut développer la description des différents algorithmes (et surtout tous les explicités) ainsi que de présenter les sets de données qui servironts aux tests et la méthodologie. Ceci incluant une description du matériel utilisé mais aussi la façon dont les performances vont être mesurées.
+\subsection{Pivot aléatoire}%
+\label{subsec:random}
 
-
-
-% \section{Tests}%
-% \label{sec:tests}
-% Cette section est dédiée aux tests de performances réalisé dans le cadre de ce projet. Les différents elgorithmes testés sont les suivants
-
-% \subsection{Méthodologie}%
-% \label{subsec:methodo}
-% Explication de la méthodo pour les temps
-
-% \subsection{Tests sets}%
-% \label{subsec:sets}
-
-% Explications des différents input de tests.
+\subsection{Pivot de degré maximum}%
+\label{subsec:max}
 
 
-% \section{Conclusion}
+\section{Tests}%
+\label{sec:tests}
+Cette section est dédiée aux tests de performances réalisé dans le cadre de ce projet. Les différents algorithmes testés sont les suivants
+
+\subsection{Méthodologie}%
+\label{subsec:methodo}
+Explication de la méthodo pour les temps
+
+\subsection{Tests sets}%
+\label{subsec:sets}
+
+Explications des différents input de tests.
+
+\subsection{Résultats}%
+\label{subsec:res}
+
+Résultats et explications de ceux-ci
+
+\section{Conclusion}
 
 % TODO
 
-\bibliographystyle{apalike}
+\bibliographystyle{abbrv}
 \bibliography{biblio}
 
 \end{document}

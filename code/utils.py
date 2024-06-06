@@ -1,11 +1,14 @@
 # <<<=== START OF UTILITY ===>>>
 class Graph:
-    def __init__(self, order):
+    def __init__(self, order=None):
         self.order = order
         self.adj = {}
 
     def __str__(self) -> str:
-        return f"n : {self.order}"
+        s = ""
+        for v in self.adj:
+            s += f"{v:<6} : {self.adj[v]}\n"
+        return f"n : {self.order}\n{s}"
 
     def add_edge(self, u, v):
         if u not in self.adj:
@@ -20,6 +23,56 @@ class Graph:
     def add_nodes(self, nodes):
         for node in nodes:
             self.adj[node] = set()
+
+    def to_g6(self):
+        # Constructing the bit vector
+        bit_vector = []
+        if self.order == None:
+            print("PANIK")
+            return None
+        for u in range(self.order):
+            for v in range(0, u):
+                if v in self.adj[u]:
+                    bit_vector.append('1')
+                else:
+                    bit_vector.append('0')
+        # Padding the bit vector
+        while len(bit_vector) % 6 != 0:
+            bit_vector.append('0')
+
+        # Splitting into groups of 6 bits
+        six_bit_groups = ["".join(bit_vector[i:i+6]) for i in range(0, len(bit_vector), 6)]
+        # Converting each group to its decimal representation
+        decimal_values = [chr(int(group, 2) + 63) for group in six_bit_groups]
+
+        # Constructing the graph6 representation
+        graph6 = []
+        graph6.append(self.encode_n(self.order))  # Add the N(n) part
+        graph6.extend(decimal_values)  # Add the R(x) part
+
+        return "".join(map(str, graph6))
+
+    def encode_n(self, n):
+        if n <= 62:
+            return chr(n + 63)
+        elif n <= 258047:
+            return chr(126) + self.encode_big_endian(n, 4)
+        else:
+            return chr(126) * 2 + self.encode_big_endian(n, 8)
+
+    def encode_big_endian(self, num, bytes_num):
+        num_bytes = []
+        for _ in range(bytes_num):
+            num_bytes.append(chr(63 + (num >> ((bytes_num - 1) * 6)) & 63))
+            num <<= 6
+        return "".join(num_bytes)
+
+    def save_to_g6(self, filename):
+        """
+        Save the current instantiated graph to g6 format
+        """
+        with open(f"{filename}.g6", 'w') as fout:
+            fout.write(f'{self.to_g6()}\n')
 
 def decode_g6(bytes_in):
     """
