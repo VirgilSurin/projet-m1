@@ -16,3 +16,11 @@ domtutor-validator/venv
 /rapport/rapport.blg
 *.zip
 /code/__pycache__/
+*.csv
+/code/samples/deezer_clean_data/
+/code/samples/deezer_europe/
+*.g6
+/code/samples/facebook_large/
+/code/samples/git_web_ml/
+/code/samples/twitch/
+/rapport/*.pdf
