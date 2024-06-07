@@ -128,13 +128,24 @@
 \section{Introduction}
 
 
-Dans ce rapport nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude se base principalement sur l'article d'Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''}.
+Dans ce rapport nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude se base principalement sur l'article d'Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''} \cite{CONTE20221}.
 
-L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenus par M.Conte et M.Tomita. Également, ces algorithmes seront implémentés en Python et en Rust afin de valider le fain de temps de Rust par rapport à Python.
-
-Étudier un tel problème et surtout trouver des algorithmes efficaces pour en obtenir la réponse n'est pas sans intérêt. En effet, beaucoup de systèmes peuvent être représentés par des graphes. L'on se rend alors compte que des amats se forment, ce sont là des cliques. Il s'avère que ces cliques peuvent être considérées, selon le système étudié, comme des compartiments indépendants, peut-être des unités logiques. d'où l'utilité des les trouver efficacement. Nous pouvons observer de multiples applications des cliques dans des domaines tels que la biologie, la sociologie et bien d'autres \cite{FORTUNATO201075}.
+L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenus par M.Conte et M.Tomita. Également, ces algorithmes seront implémentés en Python et en Rust afin de valider le gain de temps de Rust par rapport à Python.
 
 Nous commencerons par un rappel des notions et notations utilisées ainsi que des définitions utiles à la compréhension de ce rapport, suivi d'une présentation des différents algorithmes implémentés et pour terminer par la comparaison d'efficacité en temps et en langage de ceux-ci.
+
+\section{Les cliques, cas d'utilisations}%
+\label{sec:usecase}
+
+Étudier le problème d'énumération de cliques maximales et développer des algorithmes efficaces pour ce faire présente un intérêt considérable en raison de la multitude de systèmes qui peuvent être modélisés par des graphes. Dans de nombreux contextes, des amats de sommets tous connectés entre eux, connus sous le nom de cliques, apparaissent naturellement. Ces cliques peuvent représenter des compartiments indépendants ou des unités logiques au sein du système étudié.
+
+Les applications des cliques sont variées et couvrent de nombreux domaines. En biologie, par exemple, les cliques peuvent représenter des complexes protéiques où chaque protéine interagit avec toutes les autres du complexe, fournissant ainsi des informations cruciales pour comprendre les réseaux de signalisation cellulaire et les interactions protéine-protéine \cite{PAVLOU2016305}.
+
+Dans le domaine de la sociologie, les cliques sont utilisées pour identifier des groupes d'individus ayant des interactions fréquentes et intenses, ce qui peut aider à analyser les structures sociales et les dynamiques de groupe \cite{SCOTT201129}.
+
+En informatique, les cliques peuvent être utilisées dans l'optimisation des requêtes de bases de données et dans la détection de communautés au sein des réseaux de communication \cite{CORMEN200932}.
+
+En résumé, la capacité à identifier efficacement les cliques dans un graphe a des applications concrètes, allant de la compréhension des systèmes biologiques complexes à l'analyse des structures sociales en passant par l'optimisation des systèmes informatiques. Ces exemples illustrent l'importance pratique des cliques dans la recherche et les applications réelles\cite{FORTUNATO201075}.
 
 \section{Les graphes}%
 \label{sec:graphes}
@@ -235,12 +246,12 @@ C'est-à-dire :
     \node (v6) at (6, 1.5){6};
     \node (v7) at (5, 0){7};
 
-    \draw[red, ultra thick](v1)--(v2);
-    \draw[red, ultra thick](v2)--(v3);
-    \draw[red, ultra thick](v1)--(v3);
-    \draw[red, ultra thick](v1)--(v4);
-    \draw[red, ultra thick](v2)--(v4);
-    \draw[red, ultra thick](v3)--(v4);
+    \draw[red!20, ultra thick](v1)--(v2);
+    \draw[red!20, ultra thick](v2)--(v3);
+    \draw[red!20, ultra thick](v1)--(v3);
+    \draw[red!20, ultra thick](v1)--(v4);
+    \draw[red!20, ultra thick](v2)--(v4);
+    \draw[red!20, ultra thick](v3)--(v4);
     \draw[-](v3)--(v5);
     \draw[-](v4)--(v5);
     \draw[-](v5)--(v6);
@@ -275,9 +286,9 @@ Enfin, nous définirons une clique \textit{maximum} comme étant une clique de t
   
   \draw[-](v1)--(v2);
   \draw[-](v2)--(v3);
-  \draw[red, ultra thick](v3)--(v4);
-  \draw[red, ultra thick](v3)--(v5);
-  \draw[red, ultra thick](v4)--(v5);
+  \draw[red!20, ultra thick](v3)--(v4);
+  \draw[red!20, ultra thick](v3)--(v5);
+  \draw[red!20, ultra thick](v4)--(v5);
   \draw[-](v5)--(v6);
 \end{tikzpicture}
 \caption{Un graphe}
@@ -334,7 +345,6 @@ Ces trois cliques sont bien les seules et uniques cliques maximales de ce graphe
 Notez comme la clique \({4, 5, 6}\) n'est pas reprise, en effet celle-ci n'est pas maximale car elle peut être agrandie avec le noeud 7.
 
 \subsection{Complexité du problème}
-% TODO: do this
 L'énumération des cliques maximales dans un graphe simple est un problème fondamental en théorie des graphes et en informatique théorique. Ce problème consiste à identifier toutes les cliques maximales d'un graphe, c'est-à-dire les sous-graphes complets qui ne peuvent être étendus par l'ajout d'un sommet adjacent. Bien que le problème soit simple à énoncer, sa complexité algorithmique est élevée et pose des défis importants. Ce problème est un problème \(\mathcal{N}\mathcal{P}\text{-Difficile}\).
 
 Le nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximise le nombre de cliques maximales sont nommés graphe de Moon-Moser ou graphe de Turán (voir Figure \ref{fig:moon-moser}).
@@ -357,7 +367,7 @@ Le nombre de cliques maximales dans un graphe peut être exponentiel par rapport
     \label{fig:moon-moser}
 \end{figure}
 
-Nous allons ici présenter un algorithmes qui atteint une complexité dans le pire des cas de \(O(3^{3/n})\)\cite{CONTE20221}, correspondant ainsi au nombre de cliques qu'il faut énumérer (dans le pire des cas).
+Nous allons ici présenter un algorithme (et des variantes) qui atteint une complexité dans le pire des cas de \(O(3^{3/n})\)\cite{CONTE20221}, correspondant ainsi au nombre de cliques qu'il faut énumérer (dans le pire des cas). Même si ce résultat semble décevant, il signifie surtout que nous pouvons énumérer toutes les cliques en temps polynomial par rapport au nombre de cliques dans le graphe. Cela implique que le délai pour trouver la prochaine clique est également polynomial. En pratique, cet algorithme et ces variantes se comportent plutôt bien en terme de temps.
 
 \section{Idée générale}%
 \label{sec:idee}
@@ -365,9 +375,9 @@ Nous allons ici présenter un algorithmes qui atteint une complexité dans le pi
 \subsection{Explication}%
 \label{subsec:explication}
 
-Dans cette section nous allons aborder et expliquer l'idée générale commune à chacun des algorithmes présentés dans \ref{sec:algo}.
+Dans cette section nous allons aborder et expliquer l'idée générale commune à chacun des algorithmes présentés dans les sections \ref{sec:clique} et \ref{sec:bk1}.
 
-Le but de ces algorithmes est d'énumérer toutes les cliques maximales dans un graphe \emph{G = (V, E)}.
+Rappellons que l'objectif de ces algorithmes est d'énumérer toutes les cliques maximales dans un graphe \emph{G = (V, E)}.
 
 L'idée est de passer par une recherche en profondeur. L'algorithme commence avec un ensemble de tous les sommets du graphe et explore récursivement toutes les combinaisons possibles de sommets pour former des cliques en appliquant des techniques d'élagages afin de ne pas considérer de duplicata.
 
@@ -458,43 +468,6 @@ L'algorithme commence par sélectionner un pivot. Supposons que nous choisissons
 Clairement, toute clique maximale dans \(\text{SUBG} \cap N(u)\) ne sera pas maximale si l'on tient en compte le noeud \emph{u}.
 
 L'utilisation d'un pivot est cruciale car elle permet de réduire le nombre d'appel récursif.
-% \begin{figure}[h]
-%   \begin{center}
-%     \begin{tikzpicture}
-%
-%       \node[vertex, fill=gray!80](v1) at (0, 0){1};
-%       \node[vertex, fill=gray!80](v2) at (0, 2){2};
-%       \node[vertex, fill=gray!80](v3) at (2, 0){3};
-%       \node[vertex, fill=gray!80](v4) at (2, 2){4};
-%       \node (v5) at (4, 1){5};
-
-%       \draw[-](v1)--(v2);
-%       \draw[-](v1)--(v3);
-%       \draw[-](v1)--(v4);
-%       \draw[-](v2)--(v3);
-%       \draw[-](v2)--(v4);
-%       \draw[-](v3)--(v4);
-%       \draw[-](v5)--(v4);
-%       \draw[-](v5)--(v3);
-%     \end{tikzpicture}
-%     \caption{Illustration du pivot}
-%     \label{fig:x algo1}
-%   \end{center}
-% \end{figure}
-
-
-% Soit $ Q = \{p_1, p_2, ..., p_d\} $ la clique courante.
-% Alors $ SUBG = V \cap N(p_1) \cap N(p_2) \cap ... \cap N(p_d)$, c'est à dire l'ensemble des nœuds voisins de tout nœud appartenant à \emph{Q}. L'algorithme selectionne alors  un noeud $ p \in SUBG $ et l'ajoute à \emph{Q} et ceci pour tout nœud dans \emph{SUBG}. Cela egendre un appel récursif avec $ SUBG_p = SUBG \cap N(p) $ et $ CANDp = CAND \cap N(p) $. \emph{p} sera retiré de $ CAND $ après l'exécution de l'appel récursif lors du \textit{backtracking}.
-
-% Afin de ne pas engendrer trop d'appel récursif, nous pouvons choisir inteligemment un noeud \textit{u} qui nous appèlerons le \textit{pivot}. Il existe plusieurs facon de choisir
-% ce pivot. Conte et Tomita\cite{CONTE20221} décrivent un bon pivot \emph{u} comme étant un noeud de
-% \emph{SUBG} qui maximise $ | CAND \cap N(u) |$. Un tel pivot va ainsi minimiser $ |CAND \setminus N(u)| $, ce
-% qui est intéressant car toute clique maximale $ Q' $ dans $ SUBG \cap N(u) $ n'est pas maximale dans
-% $ G(SUBG) $ car il est possible d'ajouter $ u $ à cette clique. Ainsi, toute clique maximale contien soit
-% \textit{u} soit un noeud dans $ SUBG \setminus N(u)$. Il n'est donc pas nécessaire d'explorer les voisins de
-% $ u $ dans ce cas.
-% Cela explique pourquoi $ u $ est un bon pivot, car maximiser $ | CAND \cap N(u) | $ va minimiser
-% $ CAND \setminus N(u)$ et donc minimiser le nombre d'appel.
 
 \subsection{Pseudo-code commun}%
 \label{subsec:algo}
@@ -517,7 +490,7 @@ Ci-dessous ce trouve le pseudo code générique des différents algorithmes que 
           \State // Mise à jour des paramètres
           \State $SUBG_p \gets SUBG \cap N(p)$
           \State $CAND_p \gets CAND \cap N(p)$
-          \State \Call{Cliques}{$SUBG_p, CAND_p$}
+          \State \Call{ALG}{$SUBG_p, CAND_p$}
           \State $CAND \gets CAND \setminus {p}$
           \State $ Q \setminus p $ \Comment{on retire \emph{p} de $Q$}
         \EndWhile
@@ -525,14 +498,40 @@ Ci-dessous ce trouve le pseudo code générique des différents algorithmes que 
     \EndProcedure
     \State \Call{ALG}{$V,V$}
   \end{algorithmic}
-  \caption{\label{fig:alg} Squelette de base}
+  \caption{Squelette de base}
+  \label{fig:alg}
 \end{algorithm}
 
-% TODO: expliquer les différentes lignes du code
+La condition en ligne 2 permet de savoir si nous avons trouvé une clique maximale ou non, en effet, si \emph{SUBG} est vide, alors nous sommes arrivés au bout de notre exploration en profondeur et donc la clique \emph{Q} est maximale, il ne reste plus de noeud candidat qui pourrait étendre celle-ci.
 
-Nous allons maintenant présenter les spécificités de chaque algorithmes. Pour rappel, ils se différencient dans le choix d'un noeud pivot à un moment de leur exécution.
+Dans le cas contraire, nous choississons un pivot \emph{u} (ligne 5) en fonction d'une stratégie (définit pour chaque algorithmes, ici abstraite). Ensuite tant que nous avons des candidats, nous allons prendre un noeud \emph{p} qui ne fait pas partie des voisins de notre pivot \emph{u} (ligne 7) et l'ajouter à notre clique courante \emph{Q}. Ensuite, nous ajustons les ensembles \emph{SUBG} et \emph{CAND} pour faire un appel récursif et explorer en profondeur la clique donnée par \(Q \cup \{p\}\) (lignes 10-12).
+Lors du backtracking, il ne faut pas oublier de retirer \emph{p} de \emph{CAND} et de \emph{Q} afin de pouvoir explorer d'autres candidats et possiblités.
+
+Les sections suivantes (\ref{sec:clique} et \ref{sec:bk1}) vont présenter les spécificité de chaque algorithmes. Pour rappel, ils se différencient dans le choix du noeud pivot.
+
+\section{Bron-Kerbosch}%
+\label{sec:bk1}
+
+L'algorithme de Bron-Kerbosch est l'algorithme sur lequel se base l'algorithme CLIQUE ainsi ses variantes. Nous présenterons ici une version sans pivot, basique, de cet algorithme ainsi que deux version avec pivots.
+
+\subsection{Sans pivot}%
+\label{subsec:bk}
+Cette version sans pivot est identique à l'algorithme \ref{fig:alg} si ce n'est qu'il n'y a pas de pivot qui est choisi. Dans ce cas, la boucle \emph{while} va donc itérer sur tout les noeuds de \emph{CAND}, c'est-à-dire, les noeuds candidats pour la clique courante.
+
+\subsection{Pivot aléatoire}%
+\label{subsec:random}
+Une version avec un pivot choisi aléatoirement est proposée. Un noeud \emph{u} est donc choisi parmi les noeuds de \emph{SUBG}. Ensuite, l'ensemble des noeuds candidats est réduit à \(\text{CAND} \setminus N(u)\) conformément à ce qui est décrit dans la section sur le pivotage \ref{subsec:pivotage}.
+
+\subsection{Pivot de degré maximum}%
+\label{subsec:max}
+La dernière variante présentée ici de l'algorithme de Bron-Kerbosch utilise comme stratégie de pivotage le choix d'un noeud de \emph{SUBG} de degré maximum (notez que ce noeud n'est pas unique, dans ce cas, un des noeuds de degré maximum est choisi au hasard). De même que pour \ref{subsec:random}, l'ensemble des noeuds candidats devient alors \(\text{CAND} \setminus N(u)\).
+
+
 \section{CLIQUE}
-\label[sec:clique]
+\label{sec:clique}
+La Figure \ref{fig:cliques} montre le pseudo-code de l'algorithme CLIQUE, dérivé de l'algorithme présenté dans la section \ref{subsec:algo}.
+
+Comme dit précédemment, la différence principale se trouve dans le choix du pivot. Ici, un bon pivot est décrit comme un noeud \emph{u} de \emph{SUBG} qui maximise $ | \text{CAND} \cap N(u) |$. Un tel pivot va donc minimiser $ |\text{CAND} \setminus N(u)| $, ce qui est intéressant car comme énoncé dans la section \ref{fig:pivot}, nous allons choisir des candidats parmi les noeuds de $ |\text{CAND} \setminus N(u)| $. Un tel pivot va donc minimiser le nombre d'appel récursif, permettant d'atteindre une complexité, pour CLIQUE, en $ O(3^{n/3}) $\cite{CONTE20221}.
 
 \begin{algorithm}[H]
   \textbf{Input}: un graphe $G = (V,E)$
@@ -561,26 +560,11 @@ Nous allons maintenant présenter les spécificités de chaque algorithmes. Pour
   \caption{\label{fig:cliques} Algorithme CLIQUE}
 \end{algorithm}
 
-La complexité dans le pire des cas de CLIQUES est en $ O(3^{n/3}) $\cite{CONTE20221}.
-
-Une implémentation de l'algorithme CLIQUE est disponible en Python ainsi que des variantes avec d'autres pivots également présentés dans l'article.
-
-\section{Bron-Kerbosch}%
-\label{sec:bk1}
-
-\subsection{Sans pivot}%
-\label{subsec:bk}
-
-\subsection{Pivot aléatoire}%
-\label{subsec:random}
-
-\subsection{Pivot de degré maximum}%
-\label{subsec:max}
+Plus concrètement, la ligne 5 de l'algorithme, responsable du choix du pivot change pour respecter la propriété ainsi que la condition de sortie de la boucle \emph{while} en ligne 6 et le choix d'un noeud \emph{p} en ligne 7. En effet, nous allons donc explorer des candidats parmi \(\textrm{CAND} \setminus N(u)\).
 
 
 \section{Tests}%
 \label{sec:tests}
-Cette section est dédiée aux tests de performances réalisé dans le cadre de ce projet. Les différents algorithmes testés sont les suivants
 
 \subsection{Méthodologie}%
 \label{subsec:methodo}
