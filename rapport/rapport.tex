@@ -382,14 +382,13 @@ Considérons \( T(9, 3) \) (Figure \ref{fig:turan}). Nous partitionnons les 9 so
     \node[fill=green!50] (n2) at (2, 0) {2};
     \node[fill=green!50] (n3) at (4, 0) {3};
 
-    \node[fill=blue!50] (n4) at (-2, 2) {4};
-    \node[fill=blue!50] (n5) at (-2, 4) {5};
-    \node[fill=blue!50] (n6) at (-2, 6) {6};
+    \node[fill=blue!50] (n4) at (-2, 1) {4};
+    \node[fill=blue!50] (n5) at (-2, 3) {5};
+    \node[fill=blue!50] (n6) at (-2, 5) {6};
 
-    \node[fill=red!50] (n7) at (0, 8) {7};
-    \node[fill=red!50] (n8) at (2, 8) {8};
-    \node[fill=red!50] (n9) at (4, 8) {9};
-
+    \node[fill=red!50] (n7) at (0, 6) {7};
+    \node[fill=red!50] (n8) at (2, 6) {8};
+    \node[fill=red!50] (n9) at (4, 6) {9};
 
     \foreach \from/\to in {
       n1/n4, n1/n5, n1/n6, n1/n7, n1/n8, n1/n9,
@@ -406,6 +405,37 @@ Considérons \( T(9, 3) \) (Figure \ref{fig:turan}). Nous partitionnons les 9 so
 \end{figure}
 
 Dans cet exemple, les sommets \{1, 2, 3\}, \{4, 5, 6\}, et \{7, 8, 9\} forment les trois sous-ensembles. Chaque sommet est connecté à tous les sommets des autres sous-ensembles, mais il n'y a pas d'arêtes entre les sommets d'un même sous-ensemble.
+
+\subsubsection*{Graphes de Moon-Moser}
+\label{subsubsec:mm}
+
+Les graphes de Moon-Moser sont un sous-ensemble particulier de graphes de Turán. Un graphe de Moon-Moser est un graphe \( T(n, \lceil n/3 \rceil) \).
+
+Considérons un graphe de Moon-Moser avec 6 sommets, c'est-à-dire \( T(6, 2) \). Nous avons deux sous-ensembles de trois sommets chacun, et chaque sommet est connecté à tous les sommets des autres sous-ensembles.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        \node (n1) at (0, 0) {1};
+        \node (n2) at (3, 0) {2};
+        \node (n3) at (6, 0) {3};
+        \node (n4) at (0, 3) {4};
+        \node (n5) at (3, 3) {5};
+        \node (n6) at (6, 3) {6};
+
+        \foreach \from/\to in {
+          n1/n4, n1/n5, n1/n6,
+          n2/n4, n2/n5, n2/n6,
+          n3/n4, n3/n5, n3/n6}
+        \draw (\from) -- (\to);
+    \end{tikzpicture}
+    \caption{Graphe de Moon-Moser d'ordre 6}
+    \label{fig:moon-moser}
+\end{figure}
+
+Dans cet exemple, les deux sous-ensembles sont \{1, 2, 3\} et \{4, 5, 6\}. Chaque sommet est connecté à tous les sommets de l'autre sous-ensemble.
+
+Les graphes de Moon-Moser maximisent le nombre de cliques maximales dans un graphe \cite{MR0182577}.
 
 \section{Le problème d'énumération des cliques dans un graphe}
 
@@ -456,28 +486,7 @@ Notez comme la clique \({4, 5, 6}\) n'est pas reprise, en effet celle-ci n'est p
 \subsection{Complexité du problème}
 L'énumération des cliques maximales dans un graphe simple est un problème fondamental en théorie des graphes et en informatique théorique. Ce problème consiste à identifier toutes les cliques maximales d'un graphe, c'est-à-dire les sous-graphes complets qui ne peuvent être étendus par l'ajout d'un sommet adjacent. Bien que le problème soit simple à énoncer, sa complexité algorithmique est élevée et pose des défis importants. Ce problème est un problème \(\mathcal{N}\mathcal{P}\text{-Difficile}\).
 
-Le nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximise le nombre de cliques maximales sont nommés graphe de Moon-Moser (voir Figure \ref{fig:moon-moser}).
-\begin{figure}[h!]
-    \centering
-    \begin{tikzpicture}
-        % Define the positions of the nodes
-        \node (n1) at (0, 0) {1};
-        \node (n2) at (3, 0) {2};
-        \node (n3) at (6, 0) {3};
-        \node (n4) at (0, 3) {4};
-        \node (n5) at (3, 3) {5};
-        \node (n6) at (6, 3) {6};
-
-        % Draw the edges
-        \foreach \from/\to in {
-          n1/n4, n1/n5, n1/n6,
-          n2/n4, n2/n5, n2/n6,
-          n3/n4, n3/n5, n3/n6}
-        \draw (\from) -- (\to);
-    \end{tikzpicture}
-    \caption{Graphe de Moon-Moser d'ordre 6}
-    \label{fig:moon-moser}
-\end{figure}
+Le nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximise le nombre de cliques maximales sont nommés graphe de Moon-Moser (voir section \ref{subsubsec:mm}).
 
 Nous allons ici présenter un algorithme (et des variantes) qui atteint une complexité dans le pire des cas de \(O(3^{3/n})\)\cite{CONTE20221}, correspondant ainsi au nombre de cliques qu'il faut énumérer (dans le pire des cas). Même si ce résultat semble décevant, il signifie surtout que nous pouvons énumérer toutes les cliques en temps polynomial par rapport au nombre de cliques dans le graphe. Cela implique que le délai pour trouver la prochaine clique est également polynomial. En pratique, cet algorithme et ces variantes se comportent plutôt bien en terme de temps.
 
@@ -715,9 +724,62 @@ Nous pouvons constater en regardant le graphique \ref{fig:total_plot} que, clair
 
 De plus, le graphique \ref{fig:delay_plot} nous montre une temps relativement constant entre l'énumération de chaque clique. Nous pouvons observé un temps moyen pour énumérer les cliques maximales plus élevé pour les graphes d'ordre 4.
 
-En observant les temps obtenu pour les différents algorithmes, nous constatons que \texttt{BKP_M} (avec pour pivot le noeud de degré maximum) semble se comporter mieux de manière générale.
+En observant les temps obtenu pour les différents algorithmes, nous constatons que \texttt{BKP\_M} (avec pour pivot le noeud de degré maximum) semble se comporter mieux de manière générale.
 
 L'analyse de ces résultats est cohérente avec les discussions théoriques présentées dans l'article \cite{CONTE20221}. L'efficacité des différents algorithmes dépend fortement de leurs approches spécifiques pour traiter les graphes, et la sélection de l'algorithme optimal peut varier en fonction des caractéristiques spécifiques du graphe à traiter.
+
+Afin d'étayer ce dernier propos, nous allons présenter les mêmes tests mais en nous intéressants à des types de graphes particuliers :
+\begin{itemize}
+  \item Les graphes complets
+  \item Les graphes vides
+  \item Les graphes de Moon-Moser
+\end{itemize}
+Pour rappel, les graphes complets d'ordre \emph{n} n'ont qu'une et une seule clique maximales de taille \emph{n}, les graphes vides d'ordre \emph{n} possèdent \emph{n} cliques maximales de taille 1 et enfin, les graphes de Moon-Moser possèdent \(3^{n/3}\) cliques maximales (voir section \ref{subsec:graphes}).
+
+La méthode de test reste la même. L'algorithme sans pivot \texttt{BK} à néansmoins dû être retiré des tests car celui-ci prenait trop de temps d'exécution.
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_pivot_complete_plot.png}
+    \caption{Complets}
+    \label{subfig:total_complete}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_pivot_empty_plot.png}
+    \caption{Vides}
+    \label{subfig:total_empty}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_pivot_turan_plot.png}
+    \caption{Moon-Moser}
+    \label{subfig:total_turan}
+  \end{subfigure}
+  \caption{Temps d'exécution total pour énumérer toutes les cliques maximales}
+  \label{fig:special_total}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/delay_pivot_complete_plot.png}
+    \caption{Complets}
+    \label{subfig:delay_complete}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/delay_pivot_empty_plot.png}
+    \caption{Vides}
+    \label{subfig:delay_empty}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/delay_pivot_turan_plot.png}
+    \caption{Moon-Moser}
+    \label{subfig:delay_turan}
+  \end{subfigure}
+  \caption{Délais entre chaque énumération de clique maximale}
+  \label{fig:special_delay}
+\end{figure}
+
 
 % TODO: explication correcte pour les résultats
 % TODO: un tableau avec des graphes classiques et comparer avec un tableau avec des graphes complets et un autre avec des graphes de Turan pour voir
