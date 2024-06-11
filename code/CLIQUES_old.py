@@ -13,8 +13,8 @@ def CLIQUES(SUBG: set, CAND: set, Q: list, G: Graph, result: list, delay: list):
     Print all maximal cliques of G.
     The implementation is based on the CLIQUES algorithm described in
     the paper "On the overall and delay complexity of the CLIQUES and
-Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
-
+Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita. 
+    
     """
     if len(SUBG) == 0:
         result.append(" ".join(map(str, Q)))
@@ -23,7 +23,9 @@ Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
         # print("clique")
     else:
         u = max(SUBG, key=lambda u: len(CAND & G.adj[u]))
-        for p in CAND - G.adj[u]:
+        # for p in CAND - G.adj[u]:
+        while len(CAND - G.adj[u]) != 0:
+            p = (CAND - G.adj[u]).pop()
             p_neighbors = G.adj[p]
             # print(p, end=",")
             Q.append(p)
@@ -57,3 +59,4 @@ if __name__ == '__main__':
     res = []
     CLIQUES(set(G.adj.keys()), set(G.adj.keys()), [], G, res, [])
     print(res)
+        

@@ -9,55 +9,49 @@ def read_data(file_path):
         data = [float(line.strip()) for line in file]
     return data
 
-# Function to calculate mean for each order
 def calculate_mean(data):
     return np.mean(data)
 
-# Main function to process files and plot results
-def process_and_plot(directory):
-    function_data = {}  # Dictionary to store data for each function
-    orders = set()      # Set to store unique orders
+def process_and_plot(typ, directory, g):
+    fns = ["CLIQUES", "BKP_R", "BKP_M"]
+    function_data = {fn: {} for fn in fns}
+    orders = None
+    for fn in fns:
+        orders = set()
+        for filename in os.listdir(directory):
+            if filename.startswith(f'{typ}_res_{fn}_{g}') and filename.endswith('.out'):
+                parts = filename.split('_')
+                order = int(parts[-1].split('.')[0])
 
-    # Loop through each file in the directory
-    for filename in os.listdir(directory):
-        if filename.startswith('total') and filename.endswith('.out'):
-            if "CLIQUES" in filename:
-                function = "CLIQUES"
-            elif "BKP_M" in filename:
-                function = "BKP_M"
-            elif "BKP_R" in filename:
-                function = "BKP_R"
-            elif "BK" in filename:
-                function = "BK"
-            parts = filename.split('_')
-            order = int(parts[-1].split('.')[0])
+                # Read data from file
+                data = read_data(os.path.join(directory, filename))
 
-            # Read data from file
-            data = read_data(os.path.join(directory, filename))
+                # Calculate mean
+                mean_value = calculate_mean(data)
 
-            # Calculate mean
-            mean_value = calculate_mean(data)
+                # Store mean value for function and order
+                function_data[fn][order] = mean_value
 
-            # Store mean value for function and order
-            if function not in function_data:
-                function_data[function] = {}
-            function_data[function][order] = mean_value
+                # Add order to set of orders
+                orders.add(order)
 
-            # Add order to set of orders
-            orders.add(order)
+        # Convert orders set to sorted list
+        orders = sorted(list(orders))
 
-    # Convert orders set to sorted list
-    orders = sorted(list(orders))
-
+    plt.figure()
     # Plotting
-    for function, data in function_data.items():
-        plt.plot(orders, [data.get(order, 0) for order in orders], label=function)
+    for fn, data in function_data.items():
+        plt.plot(orders, [data.get(order, 0) for order in orders], label=fn)
 
-    plt.xlabel('Order')
-    plt.ylabel('Mean Value')
-    plt.title('Mean Value for Each Order')
+    plt.xlabel('Ordre')
+    plt.ylabel("Temps d'exécution moyen (secondes)")
     plt.legend()
-    plt.show()
+    plt.savefig(f'./out_fig/{typ}_pivot_{g}_plot.png')
 
 # Call the main function with the directory containing the files
-process_and_plot('./out/')
+process_and_plot('total', './out/specials/', "complete")
+process_and_plot('total', './out/specials/', "empty")
+process_and_plot('total', './out/specials/', "turan")
+process_and_plot('delay', './out/specials/', "complete")
+process_and_plot('delay', './out/specials/', "empty")
+process_and_plot('delay', './out/specials/', "turan")

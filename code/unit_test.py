@@ -131,6 +131,69 @@ def delay_main():
     clique_delay(8, BKP_R)
     clique_delay(9, BKP_R)
     clique_delay(10, BKP_R)
+
+
+def bench_total_time_special(order: int, algo, graph_type: str):
+    input_file = f'./samples/graphs/{graph_type}_{order}.g6'
+    with open(input_file, 'r') as input:
+        alg = ""
+        if "CLIQUES" in str(algo):
+            alg = "CLIQUES"
+        elif "BKP_M" in str(algo):
+            alg = "BKP_M"
+        elif "BKP_R" in str(algo):
+            alg = "BKP_R"
+        elif "BK" in str(algo):
+            alg = "BK"
+        out = open(f'./out/specials/total_res_{str(alg)}_{graph_type}_{order}.out', 'w')
+        lines = input.readlines()
+        for i in range(len(lines)):
+            g6 = lines[i].strip()
+            G = decode_g6(g6.encode())
+            res = []
+            start = time.perf_counter()
+            algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res, [])
+            end = time.perf_counter()
+            out.write(f'{(end - start) * 1000:0.6f}\n')  # Convert to ms
+
+def clique_delay_special(order: int, algo, graph_type: str):
+    input_file = f'./samples/graphs/{graph_type}_{order}.g6'
+    with open(input_file, 'r') as input:
+        out = open(f'./out/specials/delay_res_{algo}_{graph_type}_{order}.out', 'w')
+        lines = input.readlines()
+        for i in range(len(lines)):
+            g6 = lines[i].strip()
+            G = decode_g6(g6.encode())
+            res = []
+            delay = [time.perf_counter()]
+            algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res, delay)
+            for i in range(len(delay) - 1):
+                time_taken = (delay[i+1] - delay[i]) * 1000  # Convert to ms
+                out.write(f'{time_taken:0.6f}\n')
+
+def total_time_special():
+    print("BENCHMARK")
+    print("=========\n\n")
+    for graph_type in ['complete', 'turan', 'empty']:
+        for order in tqdm(range(3, 45)):
+            bench_total_time_special(order, CLIQUES, graph_type)
+            # bench_total_time_special(order, BK, graph_type)
+            bench_total_time_special(order, BKP_M, graph_type)
+            bench_total_time_special(order, BKP_R, graph_type)
+
+def delay_special():
+    print("BENCHMARK")
+    print("=========\n\n")
+    for graph_type in ['complete', 'turan', 'empty']:
+        for order in tqdm(range(3, 45)):
+            clique_delay_special(order, CLIQUES, graph_type)
+            # clique_delay_special(order, BK, graph_type)
+            clique_delay_special(order, BKP_M, graph_type)
+            clique_delay_special(order, BKP_R, graph_type)
+
+
 if __name__ == '__main__':
     # total_time_main()
-    delay_main()
+    # delay_main()
+    total_time_special()
+    # delay_special()

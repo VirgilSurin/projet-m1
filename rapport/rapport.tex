@@ -112,9 +112,9 @@
 
   \vspace*{2cm}
   \begin{center}
-    \includegraphics[height=1.7cm]{logoumons.jpg}
+    \includegraphics[height=1.7cm]{images/logoumons.jpg}
     \hspace{1cm}
-    \includegraphics[height=1.7cm]{logofs.jpg}
+    \includegraphics[height=1.7cm]{images/logofs.jpg}
     \\[1em]
     Ann\'ee acad\'emique 2023-2024
   \end{center}
@@ -153,6 +153,7 @@ En résumé, la capacité à identifier efficacement les cliques dans un graphe 
 \subsection{Notions de bases}
 
 Dans ce rapport, nous allons définir un graphe simple non orienté \emph{G=V, E} comme étant un ensemble de nœuds \emph{V} reliés par des arêtes. Nous notons l'ensemble des arêtes comme étant l'ensemble \emph{E}. Une arêtes est définie comme un tuple $ (v, v') $ où $ v $ et $ v' $ sont les 2 nœuds réliés par l'arête. Les nœuds peuvent être étiquetés pour plus de lisibilité.
+
 
 Nous considérons des graphes simples non dirigés, c'est à dire qu'il y a au plus une et une seule arête entre deux nœuds et aucune arête allant d'un nœud à lui-même. Les arêtes que nous considérons n'ont pas de sens particulier. Ainsi, l'arête joignant les nœuds \emph{x} et \emph{y} est la même que celle joignant \emph{y} à \emph{x} et sera dénotée par l'existence du tuple $(x, y) \in E$.
 
@@ -298,6 +299,114 @@ Enfin, nous définirons une clique \textit{maximum} comme étant une clique de t
 
 Regardons la Figure \ref{fig:x clique2}. $ \{3, 4, 5\}$ (en rouge) est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum). Par contre, la clique composée des noéuds 1 et 2, bien qu'étant maximale (en effet, aucun autre noeud du graphe ne peut être ajouté à cette clique) n'est pas maximum car elle ne contient que 2 noeuds là où la clique précédemment mentionnée (celle en rouge sur la figure \ref{fig:x clique2}) est plus grande vu qu'elle contient 3 noeuds.
 
+\subsection{Quelques types de graphes}%
+\label{subsec:graphes}
+
+\subsubsection*{Graphe complet}
+\label{subsubsec:complet}
+
+Un graphe complet d'ordre \emph{n} est un graphe avec le maximum d'arrêtes possibles, c'est à dire \(\frac{n(n-1)}{2}\) arrêtes. Dans un graphe complet, chaque noeud est directement connectés à chaque noeuds, autrement dit, le graphe \(G = V, E\) est complet si et seulement si on a :
+\begin{equation}
+\forall (v,w) \in V \ | \ (v, w) \in E \ \text{avec} \ v \neq w
+\end{equation}
+
+La Figure \ref{fig:k6} représente un graphe complet d'ordre 6.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Define the positions of the nodes
+        \node (n1) at (0, 0) {1};
+        \node (n2) at (3, 0) {2};
+        \node (n3) at (-2, 2) {3};
+        \node (n4) at (5, 2) {4};
+        \node (n5) at (0, 4) {5};
+        \node (n6) at (3, 4) {6};
+
+        % Draw the edges
+        \foreach \from/\to in {
+          n1/n2, n1/n3, n1/n4, n1/n5, n1/n6,
+          n2/n3, n2/n4, n2/n5, n2/n6,
+          n3/n4, n3/n5, n3/n6,
+          n4/n5, n4/n6,
+          n5/n6,
+        }
+        \draw (\from) -- (\to);
+    \end{tikzpicture}
+    \caption{Graphe complet d'ordre 6}
+    \label{fig:k6}
+\end{figure}
+
+Il est évident qu'un graphe complet contient une et une seule clique maximale (qui est donc également maximum) et que celle-ci est de taille \emph{n}. Il s'agit de l'ensemble du graphe.
+
+\subsubsection*{Graphe vide}
+\label{subsubsec:vide}
+
+Un graphe vide d'ordre \emph{n} est un graphe ne possédant aucune arrête. C'est-à-dire dont la taille \emph{m} est égale à 0. Un exemple de graphe vide d'ordre 4 est donné ci-dessous (Figure \ref{fig:vide}).
+Naturellement, un graphe vide d'ordre \emph{n} possède \emph{n} cliques maximales de tailles 1 et elles sont toutes maximum.
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \node (n1) at (0, 0) {1};
+    \node (n2) at (2, 0) {2};
+    \node (n3) at (0, 2) {3};
+    \node (n4) at (2, 2) {4};
+
+    \foreach \from/\to in {
+    }
+    \draw (\from) -- (\to);
+  \end{tikzpicture}
+  \caption{Graphe vide d'ordre 4}
+  \label{fig:vide}
+\end{figure}
+
+\subsubsection*{Graphe de Turàn}
+\label{subsubsec:turan}
+
+Un graphe de Turán, noté \( T(n, r) \), est un graphe formé en partitionnant un ensemble de \( n \) sommets en \( r \) sous-ensembles aussi égaux que possible, et en connectant deux sommets par une arête si et seulement s'ils appartiennent à des sous-ensembles différents. Les graphes de Turán sont souvent utilisés dans la théorie des graphes extrémaux car ils maximisent le nombre d'arêtes sans contenir un certain sous-graphe interdit, comme un \( K_{r+1} \) (le graphe complet sur \( r+1 \) sommets).
+
+Formellement, le graphe de Turán \( T(n, r) \) est défini comme suit :
+\begin{itemize}
+  \item Partitionner les \( n \) sommets en \( r \) sous-ensembles \( V_1, V_2, \ldots, V_r \) aussi égaux que possible.
+  \item Ajouter une arête entre deux sommets \( u \) et \( v \) si et seulement s'ils appartiennent à des sous-ensembles différents, c'est-à-dire \( u \in V_i \) et \( v \in V_j \) avec \( i \neq j \).
+\end{itemize}
+
+Considérons \( T(9, 3) \) (Figure \ref{fig:turan}). Nous partitionnons les 9 sommets en 3 sous-ensembles de 3 sommets chacun. Les arêtes connectent les sommets de sous-ensembles différents.
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+
+    \node[fill=green!50] (n1) at (0, 0) {1};
+    \node[fill=green!50] (n2) at (2, 0) {2};
+    \node[fill=green!50] (n3) at (4, 0) {3};
+
+    \node[fill=blue!50] (n4) at (-2, 2) {4};
+    \node[fill=blue!50] (n5) at (-2, 4) {5};
+    \node[fill=blue!50] (n6) at (-2, 6) {6};
+
+    \node[fill=red!50] (n7) at (0, 8) {7};
+    \node[fill=red!50] (n8) at (2, 8) {8};
+    \node[fill=red!50] (n9) at (4, 8) {9};
+
+
+    \foreach \from/\to in {
+      n1/n4, n1/n5, n1/n6, n1/n7, n1/n8, n1/n9,
+      n2/n4, n2/n5, n2/n6, n2/n7, n2/n8, n2/n9,
+      n3/n4, n3/n5, n3/n6, n3/n7, n3/n8, n3/n9,
+      n4/n7, n4/n8, n4/n9,
+      n5/n7, n5/n8, n5/n9,
+      n6/n7, n6/n8, n6/n9
+    }
+    \draw (\from) -- (\to);
+  \end{tikzpicture}
+  \caption{Graphe de Turán \( T(9, 3) \)}
+  \label{fig:turan}
+\end{figure}
+
+Dans cet exemple, les sommets \{1, 2, 3\}, \{4, 5, 6\}, et \{7, 8, 9\} forment les trois sous-ensembles. Chaque sommet est connecté à tous les sommets des autres sous-ensembles, mais il n'y a pas d'arêtes entre les sommets d'un même sous-ensemble.
+
 \section{Le problème d'énumération des cliques dans un graphe}
 
 \subsection{Définition}%
@@ -347,20 +456,23 @@ Notez comme la clique \({4, 5, 6}\) n'est pas reprise, en effet celle-ci n'est p
 \subsection{Complexité du problème}
 L'énumération des cliques maximales dans un graphe simple est un problème fondamental en théorie des graphes et en informatique théorique. Ce problème consiste à identifier toutes les cliques maximales d'un graphe, c'est-à-dire les sous-graphes complets qui ne peuvent être étendus par l'ajout d'un sommet adjacent. Bien que le problème soit simple à énoncer, sa complexité algorithmique est élevée et pose des défis importants. Ce problème est un problème \(\mathcal{N}\mathcal{P}\text{-Difficile}\).
 
-Le nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximise le nombre de cliques maximales sont nommés graphe de Moon-Moser ou graphe de Turán (voir Figure \ref{fig:moon-moser}).
+Le nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximise le nombre de cliques maximales sont nommés graphe de Moon-Moser (voir Figure \ref{fig:moon-moser}).
 \begin{figure}[h!]
     \centering
     \begin{tikzpicture}
         % Define the positions of the nodes
-        \node (n1) at (1, 0) {1};
+        \node (n1) at (0, 0) {1};
         \node (n2) at (3, 0) {2};
-        \node (n3) at (-0, 1.5) {3};
-        \node (n4) at (4, 1.5) {4};
-        \node (n5) at (1, 3) {5};
-        \node (n6) at (3, 3) {6};
+        \node (n3) at (6, 0) {3};
+        \node (n4) at (0, 3) {4};
+        \node (n5) at (3, 3) {5};
+        \node (n6) at (6, 3) {6};
 
         % Draw the edges
-        \foreach \from/\to in {n1/n2, n1/n3, n1/n4, n1/n5, n2/n3, n2/n4, n2/n6, n3/n5, n3/n6, n4/n5, n4/n6, n5/n6}
+        \foreach \from/\to in {
+          n1/n4, n1/n5, n1/n6,
+          n2/n4, n2/n5, n2/n6,
+          n3/n4, n3/n5, n3/n6}
         \draw (\from) -- (\to);
     \end{tikzpicture}
     \caption{Graphe de Moon-Moser d'ordre 6}
@@ -384,25 +496,25 @@ L'idée est de passer par une recherche en profondeur. L'algorithme commence ave
 Pour ce faire, notre procédure défini trois ensembles de sommets :
 \begin{itemize}
   \item \emph{Q}, la clique en train d'être énumérée
-  \item \emph{SUBG}, qui représente les sommets restants à explorer (notez que \emph{SUBG} est un sous-graphe induit de \emph{G}).
-  \item \emph{CAND}, qui contient les sommets qui peuvent être ajoutés à \emph{Q} (les candidats). \emph{CAND} est entièrement contenue dans \emph{SUBG}.
+  \item \texttt{SUBG}, qui représente les sommets restants à explorer (notez que \texttt{SUBG} est un sous-graphe induit de \emph{G}).
+  \item \texttt{CAND}, qui contient les sommets qui peuvent être ajoutés à \emph{Q} (les candidats). \texttt{CAND} est entièrement contenue dans \texttt{SUBG}.
 \end{itemize}
-À chaque étape de la recherche, un sommet \emph{p} est sélectionné et ajouté à \emph{Q}.  Ensuite, nous réduisons \emph{SUBG} à \emph{SUBG} \(\cap\) \emph{N(p)} et \emph{CAND} à \emph{CAND} \(\cap\) \emph{N(p)}. Lorsque nous remontons dans la recherches (backtracking), nous retirons \emph{p} des \emph{CAND}idats mais pas de \emph{SUBG}. Ainsi les cliques contenues dans \emph{CAND} n'auront pas de doublons (vu que nous ne cherchons que les maximales, lorsque nous trouvons une clique maximale avec \emph{p} il n'est pas nécessaire de chercher une autre clique maximale contenant \emph{p} car elles ont déjà toutes été trouvées lors de l'exploration des cliques contenant \emph{p})
+À chaque étape de la recherche, un sommet \emph{p} est sélectionné et ajouté à \emph{Q}.  Ensuite, nous réduisons \texttt{SUBG} à \texttt{SUBG} \(\cap\) \emph{N(p)} et \texttt{CAND} à \texttt{CAND} \(\cap\) \emph{N(p)}. Lorsque nous remontons dans la recherches (backtracking), nous retirons \emph{p} des \texttt{CAND}idats mais pas de \texttt{SUBG}. Ainsi les cliques contenues dans \texttt{CAND} n'auront pas de doublons (vu que nous ne cherchons que les maximales, lorsque nous trouvons une clique maximale avec \emph{p} il n'est pas nécessaire de chercher une autre clique maximale contenant \emph{p} car elles ont déjà toutes été trouvées lors de l'exploration des cliques contenant \emph{p})
 
-Lorsque \emph{SUBG} est vide, cela veut dire que nous avons trouvé une clique maximale car il n'y a plus de sommet à explorer.
+Lorsque \texttt{SUBG} est vide, cela veut dire que nous avons trouvé une clique maximale car il n'y a plus de sommet à explorer.
 
 \subsection{Le pivotage}%
 \label{subsec:pivotage}
 
 
-Afin d'optimiser la recherche en profondeur nous choisissons, avant de choisir un sommet \emph{p}, un noeud pivot \emph{u} qui permettra d'élaguer la recherche. Car chaque clique maximale \emph{Q'} dans \emph{SUBG} \(\cap\) \emph{N(u)} n'est en réalité pas maximale dans \emph{SUBG} vu que \emph{Q'} \(\cup \{u\}\) est une clique plus grande dans \emph{SUBG}. Ainsi nous pouvons couper l'exploration de tous les sommets dans \emph{N(u)}.
+Afin d'optimiser la recherche en profondeur nous choisissons, avant de choisir un sommet \emph{p}, un noeud pivot \emph{u} qui permettra d'élaguer la recherche. Car chaque clique maximale \emph{Q'} dans \texttt{SUBG} \(\cap\) \emph{N(u)} n'est en réalité pas maximale dans \texttt{SUBG} vu que \emph{Q'} \(\cup \{u\}\) est une clique plus grande dans \texttt{SUBG}. Ainsi nous pouvons couper l'exploration de tous les sommets dans \emph{N(u)}.
 
 
 La stratégie de pivot est une technique utilisée pour réduire le nombre de récursions nécessaires en sélectionnant un sommet pivot et en explorant ses voisins. Voici comment cette stratégie fonctionne :
 
-L'algorithme commence par sélectionner un pivot, noté \( u \), dans \emph{SUBG}. Nous discuterons de plusieurs stratégies pour choisir ce pivot plus tard.
+L'algorithme commence par sélectionner un pivot, noté \( u \), dans \texttt{SUBG}. Nous discuterons de plusieurs stratégies pour choisir ce pivot plus tard.
 
-Une clique maximale \( Q' \) dans \( \text{SUBG} \cap N(u) \) n'est pas maximale dans \( \text{SUBG} \), car \( Q' \cup \{u\} \) est une clique plus grande dans \( \text{SUBG} \) étant donné que tous les sommets de \(Q'\) sont voisins de \emph{u}. Ainsi, toute clique maximale contient soit \( u \), soit au moins un sommet de \( \text{SUBG} \setminus N(u) \). Cela signifie que nous pouvons ignorer l'expansion de tous les sommets dans \( N(u) \) et n'explorer que ceux dans \( \text{SUBG} \setminus N(u) \).
+Une clique maximale \( Q' \) dans \(\texttt{SUBG} \cap N(u)\) n'est pas maximale dans \( \texttt{SUBG} \), car \( Q' \cup \{u\} \) est une clique plus grande dans \( \texttt{SUBG} \) étant donné que tous les sommets de \(Q'\) sont voisins de \emph{u}. Ainsi, toute clique maximale contient soit \( u \), soit au moins un sommet de \( \texttt{SUBG} \setminus N(u) \). Cela signifie que nous pouvons ignorer l'expansion de tous les sommets dans \( N(u) \) et n'explorer que ceux dans \( \texttt{SUBG} \setminus N(u) \).
 
 Voici un exemple détaillé.
 
@@ -457,7 +569,7 @@ Voici un exemple détaillé.
             \foreach \from/\to in {n4/n5, n5/n6, n4/n6, n5/n7}
               \draw (\from) -- (\to);
         \end{tikzpicture}
-        \caption{\(\text{SUBG} \backslash N(u)\) }
+        \caption{\(\texttt{SUBG} \backslash N(u)\) }
         \label{fig:subgraph1}
     \end{subfigure}
     \caption{Étapes de l'algorithme d'énumération des cliques maximales avec pivot}
@@ -465,7 +577,7 @@ Voici un exemple détaillé.
 \end{figure}
 
 L'algorithme commence par sélectionner un pivot. Supposons que nous choisissons le sommet 2.
-Clairement, toute clique maximale dans \(\text{SUBG} \cap N(u)\) ne sera pas maximale si l'on tient en compte le noeud \emph{u}.
+Clairement, toute clique maximale dans \(\texttt{SUBG} \cap N(u)\) ne sera pas maximale si l'on tient en compte le noeud \emph{u}.
 
 L'utilisation d'un pivot est cruciale car elle permet de réduire le nombre d'appel récursif.
 
@@ -504,34 +616,34 @@ Ci-dessous ce trouve le pseudo code générique des différents algorithmes que 
 
 La condition en ligne 2 permet de savoir si nous avons trouvé une clique maximale ou non, en effet, si \emph{SUBG} est vide, alors nous sommes arrivés au bout de notre exploration en profondeur et donc la clique \emph{Q} est maximale, il ne reste plus de noeud candidat qui pourrait étendre celle-ci.
 
-Dans le cas contraire, nous choississons un pivot \emph{u} (ligne 5) en fonction d'une stratégie (définit pour chaque algorithmes, ici abstraite). Ensuite tant que nous avons des candidats, nous allons prendre un noeud \emph{p} qui ne fait pas partie des voisins de notre pivot \emph{u} (ligne 7) et l'ajouter à notre clique courante \emph{Q}. Ensuite, nous ajustons les ensembles \emph{SUBG} et \emph{CAND} pour faire un appel récursif et explorer en profondeur la clique donnée par \(Q \cup \{p\}\) (lignes 10-12).
-Lors du backtracking, il ne faut pas oublier de retirer \emph{p} de \emph{CAND} et de \emph{Q} afin de pouvoir explorer d'autres candidats et possiblités.
+Dans le cas contraire, nous choississons un pivot \emph{u} (ligne 5) en fonction d'une stratégie (définit pour chaque algorithmes, ici abstraite). Ensuite tant que nous avons des candidats, nous allons prendre un noeud \emph{p} qui ne fait pas partie des voisins de notre pivot \emph{u} (ligne 7) et l'ajouter à notre clique courante \emph{Q}. Ensuite, nous ajustons les ensembles \emph{SUBG} et \texttt{CAND} pour faire un appel récursif et explorer en profondeur la clique donnée par \(Q \cup \{p\}\) (lignes 10-2).
+Lors du backtracking, il ne faut pas oublier de retirer \emph{p} de \texttt{CAND} et de \emph{Q} afin de pouvoir explorer d'autres candidats et possiblités.
 
 Les sections suivantes (\ref{sec:clique} et \ref{sec:bk1}) vont présenter les spécificité de chaque algorithmes. Pour rappel, ils se différencient dans le choix du noeud pivot.
 
 \section{Bron-Kerbosch}%
 \label{sec:bk1}
 
-L'algorithme de Bron-Kerbosch est l'algorithme sur lequel se base l'algorithme CLIQUE ainsi ses variantes. Nous présenterons ici une version sans pivot, basique, de cet algorithme ainsi que deux version avec pivots.
+L'algorithme de Bron-Kerbosch est l'algorithme sur lequel se base l'algorithme \texttt{CLIQUE} ainsi ses variantes. Nous présenterons ici une version sans pivot, basique, de cet algorithme ainsi que deux version avec pivots.
 
 \subsection{Sans pivot}%
 \label{subsec:bk}
-Cette version sans pivot est identique à l'algorithme \ref{fig:alg} si ce n'est qu'il n'y a pas de pivot qui est choisi. Dans ce cas, la boucle \emph{while} va donc itérer sur tout les noeuds de \emph{CAND}, c'est-à-dire, les noeuds candidats pour la clique courante.
+Cette version sans pivot est identique à l'algorithme \ref{fig:alg} si ce n'est qu'il n'y a pas de pivot qui est choisi. Dans ce cas, la boucle \texttt{while} va donc itérer sur tout les noeuds de \texttt{CAND}, c'est-à-dire, les noeuds candidats pour la clique courante.
 
 \subsection{Pivot aléatoire}%
 \label{subsec:random}
-Une version avec un pivot choisi aléatoirement est proposée. Un noeud \emph{u} est donc choisi parmi les noeuds de \emph{SUBG}. Ensuite, l'ensemble des noeuds candidats est réduit à \(\text{CAND} \setminus N(u)\) conformément à ce qui est décrit dans la section sur le pivotage \ref{subsec:pivotage}.
+Une version avec un pivot choisi aléatoirement est proposée. Un noeud \emph{u} est donc choisi parmi les noeuds de \texttt{SUBG}. Ensuite, l'ensemble des noeuds candidats est réduit à \(\texttt{CAND} \setminus N(u)\) conformément à ce qui est décrit dans la section sur le pivotage \ref{subsec:pivotage}.
 
 \subsection{Pivot de degré maximum}%
 \label{subsec:max}
-La dernière variante présentée ici de l'algorithme de Bron-Kerbosch utilise comme stratégie de pivotage le choix d'un noeud de \emph{SUBG} de degré maximum (notez que ce noeud n'est pas unique, dans ce cas, un des noeuds de degré maximum est choisi au hasard). De même que pour \ref{subsec:random}, l'ensemble des noeuds candidats devient alors \(\text{CAND} \setminus N(u)\).
+La dernière variante présentée ici de l'algorithme de Bron-Kerbosch utilise comme stratégie de pivotage le choix d'un noeud de \texttt{SUBG} de degré maximum (notez que ce noeud n'est pas unique, dans ce cas, un des noeuds de degré maximum est choisi au hasard). De même que pour \ref{subsec:random}, l'ensemble des noeuds candidats devient alors \(\texttt{CAND} \setminus N(u)\).
 
 
 \section{CLIQUE}
 \label{sec:clique}
-La Figure \ref{fig:cliques} montre le pseudo-code de l'algorithme CLIQUE, dérivé de l'algorithme présenté dans la section \ref{subsec:algo}.
+La Figure \ref{fig:cliques} montre le pseudo-code de l'algorithme \texttt{CLIQUE}, dérivé de l'algorithme présenté dans la section \ref{subsec:algo}.
 
-Comme dit précédemment, la différence principale se trouve dans le choix du pivot. Ici, un bon pivot est décrit comme un noeud \emph{u} de \emph{SUBG} qui maximise $ | \text{CAND} \cap N(u) |$. Un tel pivot va donc minimiser $ |\text{CAND} \setminus N(u)| $, ce qui est intéressant car comme énoncé dans la section \ref{fig:pivot}, nous allons choisir des candidats parmi les noeuds de $ |\text{CAND} \setminus N(u)| $. Un tel pivot va donc minimiser le nombre d'appel récursif, permettant d'atteindre une complexité, pour CLIQUE, en $ O(3^{n/3}) $\cite{CONTE20221}.
+Comme dit précédemment, la différence principale se trouve dans le choix du pivot. Ici, un bon pivot est décrit comme un noeud \emph{u} de \texttt{SUBG} qui maximise $ | \texttt{CAND} \cap N(u) |$. Un tel pivot va donc minimiser $ |\texttt{CAND} \setminus N(u)| $, ce qui est intéressant car comme énoncé dans la section \ref{fig:pivot}, nous allons choisir des candidats parmi les noeuds de $ |\texttt{CAND} \setminus N(u)| $. Un tel pivot va donc minimiser le nombre d'appel récursif, permettant d'atteindre une complexité, pour \texttt{CLIQUE}, en $ O(3^{n/3}) $\cite{CONTE20221}.
 
 \begin{algorithm}[H]
   \textbf{Input}: un graphe $G = (V,E)$
@@ -568,17 +680,47 @@ Plus concrètement, la ligne 5 de l'algorithme, responsable du choix du pivot ch
 
 \subsection{Méthodologie}%
 \label{subsec:methodo}
-Explication de la méthodo pour les temps
+Dans cette section, nous décrivons la méthodologie utilisée pour évaluer les performances de différents algorithmes de détection de cliques maximales sur des graphes de différents ordres. Nous avons implémenté et comparé quatre algorithmes : \texttt{CLIQUES} (\ref{sec:clique}), \texttt{BK} (\ref{subsec:bk}), \texttt{BKP\_R} (\ref{subsec:random}) et \texttt{BKP\_M} (\ref{subsec:max}). Ces algorithmes ont été testés en utilisant tous les graphes d'ordre 4 à 10 inclus, représentés au format \texttt{g6} (Graph6). Les graphes utilisés sont disponible au format g6 à ce lien : \url{http://users.cecs.anu.edu.au/~bdm/data/graphs.html}\footnote{Consutlé le 7 juin 2024 à 16h32.}
 
-\subsection{Tests sets}%
-\label{subsec:sets}
+Pour mesurer le temps d'exécution total des algorithmes, nous avons utilisé la fonction \texttt{time.perf\_counter()} de la bibliothèque \texttt{time} de Python, qui offre une haute précision pour les mesures de temps.
 
-Explications des différents input de tests.
+Les données de performance ont été analysées à l'aide de la bibliothèque \texttt{numpy} pour calculer les valeurs moyennes, et les résultats ont été visualisés à l'aide de la bibliothèque \texttt{matplotlib}.
+
+Les expériences ont été exécutées sur une machine équipée d'un processeur AMD Ryzen 7 PRO 5875U et de 32 Go de RAM, garantissant ainsi des performances élevées et une capacité de mémoire suffisante pour traiter des graphes de taille modeste à moyenne.
 
 \subsection{Résultats}%
 \label{subsec:res}
 
-Résultats et explications de ceux-ci
+Les graphes ci-dessous (Figure \ref{fig:res1}) illustrent le temps d'éxécution moyen des différents algorithmes présentés ici ainsi que le délais moyen entre l'énumération de chaque clique maximale en fonction de l'ordre du graphes. L'ensemble de tests consite en l'entièreté des graphes d'ordre 4 à 10 comme décrit dans la section sur la méthodologie (\ref{subsec:methodo}).
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/total_plot.png}
+        \caption{}
+        \label{fig:total_plot}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/delay_plot.png}
+        \caption{}
+        \label{fig:delay_plot}
+    \end{subfigure}
+    \caption{Résultats des temps d'exécution pour différents algorithmes d'énumération des cliques maximales}
+    \label{fig:res1}
+\end{figure}
+
+Nous pouvons constater en regardant le graphique \ref{fig:total_plot} que, clairement, les différents algorithmes d'énumération de cliques présentés suivent bien une complexité en temps exponetiel par rapport à l'ordre du graphe.
+
+De plus, le graphique \ref{fig:delay_plot} nous montre une temps relativement constant entre l'énumération de chaque clique. Nous pouvons observé un temps moyen pour énumérer les cliques maximales plus élevé pour les graphes d'ordre 4.
+
+En observant les temps obtenu pour les différents algorithmes, nous constatons que \texttt{BKP_M} (avec pour pivot le noeud de degré maximum) semble se comporter mieux de manière générale.
+
+L'analyse de ces résultats est cohérente avec les discussions théoriques présentées dans l'article \cite{CONTE20221}. L'efficacité des différents algorithmes dépend fortement de leurs approches spécifiques pour traiter les graphes, et la sélection de l'algorithme optimal peut varier en fonction des caractéristiques spécifiques du graphe à traiter.
+
+% TODO: explication correcte pour les résultats
+% TODO: un tableau avec des graphes classiques et comparer avec un tableau avec des graphes complets et un autre avec des graphes de Turan pour voir
 
 \section{Conclusion}
 
