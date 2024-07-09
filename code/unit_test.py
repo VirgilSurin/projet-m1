@@ -1,6 +1,4 @@
 import time
-import networkx as nx
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 from CLIQUES import CLIQUES
 from BK import BK

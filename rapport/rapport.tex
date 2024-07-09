@@ -706,14 +706,14 @@ Les graphes ci-dessous (Figure \ref{fig:res1}) illustrent le temps d'éxécution
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/total_plot.png}
-        \caption{}
+        \caption{Temps total pour énumérer toutes les cliques maximales}
         \label{fig:total_plot}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/delay_plot.png}
-        \caption{}
+        \caption{Délais pour énumérer une clique maximale}
         \label{fig:delay_plot}
     \end{subfigure}
     \caption{Résultats des temps d'exécution pour différents algorithmes d'énumération des cliques maximales}
@@ -740,48 +740,40 @@ La méthode de test reste la même. L'algorithme sans pivot \texttt{BK} à néan
 
 \begin{figure}[ht]
   \centering
-  \begin{subfigure}[b]{0.32\textwidth}
-    \includegraphics[width=\textwidth]{images/total_pivot_complete_plot.png}
-    \caption{Complets}
-    \label{subfig:total_complete}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.32\textwidth}
+  \begin{subfigure}[b]{0.42\textwidth}
     \includegraphics[width=\textwidth]{images/total_pivot_empty_plot.png}
-    \caption{Vides}
+    \caption{Graphes vides}
     \label{subfig:total_empty}
   \end{subfigure}
-  \begin{subfigure}[b]{0.32\textwidth}
+  \begin{subfigure}[b]{0.42\textwidth}
     \includegraphics[width=\textwidth]{images/total_pivot_turan_plot.png}
-    \caption{Moon-Moser}
+    \caption{Graphes de Moon-Moser}
     \label{subfig:total_turan}
   \end{subfigure}
   \caption{Temps d'exécution total pour énumérer toutes les cliques maximales}
   \label{fig:special_total}
 \end{figure}
 
+Tout d'abord nous pouvons observer qu'en effet, les différents algorithmes présentés on bien une complexité dans le pire des cas en \(0(3^{n/3})\), cela se voit distinctement sur le graphique \ref{subfig:total_turan} correspondant aux graphes de Moon-Moser, les graphes avec le plus de cliques maximales possibles. Pour ce qui est des graphes vides (\ref{subfig:total_empty}), nous avons quelque chose de très linéaire ce qui s'explique probablement par le fait que vu que chaque noeuds est isolé, énumérer chaque clique maximale consiste à énumérer chaque noeud du graphe. Aucune exploration n'est nécessaire.
+
 \begin{figure}[ht]
   \centering
-  \begin{subfigure}[b]{0.32\textwidth}
-    \includegraphics[width=\textwidth]{images/delay_pivot_complete_plot.png}
-    \caption{Complets}
-    \label{subfig:delay_complete}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.32\textwidth}
+  \begin{subfigure}[b]{0.42\textwidth}
     \includegraphics[width=\textwidth]{images/delay_pivot_empty_plot.png}
-    \caption{Vides}
+    \caption{Graphes vides}
     \label{subfig:delay_empty}
   \end{subfigure}
-  \begin{subfigure}[b]{0.32\textwidth}
+  \begin{subfigure}[b]{0.42\textwidth}
     \includegraphics[width=\textwidth]{images/delay_pivot_turan_plot.png}
-    \caption{Moon-Moser}
+    \caption{Graphes de Moon-Moser}
     \label{subfig:delay_turan}
   \end{subfigure}
   \caption{Délais entre chaque énumération de clique maximale}
   \label{fig:special_delay}
 \end{figure}
 
+Observons maintenant sur ces catégories de graphes ce qu'il en est pour le délais nécessaire pour trouver la prochaine clique maximale. Dans les deux cas nous avons bien un délais qui semble polynomial en fonction du nombre de cliques ce qui est rassurant. Toutefois, il est important de souligner que l'algorithme \texttt{CLIQUES} semble moins efficace et mettre plus de temps que les autres. Cela va à l'encontre des résultats attendu et est probablement dû à l'implémentation réalisée. En effet, trouver le noeud pivot nécessite, pour chaque noeud de \texttt{SUBG} de calculer \(\texttt{CAND} \cap N(u)\) afin de trouver le noeud qui maximise cette propriété, ce qui a un coup plus grand que de trouver le noeud de degré supérieur, cela même ayant un coup plus grand que de tirer un noeud au hasard.
 
-% TODO: explication correcte pour les résultats
 % TODO: un tableau avec des graphes classiques et comparer avec un tableau avec des graphes complets et un autre avec des graphes de Turan pour voir
 
 \section{Conclusion}

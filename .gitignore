@@ -24,3 +24,10 @@ domtutor-validator/venv
 /code/samples/git_web_ml/
 /code/samples/twitch/
 /rapport/*.pdf
+/code/rust_cliques/target/debug/.fingerprint/rust_cliques-6b388ed5cd32f82f/output-bin-rust_cliques
+/code/rust_cliques/target/debug/incremental/rust_cliques-1vh9uosk0d9o9/s-gx1t00ukm8-ear73o-working/
+*.lock
+/code/rust/target/*
+target
+
+target
