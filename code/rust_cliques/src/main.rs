@@ -14,4 +14,3 @@ fn main() {
     g.add_edge(2, 3);
     println!("{}", g.to_string());
 }
-
