@@ -28,6 +28,7 @@ class Graph:
         # Constructing the bit vector
         bit_vector = []
         if self.order == None:
+            print("PANIK")
             return None
         for u in range(self.order):
             for v in range(0, u):
