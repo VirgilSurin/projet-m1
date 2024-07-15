@@ -31,6 +31,7 @@ impl Graph {
             };
         } else {
             self.adj.insert(u, vec![v]);
+            self.order += 1;
         };
         if self.adj.contains_key(&v) {
             if let Some(vec) = self.adj.get_mut(&v) {
@@ -40,6 +41,7 @@ impl Graph {
             };
         } else {
             self.adj.insert(v, vec![u]);
+            self.order += 1;
         };
     }
 
@@ -133,51 +135,85 @@ impl Graph {
         Some(graph6.join(""))
     }
 
-    fn data_to_n(mut data: Vec<u8>) -> Result<(usize, Vec<u8>), String> {
+    fn data_to_n(mut data: Vec<u32>) -> Result<(u32, Vec<u32>), String> {
         if data.is_empty() {
             return Err("Data is empty".into());
         }
         if data[0] <= 62 {
-            let value = data[0] as usize;
+            let value = data[0];
             data.remove(0);
-            Ok((value, data))
+            Ok((value.into(), data))
         } else if data.get(1).map_or(false, |&d| d <= 62) {
             if data.len() < 4 {
                 return Err("Data is too short for 4-unit value".into());
             }
-            let value = ((data[1] as usize) << 12) + ((data[2] as usize) << 6) + data[3] as usize;
+            let value = (data[1] << 12) + (data[2] << 6) + data[3];
             data.drain(0..4);
-            Ok((value, data))
+            Ok((value.into(), data))
         } else {
             if data.len() < 8 {
                 return Err("Data is too short for 8-unit value".into());
             }
-            let value = ((data[2] as usize) << 30)
-                + ((data[3] as usize) << 24)
-                + ((data[4] as usize) << 18)
-                + ((data[5] as usize) << 12)
-                + ((data[6] as usize) << 6)
-                + data[7] as usize;
+            let value = (data[2] << 30)
+                + (data[3] << 24)
+                + (data[4] << 18)
+                + (data[5] << 12)
+                + (data[6] << 6)
+                + data[7];
             data.drain(0..8);
-            Ok((value, data))
+            Ok((value.into(), data))
         }
     }
 
-    pub fn from_g6(&self, g6: &str) -> Result<bool, GraphError> {
-        let mut bytes: &[u8] = g6.as_bytes();
-        if bytes.starts_with(">>graph6<<".as_bytes()) {
-            bytes = &bytes[..10];
-        };
-        let mut data: Vec<u8> = vec![];
-        for c in bytes.iter() {
-            let d: u8 = c - 0b111111;
-            if d > 63 {
-                Err(GraphError::InvalidG6Character);
-            } else {
-                data.push(d);
-            };
-        };
+    fn bits(data: &[u32]) -> Vec<bool> {
+        let mut result = Vec::new();
+        for &d in data {
+            for i in (0..6).rev() {
+                result.push((d >> i) & 1 == 1);
+            }
+        }
+        result
     }
 
+    pub fn from_g6(g6: &str) -> Result<Graph, GraphError> {
+        let mut bytes: &[u8] = g6.trim().as_bytes();
+        if bytes.starts_with(">>graph6<<".as_bytes()) {
+            bytes = &bytes[10..];
+        };
+        let mut data: Vec<u32> = vec![];
+        for c in bytes.iter() {
+            let c_u32 = *c as u32;
+            if c_u32 >= 63 as u32 {
+                let d = c_u32 - 63;
+                if d > 63 {
+                    return Err(GraphError::InvalidG6Character);
+                } else {
+                    data.push(d);
+                };
+            } else {
+                panic!("Invalid character, got {}", c_u32)
+            }
+        };
+        let (n, data) = Graph::data_to_n(data).unwrap();
+        let nd = (n * (n - 1) / 2 + 5) / 6;
+        if data.len() != nd as usize {
+            return Err(GraphError::InvalidG6Size);
+        };
 
+        let mut graph = Graph::new(n);
+        graph.add_nodes((0..n).collect());
+
+        if data.len() as u32 != (n * (n - 1) / 2 + 5) / 6 {
+            return Err(GraphError::InvalidG6Size);
+        };
+        let bit_iter = Graph::bits(&data);
+        for i in 1..n {
+            for j in 0..i {
+                if bit_iter[(i * (i - 1) / 2 + j) as usize] {
+                    graph.add_edge(i as u32, j as u32);
+                }
+            }
+        }
+        Ok(graph)
+    }
 }
