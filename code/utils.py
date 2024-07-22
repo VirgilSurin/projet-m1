@@ -125,3 +125,8 @@ def decode_g6(bytes_in):
             G.add_edge(i, j)
     return G
 # <<<=== END OF UTILITY ===>>>
+
+def main():
+    g6 = input()
+    G = decode_g6(g6.encode())
+    print(G)

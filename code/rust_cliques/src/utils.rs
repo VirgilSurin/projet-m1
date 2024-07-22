@@ -10,15 +10,16 @@ pub enum GraphError {
 
 pub struct Graph {
     order: u32,
-    adj: HashMap<u32, Vec<u32>>
+    pub adj: HashMap<u32, Vec<u32>>
 }
 
+#[allow(dead_code)]
 impl Graph {
 
     pub fn new(order: u32) -> Self {
         Graph {
             order,
-            adj: HashMap::new(),
+            adj: HashMap::with_capacity(order as usize),
         }
     }
 
