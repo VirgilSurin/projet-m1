@@ -20,15 +20,14 @@ class Graph:
         else:
             self.adj[v].add(u)
 
-    def add_nodes(self, nodes):
-        for node in nodes:
-            self.adj[node] = set()
+    # def add_nodes(self, nodes):
+    #     for node in nodes:
+    #         self.adj[node] = set()
 
     def to_g6(self):
         # Constructing the bit vector
         bit_vector = []
         if self.order == None:
-            print("PANIK")
             return None
         for u in range(self.order):
             for v in range(0, u):
@@ -119,7 +118,6 @@ def decode_g6(bytes_in):
             f"Expected {n * (n - 1) // 2} bits but got {len(data) * 6} in graph6"
         )
     G = Graph(n)
-    G.add_nodes(range(n))
     for (i, j), b in zip([(i, j) for j in range(1, n) for i in range(j)], bits()):
         if b:
             G.add_edge(i, j)

@@ -19,8 +19,8 @@ Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
     if len(SUBG) == 0:
         result.append(" ".join(map(str, Q)))
         delay.append(time.perf_counter())
-        print(" ".join(map(str, Q)))
-        print("clique")
+        # print(" ".join(map(str, Q)))
+        # print("clique")
     else:
         u = max(SUBG, key=lambda u: len(CAND & G.adj[u]))
         for p in CAND - G.adj[u]:

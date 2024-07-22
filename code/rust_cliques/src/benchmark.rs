@@ -121,7 +121,7 @@ fn clique_delay_special(order: u32, algo: AlgoFn, graph_type: &str) {
         algo(&mut subg, &mut cand, &mut q, &G, &mut res, &mut delay);
 
         for i in 0..(delay.len() - 1) {
-            let time_taken = delay[i + 1] - delay[i];
+            let time_taken = delay[i + 1].saturating_sub(delay[i]);
             writeln!(output, "{:.6}", time_taken.as_secs_f64()).expect("Unable to write to output file");
         }
     }

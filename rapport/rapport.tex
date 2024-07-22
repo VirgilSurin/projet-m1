@@ -134,6 +134,15 @@ L'objectif de ce projet est d'implémenter les algorithmes présentés et de con
 
 Nous commencerons par un rappel des notions et notations utilisées ainsi que des définitions utiles à la compréhension de ce rapport, suivi d'une présentation des différents algorithmes implémentés et pour terminer par la comparaison d'efficacité en temps et en langage de ceux-ci.
 
+
+\section{État de l'art}%
+\label{sec:etat}
+Les premiers travaux sur ce sujet remontent aux années 1970 avec l'algorithme de Bron-Kerbosch, qui demeure l'une des méthodes les plus utilisées. Cet algorithme est basé sur une approche récursive en profondeur (\textit{depth-first search}) et fonctionne sans générer de doublons, ce qui en fait une solution efficace malgré sa complexité exponentielle dans le pire des cas.
+
+Plusieurs variantes et améliorations de l'algorithme de Bron-Kerbosch ont été proposées pour améliorer ses performances, notamment par l'intégration de techniques de pivotage qui réduisent la taille des sous-problèmes à chaque étape de la récursion. C'est d'ailleurs sur ces variantes, en comparaison avec l'algorithme de Bron-Kerbosch, que nous allons nous attarder dans ce rapport.
+
+Cependant, lorsque le nombre de cliques maximales et bien inférieur au pire des cas, d'autres algorithmes peuvent atteindre de meilleurs performances et être préférables. En 1977, Tsukiyama et al. nous montrent qu'il est possible d'énumérer toutes les cliques maximales en temps polynomial par clique générée\cite{doi:10.1137/0206036}.
+
 \section{Les cliques, cas d'utilisations}%
 \label{sec:usecase}
 
@@ -484,9 +493,9 @@ Ces trois cliques sont bien les seules et uniques cliques maximales de ce graphe
 Notez comme la clique \({4, 5, 6}\) n'est pas reprise, en effet celle-ci n'est pas maximale car elle peut être agrandie avec le noeud 7.
 
 \subsection{Complexité du problème}
-L'énumération des cliques maximales dans un graphe simple est un problème fondamental en théorie des graphes et en informatique théorique. Ce problème consiste à identifier toutes les cliques maximales d'un graphe, c'est-à-dire les sous-graphes complets qui ne peuvent être étendus par l'ajout d'un sommet adjacent. Bien que le problème soit simple à énoncer, sa complexité algorithmique est élevée et pose des défis importants. Ce problème est un problème \(\mathcal{N}\mathcal{P}\text{-Difficile}\).
+L'énumération des cliques maximales dans un graphe simple est un problème fondamental en théorie des graphes et en informatique théorique. Ce problème consiste à identifier toutes les cliques maximales d'un graphe, c'est-à-dire les sous-graphes complets qui ne peuvent être étendus par l'ajout d'un sommet adjacent. Bien que ce problème ne soit pas un problème \(\mathcal{N}\mathcal{P}\text{-Difficile}\), il reste un problème qui pose des défis important et qui ne peut actuellement ètre résolu en temps polynomial.
 
-Le nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximise le nombre de cliques maximales sont nommés graphe de Moon-Moser (voir section \ref{subsubsec:mm}).
+En effet, les meilleurs algorithmes que nous connaissons permettent d'énumérer toutes les cliques maximales d'un graphe sont polynomial en le nombre de cliques maximales. Or, nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximise le nombre de cliques maximales sont nommés graphe de Moon-Moser (voir section \ref{subsubsec:mm}).
 
 Nous allons ici présenter un algorithme (et des variantes) qui atteint une complexité dans le pire des cas de \(O(3^{3/n})\)\cite{CONTE20221}, correspondant ainsi au nombre de cliques qu'il faut énumérer (dans le pire des cas). Même si ce résultat semble décevant, il signifie surtout que nous pouvons énumérer toutes les cliques en temps polynomial par rapport au nombre de cliques dans le graphe. Cela implique que le délai pour trouver la prochaine clique est également polynomial. En pratique, cet algorithme et ces variantes se comportent plutôt bien en terme de temps.
 
@@ -683,13 +692,45 @@ Comme dit précédemment, la différence principale se trouve dans le choix du p
 
 Plus concrètement, la ligne 5 de l'algorithme, responsable du choix du pivot change pour respecter la propriété ainsi que la condition de sortie de la boucle \emph{while} en ligne 6 et le choix d'un noeud \emph{p} en ligne 7. En effet, nous allons donc explorer des candidats parmi \(\textrm{CAND} \setminus N(u)\).
 
+\section{Implémentation}%
+\label{sec:impl}
+
+Les algorithmes présentés précédemment ont été implémenté en \textit{Python} ainsi qu'en \textit{Rust}. Ces deux langages sont relativements différents. \textit{Python} n'est pas un langage typé et permet beaucoup de paradigme. C'est également un langage interprété et non compilé comme \emph{Rust}. Une autre différence majeur est que \emph{Python} est un langage de haut niveau contrairement à \emph{Rust} qui lui est de bas niveau, comparable au \emph{C}. En théorie, nous nous attendons à avoir de meilleur performance en \emph{Rust} qu'en \emph{Python} dû à ces raisons.
+
+Nous aborderons dans les sections \ref{subsec:python} et \ref{subsec:rust} les différences et difficulté d'implémentation des algorithmes ainsi que des challenges spécifiques lié au \emph{Python} et \emph{Rust} respectivement.
+
+Au sujet des graphes, nous avons décider d'utiliser des graphes représenté au format \texttt{g6} (Graph6\cite{g6}). Ce format permet de ne dépendre d'aucune librairie externe pour la manipulation de graphe. Ainsi, peut-importe le langage, il fut implémenter nos propres fonction pour lire et écrire des graphes dans ce format ainsi que notre propre structure de graphe.
+
+\subsection{Python}%
+\label{subsec:python}
+
+Comme mentionné précédemment, des fonctions utilitaires ainsi qu'une classe \emph{Graph} ont été développé afin de pouvoir manipuler des graphes. L'objet \emph{Graph} contient deux attributs :
+\begin{itemize}
+  \item \emph{order} : l'ordre du graphe
+  \item \emph{adj} : un dictionnaire d'adjacence
+\end{itemize}
+
+Afin de bénéficier d'un accès en \emph{O(1)} aux voisins d'un noeud donné, la liste d'adjacence est un dictionnaire, une structure de donnée de \emph{Python}. Il s'agit d'une liste de paires clé-valeurs. Dans notre cas, une clés est un entier (l'étiquette du noeud) et la valeur associée est une liste d'entier (les voisins du noeuds, celle-ci peut être vide dans le cas où le noeud ne possède aucun voisin).
+Une méthodes permettant d'ajouter des noeuds au graphe est également présente.
+
+Les autres fonctions utilitaires sont les fonctions permettant de lire le format g6 et de le traduire dans notre classe \emph{Graph} ainsi que l'opération inverse. Afin que ces fonctions soient efficaces, elles ont été reprise de la libraire \emph{Networkx} pour \emph{Python} qui réalise le même travaille en utilisant le plein potentiel des générateurs de \emph{Python}.
+
+Enfin les différents algorithmes ont été implémenté, chacun dans un fichier. Ceux-ci suivent le pseudo code fourni. Ils utilisent les \emph{sets} de \emph{Python} pour manipuler les ensemble de noeuds efficacement. Dans les arguments des algorithmes, deux on été ajoutés : \emph{result} et \emph{delay}. Il s'agit de deux listes, la première pour stocker la clique maximale une fois celle-ci trouvée et deuxième pour stocker le temps écoulé entre la clique maximale précédente et celle trouvée. Notez que l'impact en performace est quasi nul. En effet ajouter un élément à une liste en \emph{Python} se fait en \emph{O(1)}.
+
+Notez que les algorithmes se ressemblent énormément étant donné qu'ils diffèrent uniquement dans le choix du pivot. Pour la version de Bron-Kerbosh sans pivot, nous itérons simplement sur la liste des candidats.
+
+\subsection{Rust}%
+\label{subsec:rust}
+
+
+
 
 \section{Tests}%
 \label{sec:tests}
 
 \subsection{Méthodologie}%
 \label{subsec:methodo}
-Dans cette section, nous décrivons la méthodologie utilisée pour évaluer les performances de différents algorithmes de détection de cliques maximales sur des graphes de différents ordres. Nous avons implémenté et comparé quatre algorithmes : \texttt{CLIQUES} (\ref{sec:clique}), \texttt{BK} (\ref{subsec:bk}), \texttt{BKP\_R} (\ref{subsec:random}) et \texttt{BKP\_M} (\ref{subsec:max}). Ces algorithmes ont été testés en utilisant tous les graphes d'ordre 4 à 10 inclus, représentés au format \texttt{g6} (Graph6). Les graphes utilisés sont disponible au format g6 à ce lien : \url{http://users.cecs.anu.edu.au/~bdm/data/graphs.html}\footnote{Consutlé le 7 juin 2024 à 16h32.}
+Dans cette section, nous décrivons la méthodologie utilisée pour évaluer les performances de différents algorithmes de détection de cliques maximales sur des graphes de différents ordres. Nous avons implémenté et comparé quatre algorithmes : \texttt{CLIQUES} (\ref{sec:clique}), \texttt{BK} (\ref{subsec:bk}), \texttt{BKP\_R} (\ref{subsec:random}) et \texttt{BKP\_M} (\ref{subsec:max}). Ces algorithmes ont été testés en utilisant tous les graphes d'ordre 4 à 10 inclus. Les graphes utilisés sont disponible au format g6 à ce lien : \url{http://users.cecs.anu.edu.au/~bdm/data/graphs.html}\footnote{Consutlé le 7 juin 2024 à 16h32.}
 
 Pour mesurer le temps d'exécution total des algorithmes, nous avons utilisé la fonction \texttt{time.perf\_counter()} de la bibliothèque \texttt{time} de Python, qui offre une haute précision pour les mesures de temps.
 

@@ -21,7 +21,6 @@ fout = [# "email-Enron",
 #         n = int(f.readline())
 #         m = int(f.readline())
 #         G = Graph(n)
-#         G.add_nodes(range(n))
 #         i = 0
 #         lines = f.readlines()
 #     print(filename)
