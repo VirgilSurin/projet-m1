@@ -5,7 +5,10 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{float}
-\usepackage{algorithm} 
+\usepackage{listings}
+\usepackage{listings-rust}
+\usepackage{xcolor}
+\usepackage{algorithm}
 \usepackage{algpseudocode}
 \edef\restoreparindent{\parindent=\the\parindent\relax}
 \usepackage{parskip}
@@ -30,6 +33,32 @@
 }
 \tikzset{every picture/.style={scale=1,auto=center,every node/.style={circle,fill=blue!20}}}
 \graphicspath{images/}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{blue},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
 
 \begin{document}
 
@@ -137,11 +166,11 @@ Nous commencerons par un rappel des notions et notations utilisées ainsi que de
 
 \section{État de l'art}%
 \label{sec:etat}
-Les premiers travaux sur ce sujet remontent aux années 1970 avec l'algorithme de Bron-Kerbosch, qui demeure l'une des méthodes les plus utilisées. Cet algorithme est basé sur une approche récursive en profondeur (\textit{depth-first search}) et fonctionne sans générer de doublons, ce qui en fait une solution efficace malgré sa complexité exponentielle dans le pire des cas.
+Les premiers travaux sur ce sujet remontent aux années 1970 avec l'algorithme de Bron-Kerbosch\cite{bron1973algorithm}, qui demeure l'une des méthodes les plus utilisées. Cet algorithme est basé sur une approche récursive en profondeur (\textit{depth-first search}) et fonctionne sans générer de doublons, ce qui en fait une solution efficace malgré sa complexité exponentielle dans le pire des cas .
 
-Plusieurs variantes et améliorations de l'algorithme de Bron-Kerbosch ont été proposées pour améliorer ses performances, notamment par l'intégration de techniques de pivotage qui réduisent la taille des sous-problèmes à chaque étape de la récursion. C'est d'ailleurs sur ces variantes, en comparaison avec l'algorithme de Bron-Kerbosch, que nous allons nous attarder dans ce rapport.
+En 1977, Tsukiyama et al. ont proposé un algorithme \emph{output-sensitive} pour énumérer les cliques maximales \cite{tsukiyama1977new}. Cet algorithme garantit que le temps entre la sortie de deux cliques consécutives est borné par une fonction polynomiale de la taille de l'entrée. Un autre développement significatif est l'algorithme CLIQUES, introduit par Tomita et al., qui utilise une stratégie de recherche en profondeur et produit les cliques maximales sous forme d'arbre. Cet algorithme atteint une complexité temporelle optimale dans le pire des cas de \(O(3^{n/3})\) et est l'algorithme que nous allons comparé à celui de Bron et Kerbosch.
 
-Cependant, lorsque le nombre de cliques maximales et bien inférieur au pire des cas, d'autres algorithmes peuvent atteindre de meilleurs performances et être préférables. En 1977, Tsukiyama et al. nous montrent qu'il est possible d'énumérer toutes les cliques maximales en temps polynomial par clique générée\cite{doi:10.1137/0206036}.
+La technique de recherche inversée introduite par Avis et Fukuda a été adaptée pour l'énumération des cliques maximales \cite{avis1996reverse}. Des améliorations successives par des chercheurs comme Chiba et Nishizeki \cite{chiba1985arboricity}, et Makino et Uno \cite{makino2004new}, ont permis d'améliorer l'efficacité et la scalabilité, notamment dans les graphes clairsemés, dits \emph{sparse graph}. Des travaux récents de Conte et collègues ont fourni de nouvelles perspectives sur la complexité globale et la complexité de délai des algorithmes d'énumération des cliques, démontrant que les algorithmes basés sur CLIQUES et Bron-Kerbosch sont performants en pratique sur des graphes du monde réel \cite{conte2022overall}.
 
 \section{Les cliques, cas d'utilisations}%
 \label{sec:usecase}
@@ -722,7 +751,27 @@ Notez que les algorithmes se ressemblent énormément étant donné qu'ils diff�
 \subsection{Rust}%
 \label{subsec:rust}
 
+L'implémentation en \emph{Rust} des algorithmes fut plus laborieuse dû à une particularité du langage qu'est le principe d'\emph{owrnership}\cite{rust}. Cela implique des changements dans la façon dont fonctionne le code.
 
+Les Figures \ref{fig:p1} et \ref{fig:r1} illustrent la complexité de \emph{Rust} par rapport à \emph{Python}. Afin d'obtenir le même résultat, dû au fonctionnement de \emph{Rust} et à ses mécanismes de vérifications, nous devons nous assurer de la robustesse du code. Par exemple le \verb|.unwrap()| permet de récupérer la valeur de l'appel à \verb|.max_by_key(...)| qui retourne une \emph{Option} (qui pourrait être soit notre résultat, soit \emph{None}). On peut voir également les emprunts (\emph{&}) qui permettent d'assurer l'absence de pointeur flottant.
+
+\begin{figure}[ht]
+  \begin{lstlisting}[language=Python]
+    u = max(SUBG, key=lambda u: len(CAND & G.adj[u]))
+  \end{lstlisting}
+  \caption{Python : choix du pivot dans CLIQUES}
+  \label{fig:p1}
+\end{figure}
+
+\begin{figure}[ht]
+  \begin{lstlisting}[language=Rust]
+    let u = *subg.iter().max_by_key(|&&u| g.adj[&u].iter().filter(|&&neighbor| cand.contains(&neighbor)).count()).unwrap();
+  \end{lstlisting}
+  \caption{Rust : choix du pivot dans CLIQUES}
+  \label{fig:r1}
+\end{figure}
+
+Lors de l'implémentation en \emph{Rust} (qui a eu lieu après celle en \emph{Python}), l'objectif a été de rester au plus proche de ce qui était fait en \emph{Python} afin de comparer des implémentations qui \og \textit{font les mêmes choses} \fg{} et ainsi pouvoir constater les différences de performances à armes égales.
 
 
 \section{Tests}%
