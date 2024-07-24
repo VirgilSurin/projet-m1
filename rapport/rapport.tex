@@ -721,6 +721,80 @@ Comme dit précédemment, la différence principale se trouve dans le choix du p
 
 Plus concrètement, la ligne 5 de l'algorithme, responsable du choix du pivot change pour respecter la propriété ainsi que la condition de sortie de la boucle \emph{while} en ligne 6 et le choix d'un noeud \emph{p} en ligne 7. En effet, nous allons donc explorer des candidats parmi \(\textrm{CAND} \setminus N(u)\).
 
+\subsection{Exemple}%
+\label{subsec:ex}
+
+Cette section vous présente un exemple de l'exécution de CLIQUES sur le graphe en Figure \ref{fig:exemple}.
+
+Nous commençons par le premier appel :
+\begin{itemize}
+  \item \texttt{SUBG} = \texttt{CAND} = \(\{1,2,3,4,5,6,7,8,9\}\)
+  \item \texttt{Q} est vide
+\end{itemize}
+
+Le premier appel se fait avec ses argument. \texttt{SUBG} n'étant pas vide, nous allons choisir un pivot \emph{u}. Pour rappel, nous cherchons à trouver le noeud dans \texttt{SUBG} tel que l'intersection entre les voisins de ce noeuds et \texttt{CAND} est le plus grand possible. Dans notre exemple il s'agit de 4.
+
+Conformément à la ligne 6 de CLIQUES, nous allons itérer sur tous les noeuds de \(CAND - N(4)\), c'est-à-dire sur \(\{1, 2, 9, 4\}\).
+Prenons \emph{p} = 1.
+Nous ajoutons \emph{p} à la clique courante \emph{Q} et nous allons faire un nouvel appel récursif mais avec :
+\begin{itemize}
+  \item \texttt{SUBG} = \texttt{CAND} = \(\SUBG \cap N(1) = CAND \cap N(1) = {2, 9\}\)
+  \item \texttt{Q} = \(\{1\}\)
+\end{itemize}
+
+Pour ce deuxième appel, \texttt{SUBG} n'est toujours pas vide. Nous choisissons donc un nouveau pivot dans \texttt{SUBG}. Ici \emph{u} = 9. Nous allons itérer dans \(CAND - N(9) = \{9\}\), nous choisissons \emph{p} = 9 (seule possibilité). Nous calculons les nouveaux ensemble \texttt{SUBG} et \texttt{CAND} et ajoutons 9 à \texttt{Q}.
+
+Un troisième appel est effectué avec comme arguments :
+\begin{itemize}
+  \item \texttt{SUBG} = \texttt{CAND} = \(\{2\}\) (2 étant le seul voisin restant de 9)
+  \item \texttt{Q} = \(\{1, 9\}\)
+\end{itemize}
+
+Ici le choix du pivot est évident étant donné que nous n'avons qu'un seul candidat. Nous prenons donc \emph{u} = 2. La suite de l'algorithme nous dit d'itérer sur les noeuds dans \texttt{CAND} dont on retire les voisins de \emph{u} (2), ce qui nous laisse que le noeud 2.
+
+Nous choissisons donc \emph{p} = 2 et l'ajoutons à la clique courante \texttt{Q}.
+Il est facile de voir que le prochain appel récursif aura pour argument des ensemble vide (excepté \texttt{Q}) dû aux lignes 10 et 11 de CLIQUES.
+
+Nous faisons donc le derniers appele de l'exploration de cette branche. Nous tombons dans le cas où \texttt{SUBG} est vide et nous avons donc trouvé une clique maximale : \(Q = \{1, 9, 2\}\)
+
+Enfin nous arrivons dans le backtracking et remontons dans l'arbre d'appel (lignes 13 et 14 de CLIQUES). Pour ce faire nous retirons le noeuds \emph{p} mis dans la clique courante mais également de l'ensemble des candidats afin d'éviter de revenir sur un noeuds dont nous avons déjà trouver la clique maximale qui le contient.
+
+Dans notre exemple nous retirons donc le noeuds 2, à ce stade il n'y a pas d'autres noeuds à explorer dans \(CAND - N(u)\) (vide). Nous remontons donc d'un appel et retirons 9 de \texttt{CAND} et \texttt{Q} (Nous obtenons donc \texttt{CAND} = \(\{2\}\) et \texttt{Q} = \(\{1\}\)). Pour rappel il s'agit de l'appel ou 9 est notre pivot \emph{u}. Certe il reste le noeud 2 dans les candidats mais les candidats sont choisis parmi \(CAND - N(u)\).
+L'algorithme continue son backtracking. Nous arrivons dans le premier appel où \emph{u} = 4 et \emph{p} = 1. Nous retirons 1 de \texttt{CAND} ce qui nous donne tous les noeuds sauf 1. Nous continuons donc d'itérer sur \(CAND - N(u)\).
+
+
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{tikzpicture}
+      \node (n1) at (0, 2) {1};
+      \node (n2) at (2, 4) {2};
+      \node (n3) at (4, 2) {3};
+      \node (n4) at (6, 4) {4};
+      \node (n5) at (6, 6) {5};
+      \node (n6) at (10, 4) {6};
+      \node (n7) at (10, 0) {7};
+      \node (n8) at (6, 0) {8};
+      \node (n9) at (2, 0) {9};
+
+
+        \foreach \from/\to in {
+          n1/n2, n1/n9,
+          n2/n9, n2/n3,
+          n3/n9, n3/n4, n3/n8,
+          n4/n5, n4/n6, n4/n7, n4/n8,
+          n6/n7, n6/n8,
+          n7/n8,
+        }
+        \draw (\from) -- (\to);
+    \end{tikzpicture}
+    \caption{}
+    \label{fig:exemple}
+  \end{center}
+\end{figure}
+
+
+
 \section{Implémentation}%
 \label{sec:impl}
 
@@ -739,7 +813,7 @@ Comme mentionné précédemment, des fonctions utilitaires ainsi qu'une classe \
   \item \emph{adj} : un dictionnaire d'adjacence
 \end{itemize}
 
-Afin de bénéficier d'un accès en \emph{O(1)} aux voisins d'un noeud donné, la liste d'adjacence est un dictionnaire, une structure de donnée de \emph{Python}. Il s'agit d'une liste de paires clé-valeurs. Dans notre cas, une clés est un entier (l'étiquette du noeud) et la valeur associée est une liste d'entier (les voisins du noeuds, celle-ci peut être vide dans le cas où le noeud ne possède aucun voisin).
+Afin de bénéficier d'un accès en \emph{O(2)} aux voisins d'un noeud donné, la liste d'adjacence est un dictionnaire, une structure de donnée de \emph{Python}. Il s'agit d'une liste de paires clé-valeurs. Dans notre cas, une clés est un entier (l'étiquette du noeud) et la valeur associée est une liste d'entier (les voisins du noeuds, celle-ci peut être vide dans le cas où le noeud ne possède aucun voisin).
 Une méthodes permettant d'ajouter des noeuds au graphe est également présente.
 
 Les autres fonctions utilitaires sont les fonctions permettant de lire le format g6 et de le traduire dans notre classe \emph{Graph} ainsi que l'opération inverse. Afin que ces fonctions soient efficaces, elles ont été reprise de la libraire \emph{Networkx} pour \emph{Python} qui réalise le même travaille en utilisant le plein potentiel des générateurs de \emph{Python}.

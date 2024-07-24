@@ -30,9 +30,8 @@ fn bench_total_time(order: u32, algo: AlgoFn) {
         let now = Instant::now();
         let mut delay = vec![now.elapsed()];
 
-        let start = Instant::now();
         algo(&mut subg, &mut cand, &mut q, &G, &mut res, &mut delay);
-        let duration = start.elapsed();
+        let duration = now.elapsed();
 
         writeln!(output, "{:.6}", duration.as_secs_f64()).expect("Unable to write to output file");
     }
@@ -58,9 +57,8 @@ fn bench_total_time_special(order: u32, algo: AlgoFn, graph_type: &str) {
         let now = Instant::now();
         let mut delay = vec![now.elapsed()];
 
-        let start = Instant::now();
         algo(&mut subg, &mut cand, &mut q, &G, &mut res, &mut delay);
-        let duration = start.elapsed();
+        let duration = now.elapsed();
 
         writeln!(output, "{:.6}", duration.as_secs_f64()).expect("Unable to write to output file");
     }

@@ -19,7 +19,7 @@ def process_and_plot(typ, directory, g):
     for fn in fns:
         orders = set()
         for filename in os.listdir(directory):
-            if filename.startswith(f'{typ}_res_{fn}_{g}') and filename.endswith('.out'):
+            if filename.startswith(f'{typ}_rust_res_{fn}_{g}') and filename.endswith('.out'):
                 parts = filename.split('_')
                 order = int(parts[-1].split('.')[0])
 
@@ -46,7 +46,7 @@ def process_and_plot(typ, directory, g):
     plt.xlabel('Ordre')
     plt.ylabel("Temps d'exécution moyen (secondes)")
     plt.legend()
-    plt.savefig(f'./out_fig/{typ}_pivot_{g}_plot.png')
+    plt.savefig(f'./out_fig/{typ}_rust_pivot_{g}_plot.png')
 
 # Call the main function with the directory containing the files
 process_and_plot('total', './out/specials/', "complete")

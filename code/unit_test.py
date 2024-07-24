@@ -28,7 +28,7 @@ def bench_total_time(order: int, algo):
         start = time.perf_counter()
         algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res)
         end = time.perf_counter()
-        out.write(f'{end - start:0.6f}\n')
+        out.write(f'{end - start}\n')
 
 def clique_delay(order: int, algo):
     input = open(f'./samples/graph{order}.g6', 'r')
@@ -52,7 +52,7 @@ def clique_delay(order: int, algo):
         algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res, delay)
         for i in range(len(delay) - 1):
             time_taken = delay[i+1] - delay[i]
-            out.write(f'{time_taken:0.6f}\n')
+            out.write(f'{time_taken}\n')
 
 def total_time_main():
     print("BENCHMARK")
@@ -152,7 +152,7 @@ def bench_total_time_special(order: int, algo, graph_type: str):
             start = time.perf_counter()
             algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res, [])
             end = time.perf_counter()
-            out.write(f'{(end - start) * 1000:0.6f}\n')  # Convert to ms
+            out.write(f'{end - start}\n')  # in s
 
 def clique_delay_special(order: int, algo, graph_type: str):
     input_file = f'./samples/graphs/{graph_type}_{order}.g6'
@@ -166,8 +166,8 @@ def clique_delay_special(order: int, algo, graph_type: str):
             delay = [time.perf_counter()]
             algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res, delay)
             for i in range(len(delay) - 1):
-                time_taken = (delay[i+1] - delay[i]) * 1000  # Convert to ms
-                out.write(f'{time_taken:0.6f}\n')
+                time_taken = (delay[i+1] - delay[i])  # in s
+                out.write(f'{time_taken}\n')
 
 def total_time_special():
     print("BENCHMARK")
