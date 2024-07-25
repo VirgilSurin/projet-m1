@@ -10,8 +10,9 @@ use benchmark::*;
 
 fn main() {
     env::set_var("RUST_BACKTRACE", "1");
-    // total_time_main();
-    // total_time_special();
+    total_time_main();
+    total_time_special();
+    delay_main();
     delay_special();
 }
 

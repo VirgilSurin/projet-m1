@@ -26,7 +26,7 @@ def bench_total_time(order: int, algo):
         G = decode_g6(g6.encode())
         res = []
         start = time.perf_counter()
-        algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res)
+        algo(set(G.adj.keys()), set(G.adj.keys()), [], G, res, [])
         end = time.perf_counter()
         out.write(f'{end - start}\n')
 
@@ -191,7 +191,7 @@ def delay_special():
 
 
 if __name__ == '__main__':
-    # total_time_main()
-    # delay_main()
+    total_time_main()
+    delay_main()
     total_time_special()
-    # delay_special()
+    delay_special()
