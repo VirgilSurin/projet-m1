@@ -1,1 +1,1 @@
-/home/virgil/Documents/M1/projet-m1/code/rust_cliques/target/debug/rust_cliques: /home/virgil/Documents/M1/projet-m1/code/rust_cliques/src/main.rs
+/home/virgil/Documents/M1/projet-m1/code/rust_cliques/target/debug/rust_cliques: /home/virgil/Documents/M1/projet-m1/code/rust_cliques/src/algo.rs /home/virgil/Documents/M1/projet-m1/code/rust_cliques/src/benchmark.rs /home/virgil/Documents/M1/projet-m1/code/rust_cliques/src/main.rs /home/virgil/Documents/M1/projet-m1/code/rust_cliques/src/utils.rs

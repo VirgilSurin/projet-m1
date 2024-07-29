@@ -917,14 +917,14 @@ Les autres fonctions utilitaires sont les fonctions permettant de lire le format
 
 Enfin les différents algorithmes ont été implémenté, chacun dans un fichier. Ceux-ci suivent le pseudo code fourni. Ils utilisent les \emph{sets} de \emph{Python} pour manipuler les ensemble de noeuds efficacement. Dans les arguments des algorithmes, deux on été ajoutés : \emph{result} et \emph{delay}. Il s'agit de deux listes, la première pour stocker la clique maximale une fois celle-ci trouvée et deuxième pour stocker le temps écoulé entre la clique maximale précédente et celle trouvée. Notez que l'impact en performace est quasi nul. En effet ajouter un élément à une liste en \emph{Python} se fait en \emph{O(1)}.
 
-Notez que les algorithmes se ressemblent énormément étant donné qu'ils diffèrent uniquement dans le choix du pivot. Pour la version de Bron-Kerbosh sans pivot, nous itérons simplement sur la liste des candidats.
+Notez que les algorithmes se ressemblent énormément étant donné qu'ils diffèrent uniquement dans le choix du pivot. Pour la version de Bron-Kerbosch sans pivot, nous itérons simplement sur la liste des candidats.
 
 \subsection{Rust}%
 \label{subsec:rust}
 
 L'implémentation en \emph{Rust} des algorithmes fut plus laborieuse dû à une particularité du langage qu'est le principe d'\emph{owrnership}\cite{rust}. Cela implique des changements dans la façon dont fonctionne le code.
 
-Les Figures \ref{fig:p1} et \ref{fig:r1} illustrent la complexité de \emph{Rust} par rapport à \emph{Python}. Afin d'obtenir le même résultat, dû au fonctionnement de \emph{Rust} et à ses mécanismes de vérifications, nous devons nous assurer de la robustesse du code. Par exemple le \verb|.unwrap()| permet de récupérer la valeur de l'appel à \verb|.max_by_key(...)| qui retourne une \emph{Option} (qui pourrait être soit notre résultat, soit \emph{None}). On peut voir également les emprunts (\emph{\&}) qui permettent d'assurer l'absence de pointeur flottant.
+Les Figures \ref{fig:p1} et \ref{fig:r1} illustrent la complexité de \emph{Rust} par rapport à \emph{Python}. Afin d'obtenir le même résultat, dû au fonctionnement de \emph{Rust} et à ses mécanismes de vérifications, nous devons nous assurer de la robustesse du code. Par exemple le \verb|.unwrap()| permet de récupérer la valeur de l'appel à \verb|.max_by_key(...)| qui retourne une \emph{Option} (qui pourrait être soit notre résultat, soit \emph{None}). On peut voir également les emprunts (\texttt{\&}) qui permettent d'assurer l'absence de pointeur flottant.
 
 \begin{figure}[ht]
   \begin{lstlisting}[language=Python]
@@ -944,6 +944,35 @@ Les Figures \ref{fig:p1} et \ref{fig:r1} illustrent la complexité de \emph{Rust
 
 Lors de l'implémentation en \emph{Rust} (qui a eu lieu après celle en \emph{Python}), l'objectif a été de rester au plus proche de ce qui était fait en \emph{Python} afin de comparer des implémentations qui \og \textit{font les mêmes choses} \fg{} et ainsi pouvoir constater les différences de performances à armes égales.
 
+Malgré tout, il n'est pas simple de retranscire du \emph{Python} en \emph{Rust} et il est important de noter que dans l'état actuel des implémentations, celle en \emph{Rust} semble moins efficace. Cela est dù à la présence de beaucoup de clonage de sets et vecteurs afin de pouvoir faire fonctionner le code (voir Figure \ref{fig:r2} et \ref{fig:p2}). On peut clairement voir une copie qui semble inutile dans le code \emph{Rust}. Malheureusement cela semble être la meilleure façon de faire car nous devons conserver intact \texttt{SUBG}, \texttt{CAND} et N(p) (\texttt{p\_neighbors} dans le code \emph{Rust})\footnote{Propos appuyés par \href{https://stackoverflow.com/questions/55975234/how-do-i-intersect-two-hashsets-while-moving-values-in-common-into-a-new-set}{ce post StackOverflow}, consulté le 29/07/2024 à 15h30.}
+\begin{figure}[ht]
+  \begin{lstlisting}[language=Rust]
+let subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
+let cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
+  \end{lstlisting}
+  \caption{Création des nouveaux ensemble \texttt{SUBG\_p} et \texttt{CAND\_p} en \emph{Rust}}
+  \label{fig:r2}
+\end{figure}
+\begin{figure}[ht]
+  \begin{lstlisting}[language=Python]
+SUBG_p = SUBG & p_neighbors
+CAND_p = CAND & p_neighbors
+  \end{lstlisting}
+  \caption{Création des nouveaux ensemble \texttt{SUBG\_p} et \texttt{CAND\_p} en \emph{Python}}
+  \label{fig:p2}
+\end{figure}
+\subsection{Limitations}%
+\label{subsec:limit}
+
+Initialement, il était prévu de tester les différents algorithmes sur de grands graphes obtenu sur bases de données réelles, dont notamment des graphes représentant les utilistateurs de Deezer et leurs liens (\emph{follow}) (\cite{rozemberczki2020characteristic}), un graphe des relations entre pages de Facebook (\cite{rozemberczki2019multiscale}) par exemples. Mais très vite un soucis c'est posé. En effet il s'agit de très très grand graphes. Par exemple, celui représentant les relations entre pages Facebook contient 22 470 noeuds.
+
+Un simple code en \emph{Python} visant à transformer un de ces graphes au format g6 afin de pouvoir travailler avec fu développer mais celui-ci ne put se terminer. En effet malgré le \emph{hardware} utilisé (voir \ref{subsec:methodo}), la RAM arrivait très vite à saturation résultant en un crash du programme.
+
+Afin de contourner ces limitations deux pistes semblent possible :
+\begin{itemize}
+  \item Utiliser un autre langage (probablement de bas niveau) afin de réduire le coup sur la mémoire
+  \item Augmenter les ressources disponible, surtout la RAM
+\end{itemize}
 
 \section{Tests}%
 \label{sec:tests}
@@ -961,20 +990,20 @@ Les expériences ont été exécutées sur une machine équipée d'un processeur
 \subsection{Résultats}%
 \label{subsec:res}
 
-Les graphes ci-dessous (Figure \ref{fig:res1}) illustrent le temps d'éxécution moyen des différents algorithmes présentés ici ainsi que le délais moyen entre l'énumération de chaque clique maximale en fonction de l'ordre du graphes. L'ensemble de tests consite en l'entièreté des graphes d'ordre 4 à 10 comme décrit dans la section sur la méthodologie (\ref{subsec:methodo}).
+Les graphes ci-dessous (Figure \ref{fig:res1}) illustrent le temps d'éxécution moyen des différents algorithmes présentés ici ainsi que le délais moyen entre l'énumération de chaque clique maximale en fonction de l'ordre du graphes. L'ensemble de tests consite en l'entièreté des graphes d'ordre 4 à 10 comme décrit dans la section sur la méthodologie (\ref{subsec:methodo}). Les graphes d'ordres 1 à 3 ont été exclus car l'exécution était tellement rapide qu'aucun temps notable n'était recensé.
 \begin{figure}[h!]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/total_plot.png}
-        \caption{Temps total pour énumérer toutes les cliques maximales}
+        \caption{Temps total moyen pour énumérer toutes les cliques maximales}
         \label{fig:total_plot}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/delay_plot.png}
-        \caption{Délais pour énumérer une clique maximale}
+        \caption{Délais moyen pour énumérer une clique maximale}
         \label{fig:delay_plot}
     \end{subfigure}
     \caption{Résultats des temps d'exécution pour différents algorithmes d'énumération des cliques maximales}
@@ -1035,7 +1064,98 @@ Tout d'abord nous pouvons observer qu'en effet, les différents algorithmes pré
 
 Observons maintenant sur ces catégories de graphes ce qu'il en est pour le délais nécessaire pour trouver la prochaine clique maximale. Dans les deux cas nous avons bien un délais qui semble polynomial en fonction du nombre de cliques ce qui est rassurant. Toutefois, il est important de souligner que l'algorithme \texttt{CLIQUES} semble moins efficace et mettre plus de temps que les autres. Cela va à l'encontre des résultats attendu et est probablement dû à l'implémentation réalisée. En effet, trouver le noeud pivot nécessite, pour chaque noeud de \texttt{SUBG} de calculer \(\texttt{CAND} \cap N(u)\) afin de trouver le noeud qui maximise cette propriété, ce qui a un coup plus grand que de trouver le noeud de degré supérieur, cela même ayant un coup plus grand que de tirer un noeud au hasard.
 
-% TODO: un tableau avec des graphes classiques et comparer avec un tableau avec des graphes complets et un autre avec des graphes de Turan pour voir
+\begin{center}
+  \begin{table}[h!]
+    \begin{tabular}{|l||l|l|l|l|}
+      \hline
+      Ordre & BK & BKP\_R & BKP\_M & CLIQUES \\
+      \hline
+      \hline
+      4  & $1.0799^{e-05}$ & $1.6508^{e-05}$ & $1.1213^{e-05}$ & $1.1625^{e-05}$ \\
+      5  & $1.2079^{e-05}$ & $1.3219^{e-05}$ & $1.2379^{e-05}$ & $1.3643^{e-05}$ \\
+      6  & $1.560e^{e-05}$  & $1.6169^{e-05}$ & $1.5854^{e-05}$  & $1.7883^{e-05}$ \\
+      7  & $2.0252^{e-05}$ & $2.0829^{e-05}$ & $1.9958^{e-05}$ & $2.1590^{e-05}$   \\
+      8  & $2.5791^{e-05}$ & $2.6625^{e-05}$ & $2.5337^{e-05}$   & $2.7245^{e-05}$ \\
+      9  & $3.2806^{e-05}$ & $3.3322^{e-05}$  & $3.189e^{e-05}$  & $3.387e^{e-05}$  \\
+      10 & $4.0894^{e-05}$ & $4.1189^{e-05}$ & $3.926e^{e-05}$ & $4.2038^{e-05}$  \\
+      \hline
+    \end{tabular}
+    \caption{Temps d'exécution moyen des algorithmes sur tous les graphes d'ordre donné}
+    \label{table:1}
+\end{table}
+\end{center}
+\begin{center}
+  \begin{table}[h!]
+    \begin{tabular}{|l||l|l|l|l|}
+      \hline
+      Ordre & BK & BKP\_R & BKP\_M & CLIQUES \\
+      \hline
+      \hline
+      4  & $3.7588^{e-06}$ & $4.0444^{e-06}$ & $4.5968^{e-06}$ & $5.1999^{e-06}$ \\
+      5  & $3.0838^{e-06}$ & $3.5742^{e-06}$ & $3.7282^{e-06}$ & $3.9874^{e-06}$ \\
+      6  & $2.8786^{e-06}$ & $3.4932^{e-06}$ & $3.4684^{e-06}$ & $3.7294^{e-06}$ \\
+      7  & $2.8994^{e-06}$ & $3.4047^{e-06}$ & $3.4149^{e-06}$ & $3.7131^{e-06}$   \\
+      8  & $3.0013^{e-06}$ & $3.5007^{e-06}$ & $3.4537^{e-06}$ & $3.7050^{e-06}$ \\
+      9  & $3.1184^{e-06}$ & $3.5931^{e-06}$ & $3.5112^{e-06}$ & $3.8213^{e-06}$  \\
+      10 & $3.2128^{e-06}$ & $3.6631^{e-06}$ & $3.5805e^{e-06}$ & $3.8666^{e-06}$  \\
+      \hline
+    \end{tabular}
+    \caption{Délais moyen pour énumérer une clique maximale}
+    \label{table:2}
+\end{table}
+\end{center}
+
+\subsubsection*{Comparaison avec \emph{Rust}}
+
+L'une des revendications de ce projet est que, bien implémenté, un algorithme équivalent en \emph{Rust} devrait être plus performant que son homonyme écrit en \emph{Python}. Bien évidemment il va de soit que cela dépend de la qualité de l'implémentation.
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{images/total_pyrust_CLIQUES_plot.png}
+  \caption{CLIQUES}%
+  \label{subfig:pr_cliques}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{images/total_pyrust_BK_plot.png}
+  \caption{Bron-Kerbosch}%
+  \label{subfig:pr_bk}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{images/total_pyrust_BKP_M_plot.png}
+  \caption{BKP\_M}%
+  \label{subfig:pr_bkp_m}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{images/total_pyrust_BKP_R_plot.png}
+  \caption{BKP\_R}%
+  \label{subfig:pr_bkp_r}
+  \end{subfigure}
+  \caption{Comparaison des différents algorithmes en \emph{Python} et \emph{Rust}}%
+  \label{fig:pvr}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{images/total_CLIQUES_pyrust_pivot_complete_plot.png}
+  \caption{Graphes complets}%
+  \label{subfig:pr_cliques_complete}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{images/total_CLIQUES_pyrust_pivot_empty_plot.png}
+  \caption{Graphes vides}%
+  \label{subfig:pr_cliques_empty}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{images/total_CLIQUES_pyrust_pivot_turan_plot.png}
+  \caption{Graphes de Turàn}%
+  \label{subfig:pr_cliques_turan}
+  \end{subfigure}
+  \caption{Comparaison CLIQUES en \emph{Python} et \emph{Rust} sur des graphes spéciaux}%
+  \label{fig:pvr_cliques}
+\end{figure}
+
 
 \section{Conclusion}
 

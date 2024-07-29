@@ -13,6 +13,19 @@ def read_data(file_path):
 def calculate_mean(data):
     return np.mean(data)
 
+def get_values(typ, directory):
+    """
+    Retourne les valeurs moyennes pour exécuter tous les algorithmes sur les graphes d'ordres donnés.
+    """
+    fns = ["CLIQUES", "BKP_R", "BKP_M", "BK"]
+    pattern = re.compile(rf'^{typ}_res_({"|".join(fns)})_(\d+)\.out$')
+    dirs = os.listdir(directory)
+    dirs.sort()
+    for filename in dirs:
+        if pattern.match(filename):
+            data = read_data(os.path.join(directory, filename))
+            mean_value = calculate_mean(data)
+            print(f"{filename:<26} = {mean_value:<16}")
 
 def process_and_plot(typ, directory):
     """
@@ -21,8 +34,8 @@ def process_and_plot(typ, directory):
     fns = ["CLIQUES", "BKP_R", "BKP_M", "BK"]
     function_data = {fn: {} for fn in fns}
     orders = None
-    pattern = re.compile(rf'^{typ}_res_({{"|".join(fns)}})_(\d+)\.out$')
     for fn in fns:
+        pattern = re.compile(rf'^{typ}_res_{fn}_(\d+)\.out$')
         orders = set()
         for filename in os.listdir(directory):
             if pattern.match(filename):
@@ -46,6 +59,7 @@ def process_and_plot(typ, directory):
 
     plt.figure()
     # Plotting
+    print(function_data)
     for fn, data in function_data.items():
         plt.plot(orders, [data.get(order, 0) for order in orders], label=fn)
 
@@ -159,10 +173,10 @@ def process_and_plot_pyrust(typ, directory):
     function_data = {fn: {} for fn in fns}
     rust_data = {fn: {} for fn in fns}
     orders = None
-    pattern = re.compile(rf'^{typ}_res_({"|".join(fns)})_(\d+)\.out$')
-    rust_pattern = re.compile(rf'^{typ}_rust_res_({"|".join(fns)})_(\d+)\.out$')
     for fn in fns:
         orders = set()
+        pattern = re.compile(rf'^{typ}_res_({fn})_(\d+)\.out$')
+        rust_pattern = re.compile(rf'^{typ}_rust_res_({fn})_(\d+)\.out$')
         for filename in os.listdir(directory):
             if pattern.match(filename):
                 parts = filename.split('_')
