@@ -22,10 +22,10 @@ pub fn cliques(subg: &mut HashSet<u32>, cand: &mut HashSet<u32>, q: &mut Vec<u32
             let p_neighbors: HashSet<_> = g.adj[&p].iter().cloned().collect();
             q.push(p);
 
-            let subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
-            let cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
+            let mut subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
+            let mut cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
 
-            cliques(&mut subg_p.clone(), &mut cand_p.clone(), q, g, result, delay);
+            cliques(&mut subg_p, &mut cand_p, q, g, result, delay);
 
             q.pop();
             cand.remove(&p);
@@ -48,10 +48,10 @@ pub fn bk(subg: &mut HashSet<u32>, cand: &mut HashSet<u32>, q: &mut Vec<u32>, g:
             let p_neighbors: HashSet<_> = g.adj[&p].iter().cloned().collect();
             q.push(*p);
 
-            let subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
-            let cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
+            let mut subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
+            let mut cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
 
-            cliques(&mut subg_p.clone(), &mut cand_p.clone(), q, g, result, delay);
+            bk(&mut subg_p, &mut cand_p, q, g, result, delay);
 
             q.pop();
             cand.remove(&p);
@@ -79,10 +79,10 @@ pub fn bk_r(subg: &mut HashSet<u32>, cand: &mut HashSet<u32>, q: &mut Vec<u32>, 
             let p_neighbors: HashSet<_> = g.adj[&p].iter().cloned().collect();
             q.push(p);
 
-            let subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
-            let cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
+            let mut subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
+            let mut cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
 
-            cliques(&mut subg_p.clone(), &mut cand_p.clone(), q, g, result, delay);
+            bk_r(&mut subg_p, &mut cand_p, q, g, result, delay);
 
             q.pop();
             cand.remove(&p);
@@ -107,10 +107,10 @@ pub fn bk_m(subg: &mut HashSet<u32>, cand: &mut HashSet<u32>, q: &mut Vec<u32>, 
             let p_neighbors: HashSet<_> = g.adj[&p].iter().cloned().collect();
             q.push(p);
 
-            let subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
-            let cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
+            let mut subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
+            let mut cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
 
-            cliques(&mut subg_p.clone(), &mut cand_p.clone(), q, g, result, delay);
+            bk_m(&mut subg_p, &mut cand_p, q, g, result, delay);
 
             q.pop();
             cand.remove(&p);
