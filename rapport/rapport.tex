@@ -718,14 +718,14 @@ Plus concrètement, la ligne 5 de l'algorithme, responsable du choix du pivot ch
 \label{subsec:ex}
 
 Cette section vous présente un exemple de l'exécution de CLIQUES sur le graphe en Figure \ref{subfig:call1}.
-Un code couleur est établi, un noeud entouré de rouge appartient à \texttt{CAND}, colorié en rouge signifie qu'il appartient à \texttt{SUBG}. Un noeud entouré de vert est le noeud pivot de l'appel actuel, entouré de bleu il s'agit du noeud \emph{p} choisi en ligne 7 de l'algorithme \ref{fig:cliques}.
+Un code couleur est établi, un noeud entouré de rouge appartient à \texttt{CAND}, colorié en rouge signifie qu'il appartient à \texttt{SUBG}. Un noeud entouré de vert est le noeud pivot de l'appel actuel, entouré de bleu il s'agit du noeud \emph{p} choisi en ligne 7 de l'algorithme \ref{fig:cliques}. Un noeud de forme carrée appartient à la clique courante \emph{Q}.
 
 Nous commençons par le premier appel (voir Figure \ref{subfig:call1}):
 \begin{itemize}
   \item \texttt{SUBG} = \texttt{CAND} (en rouge sur la Figure \ref{subfig:call1}) = \(\{1,2,3,4,5,6,7,8,9\}\)
   \item \texttt{Q} est vide
 \end{itemize}
-Le premier appel se fait avec ses argument. \texttt{SUBG} n'étant pas vide, nous allons choisir un pivot \emph{u}. Pour rappel, nous cherchons à trouver le noeud dans \texttt{SUBG} tel que l'intersection entre les voisins de ce noeuds et \texttt{CAND} est le plus grand possible. Dans notre exemple il s'agit de 4 (en vert sur la Figure \ref{subfig:call1}).
+Le premier appel se fait avec ces arguments. \texttt{SUBG} n'étant pas vide, nous allons choisir un pivot \emph{u}. Pour rappel, nous cherchons à trouver le noeud dans \texttt{SUBG} tel que l'intersection entre les voisins de ce noeuds et \texttt{CAND} est le plus grand possible. Dans notre exemple il s'agit de 4 (en vert sur la Figure \ref{subfig:call1}).
 
 \begin{figure}
   \centering
@@ -755,15 +755,15 @@ Le premier appel se fait avec ses argument. \texttt{SUBG} n'étant pas vide, nou
     \end{subfigure}
   \begin{subfigure}[b]{0.33\textwidth}
       \begin{tikzpicture}
-        \node[fill=blue!60, draw=red, ultra thick] (n1) at (0, 5) {1};
-        \node[draw=red, ultra thick] (n2) at (1, 4) {2};
-        \node[draw=red, ultra thick] (n3) at (0, 3) {3};
-        \node[draw=green, ultra thick] (n4) at (1, 2) {4};
-        \node[draw=red, ultra thick] (n5) at (2, 3) {5};
-        \node[draw=red, ultra thick] (n6) at (1, 1) {6};
-        \node[draw=red, ultra thick] (n7) at (-1, 1) {7};
-        \node[draw=red, ultra thick] (n8) at (-1, 2) {8};
-        \node[draw=red, ultra thick] (n9) at (-1, 4) {9};
+        \node[rectangle, double] (n1) at (0, 5) {1};
+        \node[fill=red!40, draw=red, ultra thick] (n2) at (1, 4) {2};
+        \node[] (n3) at (0, 3) {3};
+        \node[] (n4) at (1, 2) {4};
+        \node[] (n5) at (2, 3) {5};
+        \node[] (n6) at (1, 1) {6};
+        \node[] (n7) at (-1, 1) {7};
+        \node[] (n8) at (-1, 2) {8};
+        \node[fill=blue!60, draw=green, ultra thick] (n9) at (-1, 4) {9};
 
         \foreach \from/\to in {
           n1/n2, n1/n9,
@@ -777,21 +777,93 @@ Le premier appel se fait avec ses argument. \texttt{SUBG} n'étant pas vide, nou
       \caption{Deuxième appel}
       \label{subfig:call2}
     \end{subfigure}
+  \begin{subfigure}[b]{0.33\textwidth}
+      \begin{tikzpicture}
+        \node[rectangle, double] (n1) at (0, 5) {1};
+        \node[fill=blue!60, draw=green, ultra thick] (n2) at (1, 4) {2};
+        \node[] (n3) at (0, 3) {3};
+        \node[] (n4) at (1, 2) {4};
+        \node[] (n5) at (2, 3) {5};
+        \node[] (n6) at (1, 1) {6};
+        \node[] (n7) at (-1, 1) {7};
+        \node[] (n8) at (-1, 2) {8};
+        \node[rectangle, double] (n9) at (-1, 4) {9};
+
+        \foreach \from/\to in {
+          n1/n2, n1/n9,
+          n2/n9, n2/n3,
+          n3/n9, n3/n4, n3/n8,
+          n4/n5, n4/n6, n4/n7, n4/n8,
+          n6/n7, n6/n8,
+          n7/n8}
+        \draw (\from) -- (\to);
+      \end{tikzpicture}
+      \caption{Troisième appel}
+      \label{subfig:call3}
+    \end{subfigure}
+  \begin{subfigure}[b]{0.33\textwidth}
+      \begin{tikzpicture}
+        \node[rectangle, double] (n1) at (0, 5) {1};
+        \node[rectangle, double] (n2) at (1, 4) {2};
+        \node[] (n3) at (0, 3) {3};
+        \node[] (n4) at (1, 2) {4};
+        \node[] (n5) at (2, 3) {5};
+        \node[] (n6) at (1, 1) {6};
+        \node[] (n7) at (-1, 1) {7};
+        \node[] (n8) at (-1, 2) {8};
+        \node[rectangle, double] (n9) at (-1, 4) {9};
+
+        \foreach \from/\to in {
+          n1/n2, n1/n9,
+          n2/n9, n2/n3,
+          n3/n9, n3/n4, n3/n8,
+          n4/n5, n4/n6, n4/n7, n4/n8,
+          n6/n7, n6/n8,
+          n7/n8}
+        \draw (\from) -- (\to);
+      \end{tikzpicture}
+      \caption{Quatrième appel}
+      \label{subfig:call4}
+    \end{subfigure}
+  \begin{subfigure}[b]{0.33\textwidth}
+      \begin{tikzpicture}
+        \node[fill=red!40, draw=green, ultra thick] (n1) at (0, 5) {1};
+        \node[rectangle] (n2) at (1, 4) {2};
+        \node[fill=blue!60, draw=red, ultra thick] (n3) at (0, 3) {3};
+        \node[] (n4) at (1, 2) {4};
+        \node[] (n5) at (2, 3) {5};
+        \node[] (n6) at (1, 1) {6};
+        \node[] (n7) at (-1, 1) {7};
+        \node[] (n8) at (-1, 2) {8};
+        \node[fill=red!40, draw=red, ultra thick] (n9) at (-1, 4) {9};
+
+        \foreach \from/\to in {
+          n1/n2, n1/n9,
+          n2/n9, n2/n3,
+          n3/n9, n3/n4, n3/n8,
+          n4/n5, n4/n6, n4/n7, n4/n8,
+          n6/n7, n6/n8,
+          n7/n8}
+        \draw (\from) -- (\to);
+      \end{tikzpicture}
+      \caption{Cinquième appel}
+      \label{subfig:call5}
+    \end{subfigure}
       \caption{}
       \label{fig:ex1}
 \end{figure}
 
 Conformément à la ligne 6 de CLIQUES, nous allons itérer sur tous les noeuds de \(CAND - N(4)\), c'est-à-dire sur \(\{1, 2, 9, 4\}\).
-Prenons \emph{p} = 1 (en bleu sur l'exemple en Figure \ref{fig:ex1}).
+Prenons \emph{p} = 1.
 Nous ajoutons \emph{p} à la clique courante \emph{Q} et nous allons faire un nouvel appel récursif mais avec :
 \begin{itemize}
   \item \texttt{SUBG} = \texttt{CAND} = \(SUBG \cap N(1) = CAND \cap N(1) = \{2, 9\}\)
   \item \texttt{Q} = \(\{1\}\)
 \end{itemize}
 
-Pour ce deuxième appel, \texttt{SUBG} n'est toujours pas vide. Nous choisissons donc un nouveau pivot dans \texttt{SUBG}. Ici \emph{u} = 9. Nous allons itérer dans \(CAND - N(9) = \{9\}\), nous choisissons \emph{p} = 9 (seule possibilité). Nous calculons les nouveaux ensemble \texttt{SUBG} et \texttt{CAND} et ajoutons 9 à \texttt{Q}.
+Pour ce deuxième appel (voir \ref{subfig:call2}), \texttt{SUBG} n'est toujours pas vide. Nous choisissons donc un nouveau pivot dans \texttt{SUBG}. Ici \emph{u} = 9. Nous allons itérer dans \(CAND - N(9) = \{9\}\), nous choisissons \emph{p} = 9 (seule possibilité). Nous calculons les nouveaux ensemble \texttt{SUBG} et \texttt{CAND} et ajoutons 9 à \texttt{Q}.
 
-Un troisième appel est effectué avec comme arguments :
+Un troisième appel est effectué avec comme arguments (voir \ref{subfig:call3}) :
 \begin{itemize}
   \item \texttt{SUBG} = \texttt{CAND} = \(\{2\}\) (2 étant le seul voisin restant de 9)
   \item \texttt{Q} = \(\{1, 9\}\)
@@ -802,14 +874,22 @@ Ici le choix du pivot est évident étant donné que nous n'avons qu'un seul can
 Nous choissisons donc \emph{p} = 2 et l'ajoutons à la clique courante \texttt{Q}.
 Il est facile de voir que le prochain appel récursif aura pour argument des ensemble vide (excepté \texttt{Q}) dû aux lignes 10 et 11 de CLIQUES.
 
-Nous faisons donc le derniers appele de l'exploration de cette branche. Nous tombons dans le cas où \texttt{SUBG} est vide et nous avons donc trouvé une clique maximale : \(Q = \{1, 9, 2\}\)
+Nous faisons donc le derniers appel (\ref{subfig:call4}) de l'exploration de cette branche. Nous tombons dans le cas où \texttt{SUBG} est vide et nous avons donc trouvé une clique maximale : \(Q = \{1, 9, 2\}\)
 
 Enfin nous arrivons dans le backtracking et remontons dans l'arbre d'appel (lignes 13 et 14 de CLIQUES). Pour ce faire nous retirons le noeuds \emph{p} mis dans la clique courante mais également de l'ensemble des candidats afin d'éviter de revenir sur un noeuds dont nous avons déjà trouver la clique maximale qui le contient.
 
-Dans notre exemple nous retirons donc le noeuds 2, à ce stade il n'y a pas d'autres noeuds à explorer dans \(CAND - N(u)\) (vide). Nous remontons donc d'un appel et retirons 9 de \texttt{CAND} et \texttt{Q} (Nous obtenons donc \texttt{CAND} = \(\{2\}\) et \texttt{Q} = \(\{1\}\)). Pour rappel il s'agit de l'appel ou 9 est notre pivot \emph{u}. Certe il reste le noeud 2 dans les candidats mais les candidats sont choisis parmi \(CAND - N(u)\).
-L'algorithme continue son backtracking. Nous arrivons dans le premier appel où \emph{u} = 4 et \emph{p} = 1. Nous retirons 1 de \texttt{CAND} ce qui nous donne tous les noeuds sauf 1. Nous continuons donc d'itérer sur \(CAND - N(u)\).
+Dans notre exemple nous retirons donc le noeuds 2, à ce stade il n'y a pas d'autres noeuds à explorer dans \(CAND - N(u)\) (vide). Nous remontons donc d'un appel et retirons 9 de \texttt{CAND} et \texttt{Q} (Nous obtenons donc \texttt{CAND} = \(\{2\}\) et \texttt{Q} = \(\{1\}\)). Pour rappel il s'agit de l'appel ou 9 est notre pivot \emph{u}. Certe il reste le noeud 2 dans les candidats mais \(CAND - N(u)\) est vide.
+L'algorithme continue son backtracking. Nous arrivons dans le premier appel où \emph{u} = 4 et \emph{p} = 1. Nous retirons 1 de \texttt{CAND} ce qui nous donne tous les noeuds sauf 1. Nous continuons donc d'itérer sur \(CAND - N(u)\), c'est-à-dire sur \(\{2, 4, 9\}\). Nous sommes toujours dans la boucle de la ligne 6 de CLIQUES. Un nouveau noeud \emph{p} est désigné : 2. Il est ajouté à la clique courante \emph{Q} (qui était alors vide).
 
+Nous reprenons donc l'exploration en profondeur comme précédemment (\ref{subfig:call5}). Il est important de constater qu'ici, \texttt{SUBG} et \texttt{CAND} sont différent pour l'appel suivant. En effet, le noeud 1 ayant été retiré de \texttt{CAND} (c.f. ligne 13 de CLIQUES), nous avons :
 
+\begin{itemize}
+  \item \texttt{SUBG} = \(\{1, 3, 9\}\)
+  \item \texttt{CAND} = \(\{3, 9\}\)
+\end{itemize}
+Le noeud pivot \emph{u} pris ici est 1. Vu que parmi les noeuds de \texttt{SUBG} (1, 3 et 9) il est le seul qui dont \(|CAND \cap N(u)|\) est strictement supérieur à 1 (en effet ici cela laisse un ensemble de cardinalité 2 contrairement à 3 et 9 qui laissent un ensemble de cardinalité 1).
+
+Et comme précédemment nous itérons sur les noeuds dans \(CAND - N(u)\), ici seul 3 réponds au critère. L'algorithme continue ainsi de suite jusqu'à avoir explorer toutes les possiblités.
 
 
 \section{Implémentation}%
