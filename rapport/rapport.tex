@@ -158,31 +158,31 @@
 \section{Introduction}
 
 
-Dans ce rapport nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude se base principalement sur l'article d'Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''} \cite{CONTE20221}.
+Dans ce rapport, nous allons étudier plusieurs algorithmes d'énumeration de cliques maximales dans un graphe simple non orienté. Cette étude se base principalement sur l'article d'Alessio Conte et Etsuji Tomita  \textit{''On the overall and delay complexity of the CLIQUES and Bron-Kerbosch algorithms''} \cite{CONTE20221}.
 
-L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenus par M.Conte et M.Tomita. Également, ces algorithmes seront implémentés en Python et en Rust afin de valider le gain de temps de Rust par rapport à Python.
+L'objectif de ce projet est d'implémenter les algorithmes présentés et de confirmer les résultats obtenus par M.Conte et M.Tomita. Ainsi, ces algorithmes seront implémentés en Python et en Rust afin de valider le gain de temps de Rust par rapport à Python.
 
-Nous commencerons par un rappel des notions et notations utilisées ainsi que des définitions utiles à la compréhension de ce rapport, suivi d'une présentation des différents algorithmes implémentés et pour terminer par la comparaison d'efficacité en temps et en langage de ceux-ci.
+Nous commencerons par un rappel des notions et notations utilisées ainsi que des définitions utiles à la compréhension de ce rapport, nous poursuivrons avec présentation des différents algorithmes implémentés et enfin nous terminerons par la comparaison d'efficacité en temps et en langage de ceux-ci.
 
 
 \section{État de l'art}%
 \label{sec:etat}
 Les premiers travaux sur ce sujet remontent aux années 1970 avec l'algorithme de Bron-Kerbosch\cite{bron1973algorithm}, qui demeure l'une des méthodes les plus utilisées. Cet algorithme est basé sur une approche récursive en profondeur (\textit{depth-first search}) et fonctionne sans générer de doublons, ce qui en fait une solution efficace malgré sa complexité exponentielle dans le pire des cas .
 
-En 1977, Tsukiyama et al. ont proposé un algorithme \emph{output-sensitive} pour énumérer les cliques maximales \cite{tsukiyama1977new}. Cet algorithme garantit que le temps entre la sortie de deux cliques consécutives est borné par une fonction polynomiale de la taille de l'entrée. Un autre développement significatif est l'algorithme CLIQUES, introduit par Tomita et al., qui utilise une stratégie de recherche en profondeur et produit les cliques maximales sous forme d'arbre. Cet algorithme atteint une complexité temporelle optimale dans le pire des cas de \(O(3^{n/3})\) et est l'algorithme que nous allons comparé à celui de Bron et Kerbosch.
+En 1977, Tsukiyama et al. ont proposé un algorithme \emph{output-sensitive} pour énumérer les cliques maximales \cite{tsukiyama1977new}. Cet algorithme garantit que le temps entre la sortie de deux cliques consécutives est borné par une fonction polynomiale de la taille de l'entrée. Un autre développement significatif est l'algorithme CLIQUES, introduit par Tomita et al., qui utilise une stratégie de recherche en profondeur et produit les cliques maximales sous forme d'arbre. Cet algorithme atteint une complexité temporelle optimale dans le pire des cas de \(O(3^{n/3})\) et c'est cet algorithme que nous allons comparer à celui de Bron et Kerbosch.
 
 La technique de recherche inversée introduite par Avis et Fukuda a été adaptée pour l'énumération des cliques maximales \cite{avis1996reverse}. Des améliorations successives par des chercheurs comme Chiba et Nishizeki \cite{chiba1985arboricity}, et Makino et Uno \cite{makino2004new}, ont permis d'améliorer l'efficacité et la scalabilité, notamment dans les graphes clairsemés, dits \emph{sparse graph}. Des travaux récents de Conte et collègues ont fourni de nouvelles perspectives sur la complexité globale et la complexité de délai des algorithmes d'énumération des cliques, démontrant que les algorithmes basés sur CLIQUES et Bron-Kerbosch sont performants en pratique sur des graphes du monde réel \cite{conte2022overall}.
 
 \section{Les cliques, cas d'utilisations}%
 \label{sec:usecase}
 
-Étudier le problème d'énumération de cliques maximales et développer des algorithmes efficaces pour ce faire présente un intérêt considérable en raison de la multitude de systèmes qui peuvent être modélisés par des graphes. Dans de nombreux contextes, des amats de sommets tous connectés entre eux, connus sous le nom de cliques, apparaissent naturellement. Ces cliques peuvent représenter des compartiments indépendants ou des unités logiques au sein du système étudié.
+Étudier le problème d'énumération de cliques maximales et développer des algorithmes efficaces pour ce faire présente un intérêt considérable en raison de la multitude de systèmes qui peuvent être modélisés par des graphes. Dans de nombreux contextes, des amas de sommets tous connectés entre eux, connus sous le nom de cliques, apparaissent naturellement. Ces cliques peuvent représenter des compartiments indépendants ou des unités logiques au sein du système étudié.
 
 Les applications des cliques sont variées et couvrent de nombreux domaines. En biologie, par exemple, les cliques peuvent représenter des complexes protéiques où chaque protéine interagit avec toutes les autres du complexe, fournissant ainsi des informations cruciales pour comprendre les réseaux de signalisation cellulaire et les interactions protéine-protéine \cite{PAVLOU2016305}.
 
 Dans le domaine de la sociologie, les cliques sont utilisées pour identifier des groupes d'individus ayant des interactions fréquentes et intenses, ce qui peut aider à analyser les structures sociales et les dynamiques de groupe \cite{SCOTT201129}.
 
-En informatique, les cliques peuvent être utilisées dans l'optimisation des requêtes de bases de données et dans la détection de communautés au sein des réseaux de communication \cite{CORMEN200932}.
+En informatique, les cliques servent dans l'optimisation des requêtes de bases de données et dans la détection de communautés au sein des réseaux de communication \cite{CORMEN200932}.
 
 En résumé, la capacité à identifier efficacement les cliques dans un graphe a des applications concrètes, allant de la compréhension des systèmes biologiques complexes à l'analyse des structures sociales en passant par l'optimisation des systèmes informatiques. Ces exemples illustrent l'importance pratique des cliques dans la recherche et les applications réelles\cite{FORTUNATO201075}.
 
@@ -191,14 +191,14 @@ En résumé, la capacité à identifier efficacement les cliques dans un graphe 
 
 \subsection{Notions de bases}
 
-Dans ce rapport, nous allons définir un graphe simple non orienté \emph{G=V, E} comme étant un ensemble de nœuds \emph{V} reliés par des arêtes. Nous notons l'ensemble des arêtes comme étant l'ensemble \emph{E}. Une arêtes est définie comme un tuple $ (v, v') $ où $ v $ et $ v' $ sont les 2 nœuds réliés par l'arête. Les nœuds peuvent être étiquetés pour plus de lisibilité.
+Dans ce rapport, nous allons définir un graphe simple non orienté \emph{G=V, E} comme étant un ensemble de noeuds \emph{V} reliés par des arêtes. Nous notons l'ensemble des arêtes comme étant l'ensemble \emph{E}. Une arêtes est définie comme un tuple $ (v, v') $ où $ v $ et $ v' $ sont les 2 noeuds réliés par l'arête. Les noeuds peuvent être étiquetés pour plus de lisibilité.
 
 
-Nous considérons des graphes simples non dirigés, c'est à dire qu'il y a au plus une et une seule arête entre deux nœuds et aucune arête allant d'un nœud à lui-même. Les arêtes que nous considérons n'ont pas de sens particulier. Ainsi, l'arête joignant les nœuds \emph{x} et \emph{y} est la même que celle joignant \emph{y} à \emph{x} et sera dénotée par l'existence du tuple $(x, y) \in E$.
+Nous considérons des graphes simples non dirigés, c'est à dire qu'il y a au plus une et une seule arête entre deux noeuds et aucune arête allant d'un noeud à lui-même. Les arêtes que nous considérons n'ont pas de sens particulier. Ainsi, l'arête joignant les noeuds \emph{x} et \emph{y} est la même que celle joignant \emph{y} à \emph{x} et sera dénotée par l'existence du tuple $(x, y) \in E$.
 
 L'ordre \emph{n} d'un graphe est défini comme étant $ |V| $ et sa taille \emph{m} comme $ |E| $.
 
-Dans la Figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \textit{a} dont l'ensemble des noeuds \(V\) est l'ensemble \(\{1, 2, 3\}\). L'ensemle des arretes \(E\) quant a lui est l'ensemble \(\{(1,2), (2,3)\}\). Le graphe \textit{a} est un graphe d'ordre 3 et de taille 2. De la meme facon, pour le graphe \textit{b} on a \(V = \{1, 2, 3, 4, 5\}\) et \(E = \{(1,2), (2,3), (4,5)\}\). \textit{b} est d'ordre 5 et de taille 3.
+Dans la Figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \textit{a} dont l'ensemble des noeuds \(V\) est l'ensemble \(\{1, 2, 3\}\). L'ensemle des arêtes \(E\) quant a lui est l'ensemble \(\{(1,2), (2,3)\}\). Le graphe \textit{a} est un graphe d'ordre 3 et de taille 2. De la même facon, pour le graphe \textit{b} on a \(V = \{1, 2, 3, 4, 5\}\) et \(E = \{(1,2), (2,3), (4,5)\}\). \textit{b} est d'ordre 5 et de taille 3.
 
 \begin{figure}[h]
   \begin{subfigure}[b]{0.50\textwidth}
@@ -237,17 +237,17 @@ Dans la Figure \ref{fig:x exemple1}, nous pouvons observer un premier graphe \te
   \label{fig:x exemple1}
 \end{figure}
 
-Soit \emph{G=V, E} Nous définirons les voisins d'un noeud \emph{v} comme l'ensemble des noeuds directement relié à \emph{v} par une arrete. Nous noterons l'ensemble des voisins de \emph{v} comme \emph{N(v)} définit formellement comme suit:
+Soit \emph{G=V, E} Nous définirons les voisins d'un noeud \emph{v} comme l'ensemble des noeuds directement relié à \emph{v} par une arête. Nous noterons l'ensemble des voisins de \emph{v} comme \emph{N(v)} définit formellement comme suit:
 \begin{equation}
 N(v) = { v' | (v, v') \in E }
 \end{equation}
 Prenons le noeud \emph{2} du graphe \emph{b} de la Figure \ref{fig:x exemple1}. L'ensemble des voisins de ce noeud est l'ensemble \(N = {1, 3}\).
 
 
-Soit \emph{G = V, E}, un sous-graphe induit de \emph{G}, noté \(SG = W, E(W)\), est un graphe construit à partir d'un sous-ensemble de noeud de \emph{V} où $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG=W, E(W)}..
-Notez que dans un sous-graphe induit, nous ne conservons pas les arrêtes dont une extrémité ne se trouve pas dans \emph{W}.
+Soit \emph{G = V, E}, un sous-graphe induit de \emph{G}, noté \(SG = W, E(W)\), est un graphe construit à partir d'un sous-ensemble de noeud de \emph{V} où $ W \subseteq V $ et $ E(W) = E \cap (W \times W) $. Nous appellons \emph{SG=W, E(W)}.
+Notons que dans un sous-graphe induit, nous ne conservons pas les arêtes dont une extrémité ne se trouve pas dans \emph{W}.
 
-Par exemple, en prenant le graphe \textit{b} de la Figure \ref{fig:x exemple1}, le sous-graphe \(SG=\{1, 2, 5\}, E(\{1, 2, 5\})\) est un sous-graphe valide de \textit{b} contenant uniquement les noeuds 1, 2 et 5 (\(W\)) et l'arrete \((1,2)\) (\(E(W)\)).
+Par exemple, en prenant le graphe \textit{b} de la Figure \ref{fig:x exemple1}, le sous-graphe \(SG=\{1, 2, 5\}, E(\{1, 2, 5\})\) est un sous-graphe valide de \textit{b} contenant uniquement les noeuds 1, 2 et 5 (\(W\)) et l'arête \((1,2)\) (\(E(W)\)).
 
 \begin{figure}
   \centering
@@ -304,9 +304,9 @@ C'est-à-dire :
 
 Il est important de remarquer qu'avec cette définition d'une clique, un noeud seul n'est pas une clique.
 
-La \textit{taille} d'une clique est définie par sa cardinalité, c'est à dire que la taille d'une clique \emph{C} est \(|C|\). Comme exemple, prenons la clique en rouge dans le graphe de la Figure \ref{fig:x clique1} : nous avons que \(C = \{1,2,3,4\}\) et \(|C| = 4\). C'est donc une clique de taille 4.
+La \textit{taille} d'une clique est définie par sa cardinalité, c'est à dire que la taille d'une clique \emph{C} est \(|C|\). Comme exemple, prenons la clique en rouge dans le graphe de la Figure \ref{fig:x clique1} : nous avons \(C = \{1,2,3,4\}\) et \(|C| = 4\). C'est donc une clique de taille 4.
 
-Nous dirons qu'une clique est \textit{maximale} s'il est impossible de rajouter un nœuds de \emph{G} dans la clique tel que la propriété \eqref{clique} reste respectée.
+Nous dirons qu'une clique est \textit{maximale} s'il est impossible de rajouter un noeuds de \emph{G} dans la clique telle que la propriété \eqref{clique} reste respectée.
 
 Dans la Figure \ref{fig:x clique1}, la clique \textit{bleue} composée des noeuds 1, 2, 3 et 4 est egalement maximale. Par contre, la clique composée des noeuds 3 et 5 ne l'est pas car il est possible d'y rajouter le noeud 4.
 
@@ -335,7 +335,7 @@ Enfin, nous définirons une clique \textit{maximum} comme étant une clique de t
 \end{center}
 \end{figure}
 
-Regardons la Figure \ref{fig:x clique2}. $ \{3, 4, 5\}$ (en rouge) est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum). Par contre, la clique composée des noéuds 1 et 2, bien qu'étant maximale (en effet, aucun autre noeud du graphe ne peut être ajouté à cette clique) n'est pas maximum car elle ne contient que 2 noeuds là où la clique précédemment mentionnée (celle en rouge sur la figure \ref{fig:x clique2}) est plus grande vu qu'elle contient 3 noeuds.
+Regardons la Figure \ref{fig:x clique2}. $ \{3, 4, 5\}$ (en rouge) est une clique maximale et maximum car il n'est pas possible de rajouter un noeud à cette clique tel qu'il sera voisin de 3, 4 et 5 (maximale) et il n'existe pas de clique de plus grande taille (maximum). Par contre, la clique composée des noeuds 1 et 2, bien qu'étant maximale (en effet, aucun autre noeud du graphe ne peut être ajouté à cette clique) n'est pas maximum car elle ne contient que 2 noeuds là où la clique précédemment mentionnée (celle en rouge sur la figure \ref{fig:x clique2}) en contient 3, ce qui la rend plus grande.
 
 \subsection{Quelques types de graphes}%
 \label{subsec:graphes}
@@ -343,7 +343,7 @@ Regardons la Figure \ref{fig:x clique2}. $ \{3, 4, 5\}$ (en rouge) est une cliqu
 \subsubsection*{Graphe complet}
 \label{subsubsec:complet}
 
-Un graphe complet d'ordre \emph{n} est un graphe avec le maximum d'arrêtes possibles, c'est à dire \(\frac{n(n-1)}{2}\) arrêtes. Dans un graphe complet, chaque noeud est directement connectés à chaque noeuds, autrement dit, le graphe \(G = V, E\) est complet si et seulement si on a :
+Un graphe complet d'ordre \emph{n} est un graphe avec le maximum d'arêtes possibles, c'est à dire \(\frac{n(n-1)}{2}\) arêtes. Dans un graphe complet, chaque noeud est directement connecté à chaque noeud, autrement dit, le graphe \(G = V, E\) est complet si et seulement si on a :
 \begin{equation}
 \forall (v,w) \in V \ | \ (v, w) \in E \ \text{avec} \ v \neq w
 \end{equation}
@@ -378,8 +378,8 @@ Il est évident qu'un graphe complet contient une et une seule clique maximale (
 \subsubsection*{Graphe vide}
 \label{subsubsec:vide}
 
-Un graphe vide d'ordre \emph{n} est un graphe ne possédant aucune arrête. C'est-à-dire dont la taille \emph{m} est égale à 0. Un exemple de graphe vide d'ordre 4 est donné ci-dessous (Figure \ref{fig:vide}).
-Naturellement, un graphe vide d'ordre \emph{n} possède \emph{n} cliques maximales de tailles 1 et elles sont toutes maximum.
+Un graphe vide d'ordre \emph{n} est un graphe ne possédant aucune arête. C'est-à-dire dont la taille \emph{m} est égale à 0. Un exemple de graphe vide d'ordre 4 est donné ci-dessous (Figure \ref{fig:vide}).
+Naturellement, un graphe vide d'ordre \emph{n} possède \emph{n} cliques maximales de taille 1 et elles sont toutes maximum.
 
 \begin{figure}[h!]
   \centering
@@ -442,7 +442,7 @@ Dans cet exemple, les sommets \{1, 2, 3\}, \{4, 5, 6\}, et \{7, 8, 9\} forment l
 
 Les graphes de Moon-Moser sont un sous-ensemble particulier de graphes de Turán. Un graphe de Moon-Moser est un graphe \( T(n, \lceil n/3 \rceil) \).
 
-Considérons un graphe de Moon-Moser avec 6 sommets, c'est-à-dire \( T(6, 2) \). Nous avons deux sous-ensembles de trois sommets chacun, et chaque sommet est connecté à tous les sommets des autres sous-ensembles.
+Considérons un graphe de Moon-Moser avec 6 sommets, c'est-à-dire \( T(6, 2) \). Nous avons deux sous-ensembles de trois sommets chacun et chaque sommet est connecté à tous les sommets des autres sous-ensembles.
 
 \begin{figure}[h!]
     \centering
@@ -511,15 +511,15 @@ Prenons par exemple le graphe en Figure \ref{fig:x clique3}. Nous sommes donc in
         \item \(\{5, 4, 3\}\)
         \item \(\{4, 5, 7, 6\}\)
 \end{itemize}
-Ces trois cliques sont bien les seules et uniques cliques maximales de ce graphe. De plus, la clique maximum est celles contenant les noeuds 4, 5, 6 et 7.
-Notez comme la clique \({4, 5, 6}\) n'est pas reprise, en effet celle-ci n'est pas maximale car elle peut être agrandie avec le noeud 7.
+Ces trois cliques sont bien les seules et uniques cliques maximales de ce graphe. De plus, la clique maximum est celle contenant les noeuds 4, 5, 6 et 7.
+Notez comme la clique \({4, 5, 6}\) n'est pas reprise. En effet celle-ci n'est pas maximale car elle peut être agrandie avec le noeud 7.
 
 \subsection{Complexité du problème}
-L'énumération des cliques maximales dans un graphe simple est un problème fondamental en théorie des graphes et en informatique théorique. Ce problème consiste à identifier toutes les cliques maximales d'un graphe, c'est-à-dire les sous-graphes complets qui ne peuvent être étendus par l'ajout d'un sommet adjacent. Bien que ce problème ne soit pas un problème \(\mathcal{N}\mathcal{P}\text{-Difficile}\), il reste un problème qui pose des défis important et qui ne peut actuellement ètre résolu en temps polynomial.
+L'énumération des cliques maximales dans un graphe simple est un problème fondamental en théorie des graphes et en informatique théorique. Ce problème consiste à identifier toutes les cliques maximales d'un graphe, c'est-à-dire les sous-graphes complets qui ne peuvent être étendus par l'ajout d'un sommet adjacent. Bien que ce problème ne soit pas un problème \(\mathcal{N}\mathcal{P}\text{-Difficile}\), il reste un problème qui pose des défis importants et qui ne peut actuellement ètre résolu en temps polynomial.
 
-En effet, les meilleurs algorithmes que nous connaissons permettent d'énumérer toutes les cliques maximales d'un graphe sont polynomial en le nombre de cliques maximales. Or, nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximise le nombre de cliques maximales sont nommés graphe de Moon-Moser (voir section \ref{subsubsec:mm}).
+En effet, les meilleurs algorithmes que nous connaissons permettant d'énumérer toutes les cliques maximales d'un graphe sont polynomial en le nombre de cliques maximales. Or, le nombre de cliques maximales dans un graphe peut être exponentiel par rapport au nombre de sommets du graphe. En effet, Moon et Moser ont démontré qu'un graphe simple à \(n\) noeuds a au plus \( 3^{n/3} \) cliques maximales\cite{MR0182577}. D'ailleurs, les graphes qui maximisent le nombre de cliques maximales sont nommés graphe de Moon-Moser (voir section \ref{subsubsec:mm}).
 
-Nous allons ici présenter un algorithme (et des variantes) qui atteint une complexité dans le pire des cas de \(O(3^{3/n})\)\cite{CONTE20221}, correspondant ainsi au nombre de cliques qu'il faut énumérer (dans le pire des cas). Même si ce résultat semble décevant, il signifie surtout que nous pouvons énumérer toutes les cliques en temps polynomial par rapport au nombre de cliques dans le graphe. Cela implique que le délai pour trouver la prochaine clique est également polynomial. En pratique, cet algorithme et ces variantes se comportent plutôt bien en terme de temps.
+Nous allons ici présenter un algorithme (et des variantes) qui atteint une complexité dans le pire des cas de \(O(3^{3/n})\)\cite{CONTE20221}, correspondant ainsi au nombre de cliques qu'il faut énumérer. Même si ce résultat semble décevant, il signifie surtout que nous pouvons énumérer toutes les cliques en temps polynomial par rapport au nombre de cliques dans le graphe. Cela implique que le délai pour trouver la prochaine clique est également polynomial. En pratique, cet algorithme et ces variantes se comportent plutôt bien en terme de temps.
 
 \section{Idée générale}%
 \label{sec:idee}
@@ -531,9 +531,9 @@ Dans cette section nous allons aborder et expliquer l'idée générale commune �
 
 Rappellons que l'objectif de ces algorithmes est d'énumérer toutes les cliques maximales dans un graphe \emph{G = (V, E)}.
 
-L'idée est de passer par une recherche en profondeur. L'algorithme commence avec un ensemble de tous les sommets du graphe et explore récursivement toutes les combinaisons possibles de sommets pour former des cliques en appliquant des techniques d'élagages afin de ne pas considérer de duplicata.
+L'idée est de passer par une recherche en profondeur. L'algorithme commence avec un ensemble de tous les sommets du graphe et explore récursivement toutes les combinaisons possibles de sommets pour former des cliques en appliquant des techniques d'élagage afin de ne pas considérer de duplicata.
 
-Pour ce faire, notre procédure défini trois ensembles de sommets :
+Pour ce faire, notre procédure définit trois ensembles de sommets :
 \begin{itemize}
   \item \emph{Q}, la clique en train d'être énumérée
   \item \texttt{SUBG}, qui représente les sommets restants à explorer (notez que \texttt{SUBG} est un sous-graphe induit de \emph{G}).
@@ -547,7 +547,7 @@ Lorsque \texttt{SUBG} est vide, cela veut dire que nous avons trouvé une clique
 \label{subsec:pivotage}
 
 
-Afin d'optimiser la recherche en profondeur nous choisissons, avant de choisir un sommet \emph{p}, un noeud pivot \emph{u} qui permettra d'élaguer la recherche. Car chaque clique maximale \emph{Q'} dans \texttt{SUBG} \(\cap\) \emph{N(u)} n'est en réalité pas maximale dans \texttt{SUBG} vu que \emph{Q'} \(\cup \{u\}\) est une clique plus grande dans \texttt{SUBG}. Ainsi nous pouvons couper l'exploration de tous les sommets dans \emph{N(u)}.
+Afin d'optimiser la recherche en profondeur nous sélectionnons, avant de choisir un sommet \emph{p}, un noeud pivot \emph{u} qui permettra d'élaguer la recherche. Car chaque clique maximale \emph{Q'} dans \texttt{SUBG} \(\cap\) \emph{N(u)} n'est en réalité pas maximale dans \texttt{SUBG} vu que \emph{Q'} \(\cup \{u\}\) est une clique plus grande dans \texttt{SUBG}. Ainsi nous pouvons couper l'exploration de tous les sommets dans \emph{N(u)}.
 
 
 La stratégie de pivot est une technique utilisée pour réduire le nombre de récursions nécessaires en sélectionnant un sommet pivot et en explorant ses voisins. Voici comment cette stratégie fonctionne :
@@ -624,7 +624,7 @@ L'utilisation d'un pivot est cruciale car elle permet de réduire le nombre d'ap
 \subsection{Pseudo-code commun}%
 \label{subsec:algo}
 
-Ci-dessous ce trouve le pseudo code générique des différents algorithmes que nous présentons. Il s'agit là de leur squelette commun. La partie sur le choix du pivot est volontairement laissée floue et sera précisée dans les sous-sections respectives de chacun des algorithmes.
+Ci-dessous ce trouve le pseudo-code générique des différents algorithmes que nous présentons. Il s'agit là de leur squelette commun. La partie sur le choix du pivot est volontairement laissée floue et sera précisée dans les sous-sections respectives de chacun des algorithmes.
 
 \begin{algorithm}[H]
   \textbf{Input}: un graphe $G = (V,E)$
@@ -656,15 +656,15 @@ Ci-dessous ce trouve le pseudo code générique des différents algorithmes que 
 
 La condition en ligne 2 permet de savoir si nous avons trouvé une clique maximale ou non, en effet, si \emph{SUBG} est vide, alors nous sommes arrivés au bout de notre exploration en profondeur et donc la clique \emph{Q} est maximale, il ne reste plus de noeud candidat qui pourrait étendre celle-ci.
 
-Dans le cas contraire, nous choississons un pivot \emph{u} (ligne 5) en fonction d'une stratégie (définit pour chaque algorithmes, ici abstraite). Ensuite tant que nous avons des candidats, nous allons prendre un noeud \emph{p} qui ne fait pas partie des voisins de notre pivot \emph{u} (ligne 7) et l'ajouter à notre clique courante \emph{Q}. Ensuite, nous ajustons les ensembles \emph{SUBG} et \texttt{CAND} pour faire un appel récursif et explorer en profondeur la clique donnée par \(Q \cup \{p\}\) (lignes 10-2).
+Dans le cas contraire, nous choississons un pivot \emph{u} (ligne 5) en fonction d'une stratégie (défini pour chaque algorithme, ici abstraite). Ensuite tant que nous avons des candidats, nous allons prendre un noeud \emph{p} qui ne fait pas partie des voisins de notre pivot \emph{u} (ligne 7) et l'ajouter à notre clique courante \emph{Q}. Ensuite, nous ajustons les ensembles \emph{SUBG} et \texttt{CAND} pour faire un appel récursif et explorer en profondeur la clique donnée par \(Q \cup \{p\}\) (lignes 10-2).
 Lors du backtracking, il ne faut pas oublier de retirer \emph{p} de \texttt{CAND} et de \emph{Q} afin de pouvoir explorer d'autres candidats et possiblités.
 
-Les sections suivantes (\ref{sec:clique} et \ref{sec:bk1}) vont présenter les spécificité de chaque algorithmes. Pour rappel, ils se différencient dans le choix du noeud pivot.
+Les sections suivantes (\ref{sec:clique} et \ref{sec:bk1}) vont présenter les spécificités de chaque algorithme. Pour rappel, ils se différencient dans le choix du noeud pivot.
 
 \section{Bron-Kerbosch}%
 \label{sec:bk1}
 
-L'algorithme de Bron-Kerbosch est l'algorithme sur lequel se base l'algorithme \texttt{CLIQUE} ainsi ses variantes. Nous présenterons ici une version sans pivot, basique, de cet algorithme ainsi que deux version avec pivots.
+L'algorithme de Bron-Kerbosch est l'algorithme sur lequel se base l'algorithme \texttt{CLIQUE} ainsi ses variantes. Nous présenterons ici une version sans pivot, basique, de cet algorithme ainsi que deux versions avec pivots.
 
 \subsection{Sans pivot}%
 \label{subsec:bk}
@@ -712,7 +712,7 @@ Comme dit précédemment, la différence principale se trouve dans le choix du p
   \caption{\label{fig:cliques} Algorithme CLIQUE}
 \end{algorithm}
 
-Plus concrètement, la ligne 5 de l'algorithme, responsable du choix du pivot change pour respecter la propriété ainsi que la condition de sortie de la boucle \emph{while} en ligne 6 et le choix d'un noeud \emph{p} en ligne 7. En effet, nous allons donc explorer des candidats parmi \(\textrm{CAND} \setminus N(u)\).
+Plus concrètement, la ligne 5 de l'algorithme, responsable du choix du pivot, change pour respecter la propriété ainsi que la condition de sortie de la boucle \emph{while} en ligne 6 et le choix d'un noeud \emph{p} en ligne 7. En effet, nous allons explorer des candidats parmi \(\textrm{CAND} \setminus N(u)\).
 
 \subsection{Exemple}%
 \label{subsec:ex}
@@ -723,9 +723,9 @@ Un code couleur est établi, un noeud entouré de rouge appartient à \texttt{CA
 Nous commençons par le premier appel (voir Figure \ref{subfig:call1}):
 \begin{itemize}
   \item \texttt{SUBG} = \texttt{CAND} (en rouge sur la Figure \ref{subfig:call1}) = \(\{1,2,3,4,5,6,7,8,9\}\)
-  \item \texttt{Q} est vide
+  \item \emph{Q} est vide
 \end{itemize}
-Le premier appel se fait avec ces arguments. \texttt{SUBG} n'étant pas vide, nous allons choisir un pivot \emph{u}. Pour rappel, nous cherchons à trouver le noeud dans \texttt{SUBG} tel que l'intersection entre les voisins de ce noeuds et \texttt{CAND} est le plus grand possible. Dans notre exemple il s'agit de 4 (en vert sur la Figure \ref{subfig:call1}).
+Le premier appel se fait avec ces arguments. \texttt{SUBG} n'étant pas vide, nous allons choisir un pivot \emph{u}. Pour rappel, nous cherchons à trouver le noeud dans \texttt{SUBG} tel que l'intersection entre les voisins de ce noeud et \texttt{CAND} est le plus grand possible. Dans notre exemple il s'agit de 4 (en vert sur la Figure \ref{subfig:call1}).
 
 \begin{figure}
   \centering
@@ -858,27 +858,27 @@ Prenons \emph{p} = 1.
 Nous ajoutons \emph{p} à la clique courante \emph{Q} et nous allons faire un nouvel appel récursif mais avec :
 \begin{itemize}
   \item \texttt{SUBG} = \texttt{CAND} = \(SUBG \cap N(1) = CAND \cap N(1) = \{2, 9\}\)
-  \item \texttt{Q} = \(\{1\}\)
+  \item \emph{Q} = \(\{1\}\)
 \end{itemize}
 
-Pour ce deuxième appel (voir \ref{subfig:call2}), \texttt{SUBG} n'est toujours pas vide. Nous choisissons donc un nouveau pivot dans \texttt{SUBG}. Ici \emph{u} = 9. Nous allons itérer dans \(CAND - N(9) = \{9\}\), nous choisissons \emph{p} = 9 (seule possibilité). Nous calculons les nouveaux ensemble \texttt{SUBG} et \texttt{CAND} et ajoutons 9 à \texttt{Q}.
+Pour ce deuxième appel (voir \ref{subfig:call2}), \texttt{SUBG} n'est toujours pas vide. Nous choisissons donc un nouveau pivot dans \texttt{SUBG}. Ici \emph{u} = 9. Nous allons itérer dans \(CAND - N(9) = \{9\}\), nous choisissons \emph{p} = 9 (seule possibilité). Nous calculons les nouveaux ensemble \texttt{SUBG} et \texttt{CAND} et ajoutons 9 à \emph{Q}.
 
 Un troisième appel est effectué avec comme arguments (voir \ref{subfig:call3}) :
 \begin{itemize}
   \item \texttt{SUBG} = \texttt{CAND} = \(\{2\}\) (2 étant le seul voisin restant de 9)
-  \item \texttt{Q} = \(\{1, 9\}\)
+  \item \emph{Q} = \(\{1, 9\}\)
 \end{itemize}
 
 Ici le choix du pivot est évident étant donné que nous n'avons qu'un seul candidat. Nous prenons donc \emph{u} = 2. La suite de l'algorithme nous dit d'itérer sur les noeuds dans \texttt{CAND} dont on retire les voisins de \emph{u} (2), ce qui nous laisse que le noeud 2.
 
-Nous choissisons donc \emph{p} = 2 et l'ajoutons à la clique courante \texttt{Q}.
-Il est facile de voir que le prochain appel récursif aura pour argument des ensemble vide (excepté \texttt{Q}) dû aux lignes 10 et 11 de CLIQUES.
+Nous choissisons donc \emph{p} = 2 et l'ajoutons à la clique courante \emph{Q}.
+Il est facile de voir que le prochain appel récursif aura pour argument des ensembles vide (excepté \emph{Q}) dû aux lignes 10 et 11 de CLIQUES.
 
 Nous faisons donc le derniers appel (\ref{subfig:call4}) de l'exploration de cette branche. Nous tombons dans le cas où \texttt{SUBG} est vide et nous avons donc trouvé une clique maximale : \(Q = \{1, 9, 2\}\)
 
-Enfin nous arrivons dans le backtracking et remontons dans l'arbre d'appel (lignes 13 et 14 de CLIQUES). Pour ce faire nous retirons le noeuds \emph{p} mis dans la clique courante mais également de l'ensemble des candidats afin d'éviter de revenir sur un noeuds dont nous avons déjà trouver la clique maximale qui le contient.
+Enfin nous arrivons dans le backtracking et remontons dans l'arbre d'appel (lignes 13 et 14 de CLIQUES). Pour ce faire nous retirons le noeud \emph{p} mis dans la clique courante mais également de l'ensemble des candidats afin d'éviter de revenir sur un noeud dont nous avons déjà trouvé la clique maximale qui le contient.
 
-Dans notre exemple nous retirons donc le noeuds 2, à ce stade il n'y a pas d'autres noeuds à explorer dans \(CAND - N(u)\) (vide). Nous remontons donc d'un appel et retirons 9 de \texttt{CAND} et \texttt{Q} (Nous obtenons donc \texttt{CAND} = \(\{2\}\) et \texttt{Q} = \(\{1\}\)). Pour rappel il s'agit de l'appel ou 9 est notre pivot \emph{u}. Certe il reste le noeud 2 dans les candidats mais \(CAND - N(u)\) est vide.
+Dans notre exemple, nous retirons donc le noeud 2. À ce stade il n'y a pas d'autres noeuds à explorer dans \(CAND - N(u)\) (vide). Nous remontons donc d'un appel et retirons 9 de \texttt{CAND} et \emph{Q} (Nous obtenons donc \texttt{CAND} = \(\{2\}\) et \emph{Q} = \(\{1\}\)). Pour rappel il s'agit de l'appel où 9 est notre pivot \emph{u}. Certe il reste le noeud 2 dans les candidats mais \(CAND - N(u)\) est vide.
 L'algorithme continue son backtracking. Nous arrivons dans le premier appel où \emph{u} = 4 et \emph{p} = 1. Nous retirons 1 de \texttt{CAND} ce qui nous donne tous les noeuds sauf 1. Nous continuons donc d'itérer sur \(CAND - N(u)\), c'est-à-dire sur \(\{2, 4, 9\}\). Nous sommes toujours dans la boucle de la ligne 6 de CLIQUES. Un nouveau noeud \emph{p} est désigné : 2. Il est ajouté à la clique courante \emph{Q} (qui était alors vide).
 
 Nous reprenons donc l'exploration en profondeur comme précédemment (\ref{subfig:call5}). Il est important de constater qu'ici, \texttt{SUBG} et \texttt{CAND} sont différent pour l'appel suivant. En effet, le noeud 1 ayant été retiré de \texttt{CAND} (c.f. ligne 13 de CLIQUES), nous avons :
@@ -887,44 +887,44 @@ Nous reprenons donc l'exploration en profondeur comme précédemment (\ref{subfi
   \item \texttt{SUBG} = \(\{1, 3, 9\}\)
   \item \texttt{CAND} = \(\{3, 9\}\)
 \end{itemize}
-Le noeud pivot \emph{u} pris ici est 1. Vu que parmi les noeuds de \texttt{SUBG} (1, 3 et 9) il est le seul qui dont \(|CAND \cap N(u)|\) est strictement supérieur à 1 (en effet ici cela laisse un ensemble de cardinalité 2 contrairement à 3 et 9 qui laissent un ensemble de cardinalité 1).
+Le noeud pivot \emph{u} pris ici est 1. Vu que parmi les noeuds de \texttt{SUBG} (1, 3 et 9) il est le seul dont \(|CAND \cap N(u)|\) est strictement supérieur à 1 (en effet, ici, cela laisse un ensemble de cardinalité 2, contrairement à 3 et 9 qui laissent un ensemble de cardinalité 1).
 
-Et comme précédemment nous itérons sur les noeuds dans \(CAND - N(u)\), ici seul 3 réponds au critère. L'algorithme continue ainsi de suite jusqu'à avoir explorer toutes les possiblités.
+Et comme précédemment nous itérons sur les noeuds dans \(CAND - N(u)\), ici, seul 3 répond au critère. L'algorithme continue ainsi de suite jusqu'à avoir exploré toutes les possiblités.
 
 
 \section{Implémentation}%
 \label{sec:impl}
 
-Les algorithmes présentés précédemment ont été implémenté en \textit{Python} ainsi qu'en \textit{Rust}. Ces deux langages sont relativements différents. \textit{Python} n'est pas un langage typé et permet beaucoup de paradigme. C'est également un langage interprété et non compilé comme \emph{Rust}. Une autre différence majeur est que \emph{Python} est un langage de haut niveau contrairement à \emph{Rust} qui lui est de bas niveau, comparable au \emph{C}. En théorie, nous nous attendons à avoir de meilleur performance en \emph{Rust} qu'en \emph{Python} dû à ces raisons.
+Les algorithmes présentés précédemment ont été implémentés en \textit{Python} ainsi qu'en \textit{Rust}. Ces deux langages sont relativements différents. \textit{Python} n'est pas un langage typé et permet beaucoup de paradigmes. C'est également un langage interprété et non compilé comme \emph{Rust}. Une autre différence majeure est que \emph{Python} est un langage de haut niveau contrairement à \emph{Rust} qui lui est de bas niveau, comparable au \emph{C}. En théorie et pour ces raisons, nous nous attendons à avoir de meilleur performance en \emph{Rust} qu'en \emph{Python}.
 
-Nous aborderons dans les sections \ref{subsec:python} et \ref{subsec:rust} les différences et difficulté d'implémentation des algorithmes ainsi que des challenges spécifiques lié au \emph{Python} et \emph{Rust} respectivement.
+Nous aborderons dans les sections \ref{subsec:python} et \ref{subsec:rust} les différences et difficultés d'implémentation des algorithmes ainsi que des challenges spécifiques liés au \emph{Python} et au \emph{Rust} respectivement.
 
-Au sujet des graphes, nous avons décider d'utiliser des graphes représenté au format \texttt{g6} (Graph6\cite{g6}). Ce format permet de ne dépendre d'aucune librairie externe pour la manipulation de graphe. Ainsi, peut-importe le langage, il fut implémenter nos propres fonction pour lire et écrire des graphes dans ce format ainsi que notre propre structure de graphe.
+Au sujet des graphes, nous avons décidé d'utiliser des graphes représentés au format \texttt{g6} (Graph6\cite{g6}). Ce format permet de ne dépendre d'aucune librairie externe pour la manipulation de graphe. Ainsi, peut-importe le langage, il faudra implémenter nos propres fonctions pour lire et écrire des graphes dans ce format ainsi que notre propre structure de graphe.
 
 \subsection{Python}%
 \label{subsec:python}
 
-Comme mentionné précédemment, des fonctions utilitaires ainsi qu'une classe \emph{Graph} ont été développé afin de pouvoir manipuler des graphes. L'objet \emph{Graph} contient deux attributs :
+Comme mentionné précédemment, des fonctions utilitaires ainsi qu'une classe \emph{Graph} ont été développés afin de pouvoir manipuler des graphes. L'objet \emph{Graph} contient deux attributs :
 \begin{itemize}
   \item \emph{order} : l'ordre du graphe
   \item \emph{adj} : un dictionnaire d'adjacence
 \end{itemize}
 
-Afin de bénéficier d'un accès en \emph{O(2)} aux voisins d'un noeud donné, la liste d'adjacence est un dictionnaire, une structure de donnée de \emph{Python}. Il s'agit d'une liste de paires clé-valeurs. Dans notre cas, une clés est un entier (l'étiquette du noeud) et la valeur associée est une liste d'entier (les voisins du noeuds, celle-ci peut être vide dans le cas où le noeud ne possède aucun voisin).
-Une méthodes permettant d'ajouter des noeuds au graphe est également présente.
+Afin de bénéficier d'un accès en \emph{O(2)} aux voisins d'un noeud donné, la liste d'adjacence est un dictionnaire, une structure de donnée de \emph{Python}. Il s'agit d'une liste de paires clé-valeurs. Dans notre cas, une clé est un entier (l'étiquette du noeud) et la valeur associée est une liste d'entier (les voisins du noeud, celle-ci peut être vide dans le cas où le noeud ne possède aucun voisin).
+Une méthode permettant d'ajouter des noeuds au graphe est également présente.
 
-Les autres fonctions utilitaires sont les fonctions permettant de lire le format g6 et de le traduire dans notre classe \emph{Graph} ainsi que l'opération inverse. Afin que ces fonctions soient efficaces, elles ont été reprise de la libraire \emph{Networkx} pour \emph{Python} qui réalise le même travaille en utilisant le plein potentiel des générateurs de \emph{Python}.
+Les autres fonctions utilitaires sont les fonctions permettant de lire le format g6 et de le traduire dans notre classe \emph{Graph} ainsi que l'opération inverse. Afin que ces fonctions soient efficaces, elles ont été reprises de la libraire \emph{Networkx} pour \emph{Python} qui réalise le même travail en utilisant le plein potentiel des générateurs de \emph{Python}.
 
-Enfin les différents algorithmes ont été implémenté, chacun dans un fichier. Ceux-ci suivent le pseudo code fourni. Ils utilisent les \emph{sets} de \emph{Python} pour manipuler les ensemble de noeuds efficacement. Dans les arguments des algorithmes, deux on été ajoutés : \emph{result} et \emph{delay}. Il s'agit de deux listes, la première pour stocker la clique maximale une fois celle-ci trouvée et deuxième pour stocker le temps écoulé entre la clique maximale précédente et celle trouvée. Notez que l'impact en performace est quasi nul. En effet ajouter un élément à une liste en \emph{Python} se fait en \emph{O(1)}.
+Enfin les différents algorithmes ont été implémenté chacun dans un fichier. Ceux-ci suivent le pseudo-code fourni. Ils utilisent les \emph{sets} de \emph{Python} pour manipuler les ensembles de noeuds efficacement. Dans les arguments des algorithmes, deux ont été ajoutés : \emph{result} et \emph{delay}. Il s'agit de deux listes, la première pour stocker la clique maximale une fois celle-ci trouvée et la deuxième pour stocker le temps écoulé entre la clique maximale précédente et celle trouvée. Notons que l'impact en performace est quasi nul. En effet, ajouter un élément à une liste en \emph{Python} se fait en \emph{O(1)}.
 
-Notez que les algorithmes se ressemblent énormément étant donné qu'ils diffèrent uniquement dans le choix du pivot. Pour la version de Bron-Kerbosch sans pivot, nous itérons simplement sur la liste des candidats.
+Notons que les algorithmes se ressemblent énormément étant donné qu'ils diffèrent uniquement dans le choix du pivot. Pour la version de Bron-Kerbosch sans pivot, nous itérons simplement sur la liste des candidats.
 
 \subsection{Rust}%
 \label{subsec:rust}
 
-L'implémentation en \emph{Rust} des algorithmes fut plus laborieuse dû à une particularité du langage qu'est le principe d'\emph{owrnership}\cite{rust}. Cela implique des changements dans la façon dont fonctionne le code.
+L'implémentation en \emph{Rust} des algorithmes est plus laborieuse dû à une particularité du langage qu'est le principe d'\emph{owrnership}\cite{rust}. Cela implique des changements dans la façon dont fonctionne le code.
 
-Les Figures \ref{fig:p1} et \ref{fig:r1} illustrent la complexité de \emph{Rust} par rapport à \emph{Python}. Afin d'obtenir le même résultat, dû au fonctionnement de \emph{Rust} et à ses mécanismes de vérifications, nous devons nous assurer de la robustesse du code. Par exemple le \verb|.unwrap()| permet de récupérer la valeur de l'appel à \verb|.max_by_key(...)| qui retourne une \emph{Option} (qui pourrait être soit notre résultat, soit \emph{None}). On peut voir également les emprunts (\texttt{\&}) qui permettent d'assurer l'absence de pointeur flottant.
+Les Figures \ref{fig:p1} et \ref{fig:r1} illustrent la complexité de \emph{Rust} par rapport à \emph{Python}. Afin d'obtenir le même résultat, en raison du fonctionnement de \emph{Rust} et de ses mécanismes de vérifications, nous devons nous assurer de la robustesse du code. Par exemple le \verb|.unwrap()| permet de récupérer la valeur de l'appel à \verb|.max_by_key(...)| qui retourne une \emph{Option} (qui pourrait être soit notre résultat, soit \emph{None}). On peut voir également les emprunts (\texttt{\&}) qui permettent d'assurer l'absence de pointeur flottant.
 
 \begin{figure}[ht]
   \begin{lstlisting}[language=Python]
@@ -944,7 +944,7 @@ Les Figures \ref{fig:p1} et \ref{fig:r1} illustrent la complexité de \emph{Rust
 
 Lors de l'implémentation en \emph{Rust} (qui a eu lieu après celle en \emph{Python}), l'objectif a été de rester au plus proche de ce qui était fait en \emph{Python} afin de comparer des implémentations qui \og \textit{font les mêmes choses} \fg{} et ainsi pouvoir constater les différences de performances à armes égales.
 
-Malgré tout, il n'est pas simple de retranscire du \emph{Python} en \emph{Rust} et il est important de noter que dans l'état actuel des implémentations, celle en \emph{Rust} semble moins efficace. Cela est dù à la présence de beaucoup de clonage de sets et vecteurs afin de pouvoir faire fonctionner le code (voir Figure \ref{fig:r2} et \ref{fig:p2}). On peut clairement voir une copie qui semble inutile dans le code \emph{Rust}. Malheureusement cela semble être la meilleure façon de faire car nous devons conserver intact \texttt{SUBG}, \texttt{CAND} et N(p) (\texttt{p\_neighbors} dans le code \emph{Rust})\footnote{Propos appuyés par \href{https://stackoverflow.com/questions/55975234/how-do-i-intersect-two-hashsets-while-moving-values-in-common-into-a-new-set}{ce post StackOverflow}, consulté le 29/07/2024 à 15h30.}
+Malgré tout, il n'est pas simple de retranscire du \emph{Python} en \emph{Rust} et il est important de noter que dans l'état actuel des implémentations, celle en \emph{Rust} semble moins efficace. Cela est du à la présence de beaucoup de clonage de sets et vecteurs afin de pouvoir faire fonctionner le code (voir Figure \ref{fig:r2} et \ref{fig:p2}). On peut clairement voir une copie qui semble inutile dans le code \emph{Rust}. Malheureusement cela semble être la meilleure façon de faire car nous devons conserver intact \texttt{SUBG}, \texttt{CAND} et N(p) (\texttt{p\_neighbors} dans le code \emph{Rust})\footnote{Propos appuyés par \href{https://stackoverflow.com/questions/55975234/how-do-i-intersect-two-hashsets-while-moving-values-in-common-into-a-new-set}{ce post StackOverflow}, consulté le 29/07/2024 à 15h30.}
 \begin{figure}[ht]
   \begin{lstlisting}[language=Rust]
 let subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
@@ -964,14 +964,14 @@ CAND_p = CAND & p_neighbors
 \subsection{Limitations}%
 \label{subsec:limit}
 
-Initialement, il était prévu de tester les différents algorithmes sur de grands graphes obtenu sur bases de données réelles, dont notamment des graphes représentant les utilistateurs de Deezer et leurs liens (\emph{follow}) (\cite{rozemberczki2020characteristic}), un graphe des relations entre pages de Facebook (\cite{rozemberczki2019multiscale}) par exemples. Mais très vite un soucis c'est posé. En effet il s'agit de très très grand graphes. Par exemple, celui représentant les relations entre pages Facebook contient 22 470 noeuds.
+Initialement, il était prévu de tester les différents algorithmes sur de grands graphes obtenus sur base de données réelles, dont notamment des graphes représentant les utilistateurs de Deezer et leurs liens (\emph{follow}) (\cite{rozemberczki2020characteristic}), ou encore un graphe des relations entre pages de Facebook (\cite{rozemberczki2019multiscale}). Mais très vite, un soucis s'est posé. En effet il s'agit de très grands graphes. Par exemple, celui représentant les relations entre pages Facebook contient 22 470 noeuds.
 
-Un simple code en \emph{Python} visant à transformer un de ces graphes au format g6 afin de pouvoir travailler avec fu développer mais celui-ci ne put se terminer. En effet malgré le \emph{hardware} utilisé (voir \ref{subsec:methodo}), la RAM arrivait très vite à saturation résultant en un crash du programme.
+Un simple code en \emph{Python} visant à transformer un de ces graphes au format g6 afin de pouvoir travailler avec a été développé mais l'exécution de celui-ci ne se terminait pas. En effet malgré le \emph{hardware} utilisé (voir \ref{subsec:methodo}), la RAM arrivait très vite à saturation aboutissant à un crash du programme.
 
-Afin de contourner ces limitations deux pistes semblent possible :
+Afin de contourner ces limitations, deux pistes semblent possibles :
 \begin{itemize}
-  \item Utiliser un autre langage (probablement de bas niveau) afin de réduire le coup sur la mémoire
-  \item Augmenter les ressources disponible, surtout la RAM
+  \item Utiliser un autre langage (probablement de bas niveau) afin de réduire le coût sur la mémoire
+  \item Augmenter les ressources disponibles, surtout la RAM
 \end{itemize}
 
 \section{Tests}%
@@ -979,7 +979,7 @@ Afin de contourner ces limitations deux pistes semblent possible :
 
 \subsection{Méthodologie}%
 \label{subsec:methodo}
-Dans cette section, nous décrivons la méthodologie utilisée pour évaluer les performances de différents algorithmes de détection de cliques maximales sur des graphes de différents ordres. Nous avons implémenté et comparé quatre algorithmes : \texttt{CLIQUES} (\ref{sec:clique}), \texttt{BK} (\ref{subsec:bk}), \texttt{BKP\_R} (\ref{subsec:random}) et \texttt{BKP\_M} (\ref{subsec:max}). Ces algorithmes ont été testés en utilisant tous les graphes d'ordre 4 à 10 inclus. Les graphes utilisés sont disponible au format g6 à ce lien : \url{http://users.cecs.anu.edu.au/~bdm/data/graphs.html}\footnote{Consutlé le 7 juin 2024 à 16h32.}
+Dans cette section, nous décrivons la méthodologie utilisée pour évaluer les performances de différents algorithmes de détection de cliques maximales sur des graphes de différents ordres. Nous avons implémenté et comparé quatre algorithmes : \texttt{CLIQUES} (\ref{sec:clique}), \texttt{BK} (\ref{subsec:bk}), \texttt{BKP\_R} (\ref{subsec:random}) et \texttt{BKP\_M} (\ref{subsec:max}). Ces algorithmes ont été testés en utilisant tous les graphes d'ordre 4 à 10 inclus. Les graphes utilisés sont disponibles au format g6 à ce lien : \url{http://users.cecs.anu.edu.au/~bdm/data/graphs.html}\footnote{Consutlé le 7 juin 2024 à 16h32.}
 
 Pour mesurer le temps d'exécution total des algorithmes, nous avons utilisé la fonction \texttt{time.perf\_counter()} de la bibliothèque \texttt{time} de Python, qui offre une haute précision pour les mesures de temps.
 
@@ -990,35 +990,76 @@ Les expériences ont été exécutées sur une machine équipée d'un processeur
 \subsection{Résultats}%
 \label{subsec:res}
 
-Les graphes ci-dessous (Figure \ref{fig:res1}) illustrent le temps d'éxécution moyen des différents algorithmes présentés ici ainsi que le délais moyen entre l'énumération de chaque clique maximale en fonction de l'ordre du graphes. L'ensemble de tests consite en l'entièreté des graphes d'ordre 4 à 10 comme décrit dans la section sur la méthodologie (\ref{subsec:methodo}). Les graphes d'ordres 1 à 3 ont été exclus car l'exécution était tellement rapide qu'aucun temps notable n'était recensé.
+Les graphes ci-dessous (Figure \ref{fig:res1}) illustrent le temps d'éxécution moyen des différents algorithmes présentés ici ainsi que le délai moyen entre l'énumération de chaque clique maximale en fonction de l'ordre du graphes. L'ensemble de tests consiste en l'entièreté des graphes d'ordre 4 à 10 comme décrit dans la section sur la méthodologie (\ref{subsec:methodo}). Les graphes d'ordre 1 à 3 ont été exclus car l'exécution était tellement rapide qu'aucun temps notable n'était recensé.
+Les tableaux correspondant aux Figures \ref{subfig:total_plot} et \ref{subfig:delay_plot} sont respectivement les tableaux \ref{table:1} et \ref{table:2}.
+
 \begin{figure}[h!]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/total_plot.png}
         \caption{Temps total moyen pour énumérer toutes les cliques maximales}
-        \label{fig:total_plot}
+        \label{subfig:total_plot}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/delay_plot.png}
-        \caption{Délais moyen pour énumérer une clique maximale}
-        \label{fig:delay_plot}
+        \caption{Délai moyen pour énumérer une clique maximale}
+        \label{subfig:delay_plot}
     \end{subfigure}
     \caption{Résultats des temps d'exécution pour différents algorithmes d'énumération des cliques maximales}
     \label{fig:res1}
 \end{figure}
 
-Nous pouvons constater en regardant le graphique \ref{fig:total_plot} que, clairement, les différents algorithmes d'énumération de cliques présentés suivent bien une complexité en temps exponetiel par rapport à l'ordre du graphe.
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|l||l|l|l|l|}
+    \hline
+    Ordre & BK & BKP\_R & BKP\_M & CLIQUES \\
+    \hline
+    \hline
+    4  & $1.0799^{e-05}$ & $1.6508^{e-05}$ & $1.1213^{e-05}$ & $1.1625^{e-05}$ \\
+    5  & $1.2079^{e-05}$ & $1.3219^{e-05}$ & $1.2379^{e-05}$ & $1.3643^{e-05}$ \\
+    6  & $1.560e^{e-05}$  & $1.6169^{e-05}$ & $1.5854^{e-05}$  & $1.7883^{e-05}$ \\
+    7  & $2.0252^{e-05}$ & $2.0829^{e-05}$ & $1.9958^{e-05}$ & $2.1590^{e-05}$   \\
+    8  & $2.5791^{e-05}$ & $2.6625^{e-05}$ & $2.5337^{e-05}$   & $2.7245^{e-05}$ \\
+    9  & $3.2806^{e-05}$ & $3.3322^{e-05}$  & $3.189e^{e-05}$  & $3.387e^{e-05}$  \\
+    10 & $4.0894^{e-05}$ & $4.1189^{e-05}$ & $3.926e^{e-05}$ & $4.2038^{e-05}$  \\
+    \hline
+  \end{tabular}
+  \caption{Temps d'exécution moyen des algorithmes sur tous les graphes d'ordre 4 à 10}
+  \label{table:1}
+\end{table}
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{|l||l|l|l|l|}
+    \hline
+    Ordre & BK & BKP\_R & BKP\_M & CLIQUES \\
+    \hline
+    \hline
+    4  & $3.7588^{e-06}$ & $4.0444^{e-06}$ & $4.5968^{e-06}$ & $5.1999^{e-06}$ \\
+    5  & $3.0838^{e-06}$ & $3.5742^{e-06}$ & $3.7282^{e-06}$ & $3.9874^{e-06}$ \\
+    6  & $2.8786^{e-06}$ & $3.4932^{e-06}$ & $3.4684^{e-06}$ & $3.7294^{e-06}$ \\
+    7  & $2.8994^{e-06}$ & $3.4047^{e-06}$ & $3.4149^{e-06}$ & $3.7131^{e-06}$   \\
+    8  & $3.0013^{e-06}$ & $3.5007^{e-06}$ & $3.4537^{e-06}$ & $3.7050^{e-06}$ \\
+    9  & $3.1184^{e-06}$ & $3.5931^{e-06}$ & $3.5112^{e-06}$ & $3.8213^{e-06}$  \\
+    10 & $3.2128^{e-06}$ & $3.6631^{e-06}$ & $3.5805e^{e-06}$ & $3.8666^{e-06}$  \\
+    \hline
+    \end{tabular}
+    \caption{Délai moyen pour énumérer une clique maximale}
+    \label{table:2}
+\end{table}
 
-De plus, le graphique \ref{fig:delay_plot} nous montre une temps relativement constant entre l'énumération de chaque clique. Nous pouvons observé un temps moyen pour énumérer les cliques maximales plus élevé pour les graphes d'ordre 4.
+Nous pouvons constater en regardant le graphique \ref{subfig:total_plot} que, clairement, les différents algorithmes d'énumération de cliques présentés suivent bien une complexité en temps exponetiel par rapport à l'ordre du graphe.
 
-En observant les temps obtenu pour les différents algorithmes, nous constatons que \texttt{BKP\_M} (avec pour pivot le noeud de degré maximum) semble se comporter mieux de manière générale.
+De plus, le graphique \ref{subfig:delay_plot} nous montre un temps relativement constant entre l'énumération de chaque clique. Nous pouvons observé un temps moyen pour énumérer les cliques maximales plus élevé pour les graphes d'ordre 4.
+
+En observant les temps obtenu pour les différents algorithmes, nous constatons que \texttt{CLIQUEs} semble se comporter un peu mieux de manière générale.
 
 L'analyse de ces résultats est cohérente avec les discussions théoriques présentées dans l'article \cite{CONTE20221}. L'efficacité des différents algorithmes dépend fortement de leurs approches spécifiques pour traiter les graphes, et la sélection de l'algorithme optimal peut varier en fonction des caractéristiques spécifiques du graphe à traiter.
 
-Afin d'étayer ce dernier propos, nous allons présenter les mêmes tests mais en nous intéressants à des types de graphes particuliers :
+Afin d'étayer ce dernier propos, nous allons présenter les mêmes tests mais en nous intéressant à des types de graphes particuliers :
 \begin{itemize}
   \item Les graphes complets
   \item Les graphes vides
@@ -1026,7 +1067,7 @@ Afin d'étayer ce dernier propos, nous allons présenter les mêmes tests mais e
 \end{itemize}
 Pour rappel, les graphes complets d'ordre \emph{n} n'ont qu'une et une seule clique maximales de taille \emph{n}, les graphes vides d'ordre \emph{n} possèdent \emph{n} cliques maximales de taille 1 et enfin, les graphes de Moon-Moser possèdent \(3^{n/3}\) cliques maximales (voir section \ref{subsec:graphes}).
 
-La méthode de test reste la même. L'algorithme sans pivot \texttt{BK} à néansmoins dû être retiré des tests car celui-ci prenait trop de temps d'exécution.
+La méthode de test reste la même. L'algorithme sans pivot \texttt{BK} a néanmoins dû être retiré des tests car celui-ci prenait trop de temps d'exécution.
 
 \begin{figure}[ht]
   \centering
@@ -1040,12 +1081,40 @@ La méthode de test reste la même. L'algorithme sans pivot \texttt{BK} à néan
     \caption{Graphes de Moon-Moser}
     \label{subfig:total_turan}
   \end{subfigure}
+  \begin{subfigure}[b]{0.42\textwidth}
+    \includegraphics[width=\textwidth]{images/total_pivot_complete_plot.png}
+    \caption{Graphes complets}
+    \label{subfig:total_complete}
+  \end{subfigure}
   \caption{Temps d'exécution total pour énumérer toutes les cliques maximales}
   \label{fig:special_total}
 \end{figure}
 
-Tout d'abord nous pouvons observer qu'en effet, les différents algorithmes présentés on bien une complexité dans le pire des cas en \(0(3^{n/3})\), cela se voit distinctement sur le graphique \ref{subfig:total_turan} correspondant aux graphes de Moon-Moser, les graphes avec le plus de cliques maximales possibles. Pour ce qui est des graphes vides (\ref{subfig:total_empty}), nous avons quelque chose de très linéaire ce qui s'explique probablement par le fait que vu que chaque noeuds est isolé, énumérer chaque clique maximale consiste à énumérer chaque noeud du graphe. Aucune exploration n'est nécessaire.
+Tout d'abord, nous pouvons observer qu'en effet, les différents algorithmes présentés ont bien une complexité dans le pire des cas en \(0(3^{n/3})\), cela se voit distinctement sur le graphique \ref{subfig:total_turan} correspondant aux graphes de Moon-Moser, les graphes avec le plus de cliques maximales possible. Pour ce qui est des graphes vides (\ref{subfig:total_empty}), nous avons quelque chose de très linéaire, ce qui s'explique probablement par le fait que, vu que chaque noeud est isolé, énumérer chaque clique maximale consiste à énumérer chaque noeud du graphe. Aucune exploration n'est nécessaire. Quelque chose de curieux se passe avec les graphes complets. En effet, on voit cairement sur la Figure \ref{subfig:total_complete} que l'algorithme CLIQUES a des performances bien médiocre comparé aux autres et que la version de BK avec un pivot aléatoire est sensiblement la meilleur. Cela s'explique par la façon dont le pivot est calculé. Pour rappel, voici comment est trouvé le pivot pour CLIQUES et BKP\_M :
 
+\begin{algorithm}[H]
+  \begin{algorithmic}[1]
+    \Procedure{CLIQUES}{}
+        \State $u \gets$ un noeud de $SUBG$ qui maximise $|CAND \cap N(u)|$
+    \EndProcedure
+  \end{algorithmic}
+  \label{fig:pivot_cliques}
+  \begin{algorithmic}[1]
+    \Procedure{BKP\_M}{}
+        \State $u \gets$ un noeud de $SUBG$ qui maximise $|N(u)|$
+    \EndProcedure
+  \end{algorithmic}
+  \caption{CLIQUES vs BKP\_M}
+  \label{fig:pivot_bkp_m}
+\end{algorithm}
+
+Étant donné qu'un graphe complet d'ordre \emph{n} ne contient qu'une et une seule clique maximale, l'ensemble des candidats et l'ensemble des voisins d'un noeud sont les mêmes et sont de taille \emph{n}.
+Dans le cas de CLIQUES, pour trouver un noeud pivot, nous devons itérer sur tous les noeuds de \texttt{SUBG} (taille \emph{n}) et réaliser l'intersection entre \texttt{CAND} et \texttt{N(u)} or, vu que ces 2 ensembles sont également de taille \emph{n}, cela se fait en \(O(n)\). Nous avons donc un pire des cas atteint de façon systématique qui est en \(n * O(n) = O(n^2)\).
+Dans le cas de l'algorithme \texttt{BKP\_M} pour trouver le noeud de degré maximum, il suffit d'itérer sur tout les noeuds et récupérer la longueur de sa liste de voisins, ce qui nous donne une complexité de \(n * O(1) = O(n)\).
+Pour le pivot aléatoire, l'opération consistant à choisir un noeud pivot se fait trivialement en temps constant (\(O(1)\)).
+Cela explique clairement pourquoi CLIQUES performe moins bien dans ce cas-ci et pourquoi la version avec un pivot aléatoire de BK est la plus efficace, le choix du pivot dans un graphe complet n'ayant pas d'importance étant donné que n'importe quel pivot mènera à la seule clique maximale existante.
+
+Ce constat est aussi valable pour le délai (voir Figure \ref{fig:special_delay}).
 \begin{figure}[ht]
   \centering
   \begin{subfigure}[b]{0.42\textwidth}
@@ -1058,56 +1127,20 @@ Tout d'abord nous pouvons observer qu'en effet, les différents algorithmes pré
     \caption{Graphes de Moon-Moser}
     \label{subfig:delay_turan}
   \end{subfigure}
-  \caption{Délais entre chaque énumération de clique maximale}
+  \begin{subfigure}[b]{0.42\textwidth}
+    \includegraphics[width=\textwidth]{images/delay_pivot_complete_plot.png}
+    \caption{Graphes complets}
+    \label{subfig:delay_complete}
+  \end{subfigure}
+  \caption{Délai entre chaque énumération de clique maximale}
   \label{fig:special_delay}
 \end{figure}
 
-Observons maintenant sur ces catégories de graphes ce qu'il en est pour le délais nécessaire pour trouver la prochaine clique maximale. Dans les deux cas nous avons bien un délais qui semble polynomial en fonction du nombre de cliques ce qui est rassurant. Toutefois, il est important de souligner que l'algorithme \texttt{CLIQUES} semble moins efficace et mettre plus de temps que les autres. Cela va à l'encontre des résultats attendu et est probablement dû à l'implémentation réalisée. En effet, trouver le noeud pivot nécessite, pour chaque noeud de \texttt{SUBG} de calculer \(\texttt{CAND} \cap N(u)\) afin de trouver le noeud qui maximise cette propriété, ce qui a un coup plus grand que de trouver le noeud de degré supérieur, cela même ayant un coup plus grand que de tirer un noeud au hasard.
-
-\begin{center}
-  \begin{table}[h!]
-    \begin{tabular}{|l||l|l|l|l|}
-      \hline
-      Ordre & BK & BKP\_R & BKP\_M & CLIQUES \\
-      \hline
-      \hline
-      4  & $1.0799^{e-05}$ & $1.6508^{e-05}$ & $1.1213^{e-05}$ & $1.1625^{e-05}$ \\
-      5  & $1.2079^{e-05}$ & $1.3219^{e-05}$ & $1.2379^{e-05}$ & $1.3643^{e-05}$ \\
-      6  & $1.560e^{e-05}$  & $1.6169^{e-05}$ & $1.5854^{e-05}$  & $1.7883^{e-05}$ \\
-      7  & $2.0252^{e-05}$ & $2.0829^{e-05}$ & $1.9958^{e-05}$ & $2.1590^{e-05}$   \\
-      8  & $2.5791^{e-05}$ & $2.6625^{e-05}$ & $2.5337^{e-05}$   & $2.7245^{e-05}$ \\
-      9  & $3.2806^{e-05}$ & $3.3322^{e-05}$  & $3.189e^{e-05}$  & $3.387e^{e-05}$  \\
-      10 & $4.0894^{e-05}$ & $4.1189^{e-05}$ & $3.926e^{e-05}$ & $4.2038^{e-05}$  \\
-      \hline
-    \end{tabular}
-    \caption{Temps d'exécution moyen des algorithmes sur tous les graphes d'ordre donné}
-    \label{table:1}
-\end{table}
-\end{center}
-\begin{center}
-  \begin{table}[h!]
-    \begin{tabular}{|l||l|l|l|l|}
-      \hline
-      Ordre & BK & BKP\_R & BKP\_M & CLIQUES \\
-      \hline
-      \hline
-      4  & $3.7588^{e-06}$ & $4.0444^{e-06}$ & $4.5968^{e-06}$ & $5.1999^{e-06}$ \\
-      5  & $3.0838^{e-06}$ & $3.5742^{e-06}$ & $3.7282^{e-06}$ & $3.9874^{e-06}$ \\
-      6  & $2.8786^{e-06}$ & $3.4932^{e-06}$ & $3.4684^{e-06}$ & $3.7294^{e-06}$ \\
-      7  & $2.8994^{e-06}$ & $3.4047^{e-06}$ & $3.4149^{e-06}$ & $3.7131^{e-06}$   \\
-      8  & $3.0013^{e-06}$ & $3.5007^{e-06}$ & $3.4537^{e-06}$ & $3.7050^{e-06}$ \\
-      9  & $3.1184^{e-06}$ & $3.5931^{e-06}$ & $3.5112^{e-06}$ & $3.8213^{e-06}$  \\
-      10 & $3.2128^{e-06}$ & $3.6631^{e-06}$ & $3.5805e^{e-06}$ & $3.8666^{e-06}$  \\
-      \hline
-    \end{tabular}
-    \caption{Délais moyen pour énumérer une clique maximale}
-    \label{table:2}
-\end{table}
-\end{center}
+Observons maintenant sur ces catégories de graphes ce qu'il en est du délai nécessaire pour trouver la prochaine clique maximale. Dans les deux cas, nous avons bien un délai qui semble polynomial en fonction du nombre de cliques ce qui est rassurant. Toutefois, il est important de souligner que l'algorithme \texttt{CLIQUES} semble moins efficace et mette plus de temps que les autres. Cela va à l'encontre des résultats attendus et est probablement dû à l'implémentation réalisée. En effet, trouver le noeud pivot nécessite, pour chaque noeud de \texttt{SUBG}, de calculer \(\texttt{CAND} \cap N(u)\) afin de trouver le noeud qui maximise cette propriété, ce qui a un coût plus grand que de trouver le noeud de degré supérieur, cela même ayant un coût plus grand que de tirer un noeud au hasard.
 
 \subsubsection*{Comparaison avec \emph{Rust}}
 
-L'une des revendications de ce projet est que, bien implémenté, un algorithme équivalent en \emph{Rust} devrait être plus performant que son homonyme écrit en \emph{Python}. Bien évidemment il va de soit que cela dépend de la qualité de l'implémentation.
+L'une des revendications de ce projet est que, bien implémenté, un algorithme équivalent en \emph{Rust} devrait être plus performant que son homonyme écrit en \emph{Python}. Bien évidemment, il va de soit que cela dépend de la qualité de l'implémentation.
 
 \begin{figure}[ht]
   \centering
@@ -1137,30 +1170,60 @@ L'une des revendications de ce projet est que, bien implémenté, un algorithme 
 
 \begin{figure}[ht]
   \centering
-  \begin{subfigure}[b]{0.45\textwidth}
+  \begin{subfigure}[b]{0.32\textwidth}
     \includegraphics[width=\textwidth]{images/total_CLIQUES_pyrust_pivot_complete_plot.png}
   \caption{Graphes complets}%
   \label{subfig:pr_cliques_complete}
   \end{subfigure}
-  \begin{subfigure}[b]{0.45\textwidth}
+  \begin{subfigure}[b]{0.32\textwidth}
     \includegraphics[width=\textwidth]{images/total_CLIQUES_pyrust_pivot_empty_plot.png}
   \caption{Graphes vides}%
   \label{subfig:pr_cliques_empty}
   \end{subfigure}
-  \begin{subfigure}[b]{0.45\textwidth}
+  \begin{subfigure}[b]{0.32\textwidth}
     \includegraphics[width=\textwidth]{images/total_CLIQUES_pyrust_pivot_turan_plot.png}
-  \caption{Graphes de Turàn}%
+  \caption{Graphes de Moon-Moser}%
   \label{subfig:pr_cliques_turan}
   \end{subfigure}
-  \caption{Comparaison CLIQUES en \emph{Python} et \emph{Rust} sur des graphes spéciaux}%
+  \caption{Comparaison de CLIQUES en \emph{Python} et \emph{Rust} sur des graphes spéciaux}%
   \label{fig:pvr_cliques}
 \end{figure}
 
+Étonnamment, nous avons l'opposé du résultat attendu. En effet, on peut clairement voir que les versions \emph{Python} sont constamment meilleures que leurs équivalentes en \emph{Rust}. Ce résultat semble surprenant mais comme mentionné précédemment, le \emph{Rust} est un langage de plus bas niveau et plus complexe dans son fonctionnement que \emph{Python} et cela est plus que certainement dû à une mauvaise implémentation. Au vu des résultats obtenus, une révision des versions \emph{Rust} fut effectuée et ces lignes de code \emph{Rust} (présentent dans chaque algorithmes) ont retenu notre attention :
 
+\begin{figure}[ht]
+  \begin{lstlisting}[language=Rust]
+let subg_p: HashSet<u32> = subg.intersection(&p_neighbors).cloned().collect();
+let cand_p: HashSet<u32> = cand.intersection(&p_neighbors).cloned().collect();
+
+cliques(&mut subg_p.clone(), &mut cand_p.clone(), q, g, result, delay);
+  \end{lstlisting}
+  \caption{Extrait du code \emph{Rust} de CLIQUES}
+  \label{fig:bad_rust}
+\end{figure}
+
+
+Assez étrangement malgré le calcul de l'intersection entre \texttt{SUBG / CAND} et \texttt{N(p)} on peut voir que nous effectuons une nouvelle copie de ces ensembles nouvellement calculés lors de l'appel récursif. Si l'on retire le \texttt{.clone()} dans l'appel récursif, le compilateur se plaint qu'il ne peut pas emprunter les-dits valeurs\footnote{Voir la documentation officielle de \emph{Rust} pour comprendre le principe d'emprunt \href{https://doc.rust-lang.org/stable/book/ch04-00-understanding-ownership.html}{ici}} de façon mutable. Cela se fixe facilement en copiant les ensembles, ainsi nous obtenons notre propre copie que nous pouvons emprunter de façon mutable, malheureusement cela introduit une copie inutile pour ces deux ensembles.
+Après révision du code il s'avère que pour éviter ces copies, il suffit de déclarer \texttt{subg\_p} et \texttt{cand\_p} comme des variables mutables avec le mot clé \texttt{mut}. Désormais il est possible de passer les ensembles à l'appel récursif et celui-ci peut les emprunter sans soucis.
+
+\newpage
 \section{Conclusion}
+
+Dans ce rapport, nous avons présenté les notions nécessaires à la compréhension du problème d'énumération de toute les cliques maximales d'un graphe simple et expliqué celui-ci. Nous avons discuté de la difficulté de ce problème et présenté plusieurs algorithmes permettant de le résoudre de façon exacte. Ces algorithmes sont tous basés sur l'algorithme de Bron et Kerbosch \cite{bron1973algorithm}. Ainsi nous avons présenté les quatres algorithmes étudiés dans ce rapport : CLIQUES, Bron-Kerbosch et deux variante de ce dernier. L'objectif était de mettre en évidence le gain de performance obtenu par le choix d'un \emph{bon} noeud pivot afin de couper dans l'exploration des cliques maximales. De façon a étayer ces propos, une implémentation en \emph{Python} de ces algorithmes a été réalisée, permettant une évaluation expérimentale de ceux-ci.
+
+Dans un premier temps, les résultats obtenus ont confirmé les complexités de ces derniers et mis en évidence qu'un bon pivot peu améliorer sensiblement les choses.
+
+Afin d'aller plus loin nous avons pris des graphes spéciaux, décrits au préalable, afin de mettre en lumière des différences de performances plus significatives entre les quatres algorithmes. Nous avons donc testé sur des graphes vides, complet et de Moon-Moser afin de voir si ces graphes montraient des tendances différentes. Nous avons pu constater que c'est le cas : CLIQUES se comporte mal sur les graphes complets à cause de la façon dont il caclule son pivot. En essayant de tester nos implémentations sur de grands graphes tirés de cas réel, nous avons pu mettre en évidence les limites techniques de celles-ci étant donné que le matériel utilisé n'était pas suffisant pour gérer des graphes de cette taille. Une façon d'améliorer ce point pourrait être d'utiliser les générateurs de \emph{Python} et de réécrire les algorithmes pour les utiliser directement et ainsi permettre leur utilisation sur de plus grands graphes.
+
+Dans un second temps, nous souhaitions montrer l'importance du choix du langage de programmation pour ce genre d'algorithme et des gains de performances qui peuvent s'en suivre. Ainsi une version en \emph{Rust}, langage de bas niveau, a été réalisée avec le postulat que le \emph{Rust} serait plus efficace. Nous avons constaté la difficulté de traduire d'un langage de haut niveau à un autre langage de programmation de bas niveau, rendant de ce fait toute implémentation plus enclin à avoir des défauts d'optimisation, ceci étant dû à une moins bonne maitrise de ce dernier. Il est clair qu'une meilleure maitrise du langage permettrait d'obtenir de bien meilleurs résultats.
+
+En conclusion, ce projet m'a permis de comprendre et comparer des algorithmes pointus sur un sujet de recherche actif, de comprendre les défis liés à l'implémentation de ceux-ci et de constater les différences entre les attentes théoriques et les résultats expérimentaux. Également, ce projet m'a permis de me familiariser davantage avec le langage \emph{Rust} et de mieux comprendre des mécanismes que je n'avais encore jamais rencontré. J'ai pu me rendre compte aussi de la difficulté de traduire d'un langage à un autre des algorithmes et de voir qu'il était plus que facile de faire des erreurs menant à une détérioration notable des performances par rapport à ce qui est attendu.
+
+Enfin ce projet m'a permis d'améliorer la qualité de ma rédaction en m'enseignant à mieux vulgariser et illustrer mes propos mais aussi en y apportant une meilleure structure. Il est certain que cela me servira à l'avenir dans mes prochaines productions écrites.
 
 % TODO
 
+\newpage
 \bibliographystyle{abbrv}
 \bibliography{biblio}
 
