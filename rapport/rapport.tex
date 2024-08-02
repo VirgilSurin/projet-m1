@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{float}
 \usepackage{wrapfig}
+\usepackage{forest}
 \usepackage{listings}
 \usepackage{listings-rust}
 \usepackage{xcolor}
@@ -98,7 +99,7 @@
 %     % Bottom of the page
 %     \begin{center}
 %       \begin{tabular}[t]{c c c}
-%         \includegraphics[height=1.5cm]{logoumons.jpg} &
+%        \includegraphics[height=1.5cm]{logoumons.jpg} &
 %                                                         \hspace{0.3cm} &
 %                                                                          \includegraphics[height=1.5cm]{logofs.jpg}
 %       \end{tabular}
@@ -891,6 +892,90 @@ Le noeud pivot \emph{u} pris ici est 1. Vu que parmi les noeuds de \texttt{SUBG}
 
 Et comme précédemment nous itérons sur les noeuds dans \(CAND - N(u)\), ici, seul 3 répond au critère. L'algorithme continue ainsi de suite jusqu'à avoir exploré toutes les possiblités.
 
+\begin{figure}[ht]
+  \centering
+  \forestset{
+    mynode/.style={
+      for tree={
+        rectangle, draw, text centered, align=left, anchor=north,
+        edge={-latex},
+        parent anchor=south, child anchor=north,
+        l sep+=1cm, % increase level separation
+        s sep+=0.5cm, % increase sibling separation
+        inner xsep=7pt, % horizontal padding
+        inner ysep=3pt, % vertical padding
+        font=\small,
+        scale=0.6,
+      }
+    },
+    EL/.style = {
+      edge label={node[rectangle, midway, fill=white, draw=none, anchor=center, font=\scriptsize]{#1}}
+    }
+  }
+  \begin{forest} mynode
+    [{SUBG = \{1, 2, 3, 4, 5, 6, 7, 8, 9\}\\
+      CAND = \{1, 2, 3, 4, 5, 6, 7, 8, 9\}\\
+      u = 4\\
+      CAND - N(u) = \{1, 2, 4, 9\}}
+      [{SUBG = \{9, 2\}\\
+        CAND = \{9, 2\}\\
+        u = 9\\
+        CAND - N(u) = \{9\}}, EL={p=1}
+        [{SUBG = \{2\}\\
+          CAND = \{2\}\\
+          u = 2\\
+          CAND - N(u) = \{2\}}, EL={p=9}
+          [{SUBG = \{\}\\
+            CAND = \{\}\\
+            Clique: \{1, 9, 2\}}, EL={p=2}]
+        ]
+      ]
+      [{SUBG = \{1, 3, 9\}\\
+        CAND = \{9, 3\}\\
+        u = 1\\
+        CAND - N(u) = \{3\}}, EL={p=2}
+        [{SUBG = \{9\}\\
+          CAND = \{9\}\\
+          u = 9\\
+          CAND - N(u) = \{9\}}, EL={p=3}
+          [{SUBG = \{\}\\
+            CAND = \{\}\\
+            Clique: \{2, 3, 9\}}, EL={p=9}]
+        ]
+      ]
+      [{SUBG = \{3, 5, 6, 7, 8\}\\
+        CAND = \{3, 5, 6, 7, 8\}\\
+        u = 8\\
+        CAND - N(u) = \{8, 5\}}, EL={p=4}
+        [{SUBG = \{3, 6, 7\}\\
+          CAND = \{3, 6, 7\}\\
+          u = 6\\
+          CAND - N(u) = \{3, 6\}}, EL={p=8}
+          [{SUBG = \{\}\\
+            CAND = \{\}\\
+            Clique: \{4, 8, 3\}}, EL={p=3}]
+          [{SUBG = \{7\}\\
+            CAND = \{7\}\\
+            u = 7\\
+            CAND - N(u) = \{7\}}, EL={p=6}
+            [{SUBG = \{\}\\
+              CAND = \{\}\\
+              Clique: \{4, 8, 6, 7\}}, EL={p=7}]
+          ]
+        ]
+        [{SUBG = \{\}\\
+          CAND = \{\}\\
+          Clique: \{4, 5\}}, EL={p=5}]
+      ]
+      [{SUBG = \{1, 2, 3\}\\
+        CAND = \{3\}\\
+        u = 2\\
+        CAND - N(u) = \{\}}, EL={p=9}]
+    ]
+  \end{forest}
+  \caption{Arbre d'appels}
+  \label{fig:tree}
+\end{figure}
 
 \section{Implémentation}%
 \label{sec:impl}
