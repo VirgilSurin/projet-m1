@@ -293,5 +293,155 @@ def process_and_plot_tabular(typ, directory):
     latex_table += "\\end{tabular}"
     return latex_table
 
-table = process_and_plot_tabular('total', './out/')
+
+
+def process_and_plot_tabular_special(typ, directory):
+    """
+    Génère un tableau LaTeX avec les résultats d'exécution pour les graphes spéciaux (Empty, Turan, Complete).
+    """
+    fns = ["CLIQUES", "BKP_R", "BKP_M"]
+    graph_types = ["empty", "turan", "complete"]
+    function_data = {fn: {g: {} for g in graph_types} for fn in fns}
+
+    orders = set()
+
+    for fn in fns:
+        for g in graph_types:
+            for filename in os.listdir(directory):
+                if filename.startswith(f'{typ}_res_{fn}_{g}') and filename.endswith('.out'):
+                    parts = filename.split('_')
+                    order = int(parts[-1].split('.')[0])
+
+                    # Read data from file
+                    data = read_data(os.path.join(directory, filename))
+
+                    # Calculate mean
+                    mean_value = calculate_mean(data)
+
+                    # Store mean value for function and order
+                    function_data[fn][g][order] = mean_value
+
+                    # Add order to set of orders
+                    orders.add(order)
+
+    # Convert orders set to sorted list
+    orders = sorted(list(orders))
+
+    # Génération du tableau LaTeX
+    latex_table = "\\begin{longtable}{|l||l|l|l|l|}\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  Ordre & Graphe & CLIQUES & BKP\\_R & BKP\\_M \\\\endhead\\\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  \\hline\n"
+
+    orders = list(range(5, 45))
+    for order in orders:
+        first_row = True
+        for g in graph_types:
+            if first_row:
+                latex_table += f"  {order} & {g.capitalize()} "
+                first_row = False
+            else:
+                latex_table += f"  & {g.capitalize()} "
+            for fn in fns:
+                result = function_data[fn][g].get(order, 0)
+                latex_table += f"& ${result:.2e}$ "
+            latex_table += "\\\\\n"
+        latex_table += "  \\hline\n"
+
+    latex_table += "\\end{longtable}"
+    return latex_table
+
+
+def process_and_plot_tabular_special_pyrust(typ, directory):
+    """
+    Génère un tableau LaTeX avec les différences de performance en pourcentage entre Rust et Python pour les graphes spéciaux (Empty, Turan, Complete).
+    """
+    fns = ["CLIQUES", "BKP_R", "BKP_M"]
+    graph_types = ["empty", "turan", "complete"]
+    function_data = {fn: {g: {} for g in graph_types} for fn in fns}
+    rust_data = {fn: {g: {} for g in graph_types} for fn in fns}
+
+    orders = set()
+
+    for fn in fns:
+        for g in graph_types:
+            pattern = re.compile(rf'^{typ}_res_{fn}_{g}_(\d+)\.out$')
+            rust_pattern = re.compile(rf'^{typ}_rust_res_{fn}_{g}_(\d+)\.out$')
+
+            for filename in os.listdir(directory):
+                if pattern.match(filename):
+                    parts = filename.split('_')
+                    order = int(parts[-1].split('.')[0])
+
+                    # Read data from file
+                    data = read_data(os.path.join(directory, filename))
+
+                    # Calculate mean
+                    mean_value = calculate_mean(data)
+
+                    # Store mean value for function and order
+                    function_data[fn][g][order] = mean_value
+
+                    # Add order to set of orders
+                    orders.add(order)
+
+                elif rust_pattern.match(filename):
+                    parts = filename.split('_')
+                    order = int(parts[-1].split('.')[0])
+
+                    # Read data from file
+                    data = read_data(os.path.join(directory, filename))
+
+                    # Calculate mean
+                    mean_value = calculate_mean(data)
+
+                    # Store mean value for function and order
+                    rust_data[fn][g][order] = mean_value
+
+    # Convert orders set to sorted list
+    orders = sorted(list(orders))
+
+    # Génération du tableau LaTeX
+    latex_table = "\\begin{longtable}{|l||l|l|l|l|}\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  \\textbf{Ordre} & \\textbf{Graphe} & \\textbf{CLIQUES} & \\textbf{BKP\\_R} & \\textbf{BKP\\_M} \\\\\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  \\endfirsthead\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  \\textbf{Ordre} & \\textbf{Graphe} & \\textbf{CLIQUES} & \\textbf{BKP\\_R} & \\textbf{BKP\\_M} \\\\\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  \\endhead\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  \\endfoot\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  \\endlastfoot\n"
+
+    orders = list(range(5, 46))
+    for order in orders:
+        first_row = True
+        for g in graph_types:
+            if first_row:
+                latex_table += f"  {order} & {g.capitalize()} "
+                first_row = False
+            else:
+                latex_table += f"  & {g.capitalize()} "
+            for fn in fns:
+                python_mean = function_data[fn][g].get(order, 0)
+                rust_mean = rust_data[fn][g].get(order, 0)
+                if python_mean == 0:  # Avoid division by zero
+                    difference = 0
+                else:
+                    difference = ((rust_mean - python_mean) / python_mean) * 100
+                color_start = "\\textcolor{red}{" if difference > 0 else ""
+                color_end = "}" if difference > 0 else ""
+                latex_table += f"& {color_start}{difference:.1f}\\%{color_end} "
+            latex_table += "\\\\\n"
+        latex_table += "  \\hline\n"
+
+    latex_table += "\\end{longtable}"
+    return latex_table
+
+# Exemple d'utilisation
+table = process_and_plot_tabular_special_pyrust('total', './out/specials/')
 print(table)

@@ -48,7 +48,10 @@ fn main() {
     let duration = now.elapsed();
     let mean_delay = delay.iter().sum::<std::time::Duration>() / delay.len() as u32;
 
-    println!("Result of the algorithm: {:?}", result);
+   println!("Result of the algorithm:");
+    for clique in result {
+        println!("{}", clique);
+    }
     println!("Mean delay: {:?}", mean_delay);
     println!("Total execution time: {:?}", duration);
 }
