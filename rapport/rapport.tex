@@ -109,6 +109,7 @@
 
 %   \end{center}
 % \end{titlepage}
+
 \begin{titlepage}
   \begin{center}
     \textnormal{\Large{Universit\'e de Mons}}\\[0.3em]
@@ -151,6 +152,11 @@
   \end{center}
 
 \end{titlepage}
+
+\section*{Remerciements}
+
+Je tiens à remercier mon directeur de projet, M. Hadrien Mélot, pour m'avoir accompagné et encouragé tout au long de ce projet mais aussi lors de ma bourse d'initiation à la recherche. Merci d'avoir cur en mes capacités à mener se projet à bien. Également j'aimerais remercier mon co-directeur de projet, M. Sébastient Bonte, pour l'encadrement qu'il m'a fourni lors de ma BIR et surtout ses précieux conseils de rédactions. Je souhaite remercier mes amis et particulièrement Alessandro Spinozi, génie du \emph{Rust}, qui m'a conseillé sur mon code lorsque je bloquais dessus. Merci également à Catherine André, pour ses relectures et corrections orthographiques et grammaticales multiples. Je remercie également mes rapporteurs qui auront pris le temps de lire et d'évaluer ce rapport.
+Enfin je remercie chaleureusement toutes les personnes qui m'ont accompagnées cette année, que ce soit des amis ou de la famille. Qui ont été là dans les bons comme les mauvais moments.
 
 \tableofcontents
 
@@ -892,6 +898,8 @@ Le noeud pivot \emph{u} pris ici est 1. Vu que parmi les noeuds de \texttt{SUBG}
 
 Et comme précédemment nous itérons sur les noeuds dans \(CAND - N(u)\), ici, seul 3 répond au critère. L'algorithme continue ainsi de suite jusqu'à avoir exploré toutes les possiblités.
 
+La Figure \ref{fig:tree} représente l'arbre d'exécution complet de l'algorithme CLIQUES sur l'exemple décrit précedemment. Cet arbre met en évidence le fait que l'algorithme évite bien de retrouver plusieurs fois la même clique.
+
 \begin{figure}[ht]
   \centering
   \forestset{
@@ -1007,7 +1015,7 @@ Notons que les algorithmes se ressemblent énormément étant donné qu'ils diff
 \subsection{Rust}%
 \label{subsec:rust}
 
-L'implémentation en \emph{Rust} des algorithmes est plus laborieuse dû à une particularité du langage qu'est le principe d'\emph{owrnership}\cite{rust}. Cela implique des changements dans la façon dont fonctionne le code.
+L'implémentation en \emph{Rust} des algorithmes est plus laborieuse dû à une particularité du langage qu'est le principe d'\emph{ownership}\cite{rust}. Cela implique des changements dans la façon dont fonctionne le code.
 
 Les Figures \ref{fig:p1} et \ref{fig:r1} illustrent la complexité de \emph{Rust} par rapport à \emph{Python}. Afin d'obtenir le même résultat, en raison du fonctionnement de \emph{Rust} et de ses mécanismes de vérifications, nous devons nous assurer de la robustesse du code. Par exemple le \verb|.unwrap()| permet de récupérer la valeur de l'appel à \verb|.max_by_key(...)| qui retourne une \emph{Option} (qui pourrait être soit notre résultat, soit \emph{None}). On peut voir également les emprunts (\texttt{\&}) qui permettent d'assurer l'absence de pointeur flottant.
 
@@ -1163,7 +1171,7 @@ La méthode de test reste la même. L'algorithme sans pivot \texttt{BK} a néanm
   \end{subfigure}
   \begin{subfigure}[b]{0.42\textwidth}
     \includegraphics[width=\textwidth]{images/total_pivot_turan_plot.png}
-    \caption{Graphes de Moon-Moser}
+    \caption{Moon-Moser}
     \label{subfig:total_turan}
   \end{subfigure}
   \begin{subfigure}[b]{0.42\textwidth}
@@ -1209,7 +1217,7 @@ Ce constat est aussi valable pour le délai (voir Figure \ref{fig:special_delay}
   \end{subfigure}
   \begin{subfigure}[b]{0.42\textwidth}
     \includegraphics[width=\textwidth]{images/delay_pivot_turan_plot.png}
-    \caption{Graphes de Moon-Moser}
+    \caption{Moon-Moser}
     \label{subfig:delay_turan}
   \end{subfigure}
   \begin{subfigure}[b]{0.42\textwidth}
@@ -1267,7 +1275,7 @@ L'une des revendications de ce projet est que, bien implémenté, un algorithme 
   \end{subfigure}
   \begin{subfigure}[b]{0.32\textwidth}
     \includegraphics[width=\textwidth]{images/total_CLIQUES_pyrust_pivot_turan_plot.png}
-  \caption{Graphes de Moon-Moser}%
+  \caption{Moon-Moser}%
   \label{subfig:pr_cliques_turan}
   \end{subfigure}
   \caption{Comparaison de CLIQUES en \emph{Python} et \emph{Rust} sur des graphes spéciaux}%
@@ -1291,6 +1299,139 @@ cliques(&mut subg_p.clone(), &mut cand_p.clone(), q, g, result, delay);
 Assez étrangement malgré le calcul de l'intersection entre \texttt{SUBG / CAND} et \texttt{N(p)} on peut voir que nous effectuons une nouvelle copie de ces ensembles nouvellement calculés lors de l'appel récursif. Si l'on retire le \texttt{.clone()} dans l'appel récursif, le compilateur se plaint qu'il ne peut pas emprunter les-dits valeurs\footnote{Voir la documentation officielle de \emph{Rust} pour comprendre le principe d'emprunt \href{https://doc.rust-lang.org/stable/book/ch04-00-understanding-ownership.html}{ici}} de façon mutable. Cela se fixe facilement en copiant les ensembles, ainsi nous obtenons notre propre copie que nous pouvons emprunter de façon mutable, malheureusement cela introduit une copie inutile pour ces deux ensembles.
 Après révision du code il s'avère que pour éviter ces copies, il suffit de déclarer \texttt{subg\_p} et \texttt{cand\_p} comme des variables mutables avec le mot clé \texttt{mut}. Désormais il est possible de passer les ensembles à l'appel récursif et celui-ci peut les emprunter sans soucis.
 
+Certe l'éliminations de ces \texttt{.clone()} inutile est une bonne nouvelle mais comme mentionné dans la section sur l'implémentation en \emph{Rust} (\ref{subsec:rust}), d'autres sont présents. Notamment au calcul de \texttt{subg\_p} et \texttt{cand\_p} mais aussi de la boucle lors du calcul de \[ CAND - N(u) \]. Après des recherchents plus approfondies il se trouve que que la fonction \texttt{.copied()} existe et peut-être utilisée en lieu et place de \texttt{.cloned()}. cette fonction peut s'avérer plus performante dans certain cas (surtout avec des types primitifs). Extrait de la documentation officielle de \emph{Rust} à propos de \texttt{Clone} : \textit{\guillemotleft Differs from Copy in that Copy is implicit and an inexpensive bit-wise copy, while Clone is always explicit and may or may not be expensive. \guillemotright}
+
+Tout cela a mené à une amélioration des performances de -+ 20\%, ce qui est un début mais cela reste loin du résultat attendu. \emph{Python} reste toujours meilleur que \emph{Rust}. Après discussion avec des personnes plus familière avec le langage, il est apparu que le soucis de performance ne venait pas du code mais de la façon dont celui-ci est exécuté. Jusqu'à présent, nous utilisions la commande \texttt{cargo run}, or, cette commande correspond au mode \emph{debug} de \emph{Rust} et compile le code mais sans optimisations. Pour profiter pleinement de la puissance du langage, il est recommandé d'utiliser la commande \texttt{cargo run --release}\footnote{Plus d'information : \url{https://doc.rust-lang.org/stable/book/ch01-03-hello-cargo.html}}.
+
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.24\textwidth}
+    \includegraphics[width=\textwidth]{images/total_new_pyrust_CLIQUES_plot.png}
+  \caption{CLIQUES}%
+  \label{subfig:pr2_cliques}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \includegraphics[width=\textwidth]{images/total_new_pyrust_BK_plot.png}
+  \caption{Bron-Kerbosch}%
+  \label{subfig:pr2_bk}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \includegraphics[width=\textwidth]{images/total_new_pyrust_BKP_M_plot.png}
+  \caption{BKP\_M}%
+  \label{subfig:pr2_bkp_m}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \includegraphics[width=\textwidth]{images/total_new_pyrust_BKP_R_plot.png}
+  \caption{BKP\_R}%
+  \label{subfig:pr2_bkp_r}
+  \end{subfigure}
+  \caption{Comparaison des différents algorithmes en \emph{Python} et \emph{Rust}, temps total moyen}%
+  \label{fig:pvr2}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.24\textwidth}
+    \includegraphics[width=\textwidth]{images/delay_new_pyrust_CLIQUES_plot.png}
+  \caption{CLIQUES}%
+  \label{subfig:pr2_delay_cliques}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \includegraphics[width=\textwidth]{images/delay_new_pyrust_BK_plot.png}
+  \caption{Bron-Kerbosch}%
+  \label{subfig:pr2_delay_bk}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \includegraphics[width=\textwidth]{images/delay_new_pyrust_BKP_M_plot.png}
+  \caption{BKP\_M}%
+  \label{subfig:pr2_delay_bkp_m}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \includegraphics[width=\textwidth]{images/delay_new_pyrust_BKP_R_plot.png}
+  \caption{BKP\_R}%
+  \label{subfig:pr2_delay_bkp_r}
+  \end{subfigure}
+  \caption{Comparaison des différents algorithmes en \emph{Python} et \emph{Rust}, délais moyen}%
+  \label{fig:pvr2_delay}
+\end{figure}
+
+En utilisant la commande indiquée nous avons désormais des résultats cohérents. Les Figures \ref{fig:pvr2} et \ref{fig:pvr2_delay} montrent bien que de manière générale \emph{Rust} est plus efficace que \emph{Python}, ce qui était un résultat attendu. Ce résultat est encourageant et montre l'importance du choix du langage pour des tâches complexes et prenant du temps.
+
+La Figure \ref{fig:pvr2_all} compare le temps total pour énumérer toutes les cliques sur des graphes spéciaux. Nous pouvons constater des résultats beaucoup plus mitigés. En effet, pour les graphes complets et de Moon-Moser nous n'observons pas de meilleur temps d'exécution, bien au contraire, dans le cas des graphes vides nous avons même des performances bien pire et ce, peu importe l'algorithme utilisé. Cela est dû au fait que le code \emph{Rust} fait plus de travail lors de la création de la boucle permettant d'itérer sur \(CAND - N(u)\).
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_BKP_R_new_pyrust_pivot_complete_plot.png}
+  \caption{Graphes complets}%
+  \label{subfig:pr2_BKP_R_complete}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_BKP_R_new_pyrust_pivot_empty_plot.png}
+  \caption{Graphes vides}%
+  \label{subfig:pr2_BKP_R_empty}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_BKP_R_new_pyrust_pivot_turan_plot.png}
+  \caption{Moon-Moser}%
+  \label{subfig:pr2_BKP_R_turan}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_BKP_M_new_pyrust_pivot_complete_plot.png}
+  \caption{Graphes complets}%
+  \label{subfig:pr2_BKP_M_complete}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_BKP_M_new_pyrust_pivot_empty_plot.png}
+  \caption{Graphes vides}%
+  \label{subfig:pr2_BKP_M_empty}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_BKP_M_new_pyrust_pivot_turan_plot.png}
+  \caption{Moon-Moser}%
+  \label{subfig:pr2_BKP_M_turan}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_CLIQUES_new_pyrust_pivot_complete_plot.png}
+  \caption{Graphes complets}%
+  \label{subfig:pr2_cliques_complete}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_CLIQUES_new_pyrust_pivot_empty_plot.png}
+  \caption{Graphes vides}%
+  \label{subfig:pr2_cliques_empty}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\textwidth}
+    \includegraphics[width=\textwidth]{images/total_CLIQUES_new_pyrust_pivot_turan_plot.png}
+  \caption{Moon-Moser}%
+  \label{subfig:pr2_cliques_turan}
+  \end{subfigure}
+  \caption{Comparaison entre \emph{Python} et \emph{Rust} sur des graphes spéciaux}%
+  \label{fig:pvr2_all}
+\end{figure}
+\begin{table}
+  \centering
+  \begin{tabular}{|l||l|l|l|l|}
+    \hline
+    Ordre & BK & BKP\_R & BKP\_M & CLIQUES \\
+    \hline
+    \hline
+    4 & $\downarrow-35.9^{\%}$ & $\downarrow-42.7^{\%}$ & $\downarrow-25.4^{\%}$ & $\downarrow-25.9^{\%}$ \\
+    5 & $\downarrow-35.8^{\%}$ & $\downarrow-31.9^{\%}$ & $\downarrow-21.1^{\%}$ & $\downarrow-23.3^{\%}$ \\
+    6 & $\downarrow-42.4^{\%}$ & $\downarrow-31.4^{\%}$ & $\downarrow-35.5^{\%}$ & $\downarrow-25.6^{\%}$ \\
+    7 & $\downarrow-39.9^{\%}$ & $\downarrow-33.1^{\%}$ & $\downarrow-34.3^{\%}$ & $\downarrow-26.1^{\%}$ \\
+    8 & $\downarrow-37.3^{\%}$ & $\downarrow-31.5^{\%}$ & $\downarrow-33.5^{\%}$ & $\downarrow-23.5^{\%}$ \\
+    9 & $\downarrow-36.8^{\%}$ & $\downarrow-31.4^{\%}$ & $\downarrow-34.6^{\%}$ & $\downarrow-24.5^{\%}$ \\
+    10 & $\downarrow-36.7^{\%}$ & $\downarrow-31.1^{\%}$ & $\downarrow-34.4^{\%}$ & $\downarrow-22.7^{\%}$ \\
+    \hline
+  \end{tabular}
+  \caption{coucou}
+  \label{table:rust_total}
+\end{table}
+
+De manière générale, \emph{Rust} reste plus performant même s'il est recommandé malgré des performances médiocre sur des graphes vides et équivalentes sur des graphes complets et de Moon-Moser. Également, il est probable qu'il soit possible d'améliorer les implémentations \emph{Rust} en utilisant une autre approche plus propice au langage que les \emph{HashSet} qui, certes, marchent bien en \emph{Python} mais induisent des copies superflues en \emph{Rust}.
+
 \newpage
 \section{Conclusion}
 
@@ -1300,7 +1441,7 @@ Dans un premier temps, les résultats obtenus ont confirmé les complexités de 
 
 Afin d'aller plus loin nous avons pris des graphes spéciaux, décrits au préalable, afin de mettre en lumière des différences de performances plus significatives entre les quatres algorithmes. Nous avons donc testé sur des graphes vides, complet et de Moon-Moser afin de voir si ces graphes montraient des tendances différentes. Nous avons pu constater que c'est le cas : CLIQUES se comporte mal sur les graphes complets à cause de la façon dont il caclule son pivot. En essayant de tester nos implémentations sur de grands graphes tirés de cas réel, nous avons pu mettre en évidence les limites techniques de celles-ci étant donné que le matériel utilisé n'était pas suffisant pour gérer des graphes de cette taille. Une façon d'améliorer ce point pourrait être d'utiliser les générateurs de \emph{Python} et de réécrire les algorithmes pour les utiliser directement et ainsi permettre leur utilisation sur de plus grands graphes.
 
-Dans un second temps, nous souhaitions montrer l'importance du choix du langage de programmation pour ce genre d'algorithme et des gains de performances qui peuvent s'en suivre. Ainsi une version en \emph{Rust}, langage de bas niveau, a été réalisée avec le postulat que le \emph{Rust} serait plus efficace. Nous avons constaté la difficulté de traduire d'un langage de haut niveau à un autre langage de programmation de bas niveau, rendant de ce fait toute implémentation plus enclin à avoir des défauts d'optimisation, ceci étant dû à une moins bonne maitrise de ce dernier. Il est clair qu'une meilleure maitrise du langage permettrait d'obtenir de bien meilleurs résultats.
+Dans un second temps, nous souhaitions montrer l'importance du choix du langage de programmation pour ce genre d'algorithme et des gains de performances qui peuvent s'en suivre. Ainsi une version en \emph{Rust}, langage de bas niveau, a été réalisée avec le postulat que le \emph{Rust} serait plus efficace. Nous avons constaté la difficulté de traduire d'un langage de haut niveau à un autre langage de programmation de bas niveau, rendant de ce fait toute implémentation plus enclin à avoir des défauts d'optimisation, ceci étant dû à une moins bonne maitrise de ce dernier. Il est clair qu'une meilleure maitrise du langage permettrait d'obtenir de bien meilleurs résultats. De surcroit, nous avons pu constater l'importance de la maitrise d'un langage. Dans le cas de \emph{Rust}, afin de profiter de ses optimisation, il est nécessaire de compiler le code en mode \emph{release}. En finalité \emph{Rust} est plus performant que \emph{Python} même si certains cas montrent le contraire. Une piste pour améliorer cette implémentation serait d'utiliser d'autres structures de données que équivalents à celles utilisées en \emph{Python}.
 
 En conclusion, ce projet m'a permis de comprendre et comparer des algorithmes pointus sur un sujet de recherche actif, de comprendre les défis liés à l'implémentation de ceux-ci et de constater les différences entre les attentes théoriques et les résultats expérimentaux. Également, ce projet m'a permis de me familiariser davantage avec le langage \emph{Rust} et de mieux comprendre des mécanismes que je n'avais encore jamais rencontré. J'ai pu me rendre compte aussi de la difficulté de traduire d'un langage à un autre des algorithmes et de voir qu'il était plus que facile de faire des erreurs menant à une détérioration notable des performances par rapport à ce qui est attendu.
 

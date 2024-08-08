@@ -46,6 +46,10 @@ impl Graph {
         };
     }
 
+    pub fn get_order(&mut self) -> u32 {
+        self.order
+    }
+
     pub fn add_nodes(&mut self, nodes: Vec<u32>) {
         self.order += nodes.len() as u32;
         for n in nodes {

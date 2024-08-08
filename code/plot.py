@@ -222,5 +222,76 @@ def process_and_plot_pyrust(typ, directory):
         plt.savefig(f'./out_fig/{typ}_pyrust_{fn}_plot.png')
         plt.close()
 
-process_and_plot_pyrust('total', './out/')
-process_and_plot_pyrust('delay', './out/')
+def process_and_plot_tabular(typ, directory):
+    """
+    Compare algo par algo les résultats entre Rust et Python pour les graphes
+    """
+    fns = ["CLIQUES", "BKP_R", "BKP_M", "BK"]
+    function_data = {fn: {} for fn in fns}
+    rust_data = {fn: {} for fn in fns}
+    orders = None
+
+    for fn in fns:
+        orders = set()
+        pattern = re.compile(rf'^{typ}_res_({fn})_(\d+)\.out$')
+        rust_pattern = re.compile(rf'^{typ}_rust_res_({fn})_(\d+)\.out$')
+
+        for filename in os.listdir(directory):
+            if pattern.match(filename):
+                parts = filename.split('_')
+                order = int(parts[-1].split('.')[0])
+
+                # Read data from file
+                data = read_data(os.path.join(directory, filename))
+
+                # Calculate mean
+                mean_value = calculate_mean(data)
+
+                # Store mean value for function and order
+                function_data[fn][order] = mean_value
+
+                # Add order to set of orders
+                orders.add(order)
+
+            elif rust_pattern.match(filename):
+                parts = filename.split('_')
+                order = int(parts[-1].split('.')[0])
+
+                # Read data from file
+                data = read_data(os.path.join(directory, filename))
+
+                # Calculate mean
+                mean_value = calculate_mean(data)
+
+                # Store mean value for function and order
+                rust_data[fn][order] = mean_value
+
+        # Convert orders set to sorted list
+        orders = sorted(list(orders))
+
+    # Calcul des différences en pourcentage et génération du tableau LaTeX
+    latex_table = "\\begin{tabular}{|l||l|l|l|l|}\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  Ordre & BK & BKP\\_R & BKP\\_M & CLIQUES \\\\\n"
+    latex_table += "  \\hline\n"
+    latex_table += "  \\hline\n"
+    orders = [4,5,6,7,8,9,10]
+    for order in orders:
+        latex_table += f"  {order} "
+        for fn in fns:
+            python_mean = function_data[fn].get(order, 0)
+            rust_mean = rust_data[fn].get(order, 0)
+            if python_mean == 0:  # Avoid division by zero
+                difference = 0
+            else:
+                difference = ((rust_mean - python_mean) / python_mean) * 100
+            arrow = "\\uparrow" if difference > 0 else "\\downarrow"
+            latex_table += f"& ${arrow}{difference:.1f}^{{\\%}}$ "
+        latex_table += "\\\\\n"
+
+    latex_table += "  \\hline\n"
+    latex_table += "\\end{tabular}"
+    return latex_table
+
+table = process_and_plot_tabular('total', './out/')
+print(table)

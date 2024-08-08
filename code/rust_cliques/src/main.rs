@@ -1,51 +1,54 @@
-mod benchmark;
-mod algo;
 mod utils;
-use std::env;
-use std::vec::Vec;
+mod algo;
+use std::io::{self};
 use std::collections::HashSet;
+use std::time::Instant;
 use utils::Graph;
-use algo::*;
-use benchmark::*;
+use algo::{bk, bk_m, bk_r, cliques};
 
 fn main() {
-    env::set_var("RUST_BACKTRACE", "1");
-    total_time_main();
-    total_time_special();
-    delay_main();
-    delay_special();
-}
+    println!("Please enter the graph in g6 format:");
+    let mut g6 = String::new();
+    io::stdin().read_line(&mut g6).expect("Failed to read line");
+    let g6 = g6.trim();
 
-fn test(f: AlgoFn, g: &mut Graph) {
-    let mut res = Vec::new();
-    let mut delay = Vec::new();
+    // HhCOhn_
+    let mut graph = match Graph::from_g6(g6) {
+        Ok(graph) => graph,
+        Err(err) => {
+            println!("Error parsing graph: {:?}", err);
+            return;
+        }
+    };
+    println!("{}", graph.to_string());
 
-    let subg: HashSet<u32> = g.adj.keys().cloned().collect();
-    let cand: HashSet<u32> = g.adj.keys().cloned().collect();
-    let mut q = Vec::new();
+    println!("Please choose the algorithm to use (1 for Bron-Kerbosch, 2 for BKP_M, 3 for BKP_R, 4 for CLIQUES):");
+    let mut algo_choice = String::new();
+    io::stdin().read_line(&mut algo_choice).expect("Failed to read line");
+    let algo_choice: u32 = algo_choice.trim().parse().expect("Please enter a valid number");
 
-    f(&mut subg.clone(), &mut cand.clone(), &mut q, &g, &mut res, &mut delay);
-    println!("{:?}", res);
-}
-fn simple_test() {
-    let mut g: Graph = Graph::new(9);
-    g.add_edge(1, 2);
-    g.add_edge(1, 9);
-    g.add_edge(9, 2);
-    g.add_edge(9, 3);
-    g.add_edge(3, 2);
-    g.add_edge(3, 8);
-    g.add_edge(3, 4);
-    g.add_edge(8, 4);
-    g.add_edge(4, 5);
-    g.add_edge(4, 7);
-    g.add_edge(4, 6);
-    g.add_edge(8, 7);
-    g.add_edge(8, 6);
-    g.add_edge(6, 7);
+    let mut subg: HashSet<u32> = graph.adj.keys().cloned().collect();
+    let mut cand: HashSet<u32> = graph.adj.keys().cloned().collect();
+    let mut q: Vec<u32> = Vec::new();
+    let mut result: Vec<String> = Vec::new();
+    let mut delay: Vec<std::time::Duration> = Vec::new();
+    let now = Instant::now();
 
-    test(cliques, &mut g);
-    test(bk, &mut g);
-    test(bk_m, &mut g);
-    test(bk_r, &mut g);
+    match algo_choice {
+        1 => bk(&mut subg, &mut cand, &mut q, &graph, &mut result, &mut delay, &now),
+        2 => bk_m(&mut subg, &mut cand, &mut q, &graph, &mut result, &mut delay, &now),
+        3 => bk_r(&mut subg, &mut cand, &mut q, &graph, &mut result, &mut delay, &now),
+        4 => cliques(&mut subg, &mut cand, &mut q, &graph, &mut result, &mut delay, &now),
+        _ => {
+            println!("Invalid choice. Please choose a number between 1 and 4.");
+            return;
+        }
+    }
+
+    let duration = now.elapsed();
+    let mean_delay = delay.iter().sum::<std::time::Duration>() / delay.len() as u32;
+
+    println!("Result of the algorithm: {:?}", result);
+    println!("Mean delay: {:?}", mean_delay);
+    println!("Total execution time: {:?}", duration);
 }

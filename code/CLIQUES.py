@@ -19,8 +19,6 @@ Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
     if len(SUBG) == 0:
         result.append(" ".join(map(str, Q)))
         delay.append(time.perf_counter())
-        # print(" ".join(map(str, Q)))
-        # print("clique")
     else:
         u = max(SUBG, key=lambda u: len(CAND & G.adj[u]))
         for p in CAND - G.adj[u]:
@@ -32,25 +30,24 @@ Bron-Kerbosch algorithms" by Alessio Conte and Etsuji Tomita.
             Q.pop()
             CAND.remove(p)
 
-
-if __name__ == '__main__':
-    # g6 = input()
-    # G = decode_g6(g6.encode())
+def main():
     G = Graph(9)
-    G.add_edge(1, 2)
-    G.add_edge(1, 9)
-    G.add_edge(9, 2)
-    G.add_edge(9, 3)
-    G.add_edge(3, 2)
-    G.add_edge(3, 8)
+    G.add_edge(0, 1)
+    G.add_edge(0, 8)
+    G.add_edge(8, 1)
+    G.add_edge(8, 2)
+    G.add_edge(2, 1)
+    G.add_edge(2, 7)
+    G.add_edge(2, 3)
+    G.add_edge(7, 3)
     G.add_edge(3, 4)
-    G.add_edge(8, 4)
-    G.add_edge(4, 5)
-    G.add_edge(4, 7)
-    G.add_edge(4, 6)
-    G.add_edge(8, 7)
-    G.add_edge(8, 6)
-    G.add_edge(6, 7)
+    G.add_edge(3, 6)
+    G.add_edge(3, 5)
+    G.add_edge(7, 6)
+    G.add_edge(7, 5)
+    G.add_edge(5, 6)
     res = []
+    print(G.to_g6())
+    print(G)
     CLIQUES(set(G.adj.keys()), set(G.adj.keys()), [], G, res, [])
     print(res)
