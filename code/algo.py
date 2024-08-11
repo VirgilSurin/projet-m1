@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import random
 import time
-from utils import decode_g6, Graph
+from utils import Graph
 
 def BK(SUBG: set, CAND: set, Q: list, G: Graph, result: list, delay: list):
     """

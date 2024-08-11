@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import os
 import time
-import numpy as np
 from utils import decode_g6
 from algo import *
 
@@ -32,7 +30,9 @@ def main():
     print("3 for BKP_R")
     print("4 for CLIQUES")
     print("Enter your choice :")
-    algo_choice = int(input().strip())
+    algo_choice = '-1'
+    while algo_choice not in ['1', '2', '3', '4', '5']:
+        algo_choice = input("Enter the number corresponding to your choice: ").strip()
 
     SUBG = set(G.adj.keys())
     CAND = set(G.adj.keys())

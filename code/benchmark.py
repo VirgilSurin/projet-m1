@@ -119,7 +119,7 @@ def main():
 
     print("Choose the test set:")
     print("1 - Standard (order 4-10)")
-    print("2 - Special (graph types: complete, turan, empty)")
+    print("2 - Special (graph types: complete, moon-moser, empty)")
     test_set_choice = '0'
     while test_set_choice not in ['1', '2']:
         test_set_choice = input("Enter the number corresponding to your choice: ").strip()

@@ -184,7 +184,7 @@ fn main() {
     println!("");
     println!("Choose the test set:");
     println!("1 - Standard (order 4-10)");
-    println!("2 - Special (graph types: complete, turan, empty)");
+    println!("2 - Special (graph types: complete, moon-moser, empty)");
 
     let mut test_set_choice = String::new();
     while !["1", "2"].contains(&test_set_choice.trim()) {
