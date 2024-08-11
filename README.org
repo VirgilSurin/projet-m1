@@ -1,8 +1,3 @@
-* Projet de master 1 - Virgil Surin - Théorie des graphes
-Auteur : Virgil Surin
-
-Directeur : Hadrien Mélot
-
-Co-directeur : Sébastien Bonte
-
-2023-2024
+* Install
+        In order to install everythink you need, run "install.sh".
+        To run the project, run "run.sh".

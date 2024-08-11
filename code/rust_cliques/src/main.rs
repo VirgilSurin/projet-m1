@@ -1,10 +1,11 @@
-mod utils;
 mod algo;
+mod utils;
+use crate::algo::*;
+use crate::utils::Graph;
+
 use std::io::{self};
 use std::collections::HashSet;
 use std::time::Instant;
-use utils::Graph;
-use algo::{bk, bk_m, bk_r, cliques};
 
 fn main() {
     println!("Please enter the graph in g6 format:");

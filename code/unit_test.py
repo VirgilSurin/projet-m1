@@ -187,8 +187,55 @@ def delay_special():
             clique_delay_special(order, BKP_R, graph_type)
 
 
-if __name__ == '__main__':
-    total_time_main()
-    delay_main()
-    total_time_special()
-    delay_special()
+
+def main():
+    print("Choose the type of benchmark:")
+    print("1 - Total Time Benchmark")
+    print("2 - Delay Benchmark")
+    benchmark_type = input("Enter the number corresponding to your choice: ").strip()
+
+    print("Choose the algorithm:")
+    print("1 - CLIQUES")
+    print("2 - Bron-Kerbosch (BK)")
+    print("3 - Bron-Kerbosch with Pivoting (BKP_M)")
+    print("4 - Randomized Bron-Kerbosch (BKP_R)")
+    algo_choice = input("Enter the number corresponding to your choice: ").strip()
+
+    print("Choose the test set:")
+    print("1 - Standard (order 4-10)")
+    print("2 - Special (graph types: complete, turan, empty)")
+    test_set_choice = input("Enter the number corresponding to your choice: ").strip()
+
+    algorithm = None
+    if algo_choice == '1':
+        algorithm = CLIQUES
+    elif algo_choice == '2':
+        algorithm = BK
+    elif algo_choice == '3':
+        algorithm = BKP_M
+    elif algo_choice == '4':
+        algorithm = BKP_R
+    else:
+        print("Invalid algorithm choice.")
+        return
+
+    if benchmark_type == '1':
+        if test_set_choice == '1':
+            total_time_main()
+        elif test_set_choice == '2':
+            total_time_special()
+        else:
+            print("Invalid test set choice.")
+    elif benchmark_type == '2':
+        if test_set_choice == '1':
+            delay_main()
+        elif test_set_choice == '2':
+            delay_special()
+        else:
+            print("Invalid test set choice.")
+    else:
+        print("Invalid benchmark type choice.")
+
+
+if __name__ == "__main__":
+    main()

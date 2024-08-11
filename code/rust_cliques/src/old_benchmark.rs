@@ -23,7 +23,7 @@ fn bench_total_time(order: u32, algo: AlgoFn) {
     let mut delay_output = File::create(delay_path).expect("Unable to create output file");
     let reader = BufReader::new(input.unwrap());
 
-    for line in reader.lines().collect::<Vec<_>>().into_iter() {
+    for line in reader.lines().collect::<Vec<_>>().into_iter().progress() {
         let g6 = line.unwrap();
         let G: Graph = Graph::from_g6(&g6).expect("Unable to decode g6");
         let mut subg: HashSet<u32> = G.adj.keys().cloned().collect();

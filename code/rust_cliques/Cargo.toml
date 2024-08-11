@@ -9,3 +9,11 @@ edition = "2021"
 bitvec = "1"
 indicatif = "0.17.8"
 rand = "0.8.5"
+
+[[bin]]
+name = "interactive"
+path = "src/main.rs"
+
+[[bin]]
+name = "benchmark"
+path = "src/benchmark.rs"
