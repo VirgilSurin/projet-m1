@@ -13,16 +13,22 @@ fn main() {
     let g6 = g6.trim();
 
     // HhCOhn_
-    let mut graph = match Graph::from_g6(g6) {
+    let graph = match Graph::from_g6(g6) {
         Ok(graph) => graph,
         Err(err) => {
             println!("Error parsing graph: {:?}", err);
             return;
         }
     };
-    println!("{}", graph.to_string());
+    println!("{}\n", graph.to_string());
 
-    println!("Please choose the algorithm to use (1 for Bron-Kerbosch, 2 for BKP_M, 3 for BKP_R, 4 for CLIQUES):");
+    println!("Please choose the algorithm to use:");
+    println!("1 for BK");
+    println!("2 for BKP_M");
+    println!("3 for BKP_R");
+    println!("4 for CLIQUES");
+
+    println!("Enter your choice :");
     let mut algo_choice = String::new();
     io::stdin().read_line(&mut algo_choice).expect("Failed to read line");
     let algo_choice: u32 = algo_choice.trim().parse().expect("Please enter a valid number");
@@ -48,9 +54,9 @@ fn main() {
     let duration = now.elapsed();
     let mean_delay = delay.iter().sum::<std::time::Duration>() / delay.len() as u32;
 
-   println!("Result of the algorithm:");
+   println!("\nResult of the algorithm:");
     for clique in result {
-        println!("{}", clique);
+        println!("{{{}}}", clique);
     }
     println!("Mean delay: {:?}", mean_delay);
     println!("Total execution time: {:?}", duration);

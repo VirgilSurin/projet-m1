@@ -8,7 +8,7 @@ class Graph:
         s = ""
         for v in self.adj:
             s += f"{v:<6} : {self.adj[v]}\n"
-        return f"n : {self.order}\n{s}"
+        return f"{s}"
 
     def add_edge(self, u, v):
         if u not in self.adj:

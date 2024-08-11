@@ -1,9 +1,6 @@
 import time
 from tqdm import tqdm
-from CLIQUES import CLIQUES
-from BK import BK
-from BKP_M import BKP_M
-from BKP_R import BKP_R
+from algo import *
 from utils import *
 
 
