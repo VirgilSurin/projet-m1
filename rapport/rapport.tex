@@ -156,7 +156,7 @@
 
 \section*{Remerciements}
 
-Je tiens à remercier mon directeur de projet, M. Hadrien Mélot, pour m'avoir accompagné et encouragé tout au long de ce projet mais aussi lors de ma bourse d'initiation à la recherche. Merci d'avoir cur en mes capacités à mener se projet à bien. Également j'aimerais remercier mon co-directeur de projet, M. Sébastient Bonte, pour l'encadrement qu'il m'a fourni lors de ma BIR et surtout ses précieux conseils de rédactions. Je souhaite remercier mes amis et particulièrement Alessandro Spinozi, génie du \emph{Rust}, qui m'a conseillé sur mon code lorsque je bloquais dessus. Merci également à Catherine André, pour ses relectures et corrections multiples. Je remercie également mes rapporteurs qui auront pris le temps de lire et d'évaluer ce rapport.
+Je tiens à remercier mon directeur de projet, M. Hadrien Mélot, pour m'avoir accompagné et encouragé tout au long de ce projet mais aussi lors de ma bourse d'initiation à la recherche. Merci d'avoir cur en mes capacités à mener se projet à bien. Également j'aimerais remercier mon co-directeur de projet, M. Sébastient Bonte, pour l'encadrement qu'il m'a fourni lors de ma BIR et surtout ses précieux conseils de rédactions. Je souhaite remercier mes amis et particulièrement Alessandro Spinozi, génie du \emph{Rust}, qui m'a conseillé sur mon code lorsque je bloquais dessus. Merci également à Catherine André, pour ses relectures et corrections multiples. Je remercie également mon rapporteur, M. Jef Wisjen, qui aura pris le temps de lire et d'évaluer ce rapport.
 Enfin je remercie chaleureusement toutes les personnes qui m'ont accompagnées cette année, que ce soit des amis ou de la famille. Ces personnes qui ont été là dans les bons comme les mauvais moments.
 
 
@@ -1458,6 +1458,8 @@ Enfin ce projet m'a permis d'améliorer la qualité de ma rédaction en m'enseig
 
 \appendix
 
+\section{Tableaux de résultats}
+\label{sec:tables}
 \begin{longtable}{|l||l|l|l|l|}
   \hline
   Ordre & Graphe & CLIQUES & BKP\_R & BKP\_M  \endhead
@@ -1989,6 +1991,34 @@ Enfin ce projet m'a permis d'améliorer la qualité de ma rédaction en m'enseig
   \caption{Gain de temps moyen d'exécution de \emph{Rust} par rapport à \emph{Python} en pourcentage sur des graphes spéciaux (Plus bas signifie de meilleures performances)}
 \end{longtable}
 
+\newpage
+\section{Manuel d'utilisation}%
+\label{sec:guide}
+
+Le code source du projet comprenant les différentes implémentations en \emph{Python} et en \emph{Rust} sont disponible via \url{https://github.com/VirgilSurin/projet-m1}.
+
+\subsection{Installation}%
+\label{subsec:installation}
+
+Un script d'installation \texttt{install.sh} se trouve à la racine du repo. L'exécuter installera tous les packages \emph{Python} nécessaire via \emph{pip} (et installera \emph{pip} également si celui-ci n'est pas installé). Notez qu'il faut avoir \emph{Python}\footnote{\url{https://www.python.org/downloads/}} et \emph{Rust}\footnote{\url{https://www.rust-lang.org/tools/install}} d'installer sur votre machine.
+
+Si le script ne marche pas sur votre système, voici la liste des packages \emph{Python} requis :
+\begin{itemize}
+  \item \texttt{numpy}
+  \item \texttt{matplotlib}
+  \item \texttt{tqdm}
+  \item \texttt{networkx}
+\end{itemize}
+
+\subsection{Utilisation}%
+\label{subsec:use}
+
+Le code de ce projet se veut structurer comme un outil permettant de réaliser le benchmark des différentes implémentations présentées dans ce rapport mais aussi d'utiliser les différents algorithmes en mode \og \emph{interactif} \fg{}. Ce dernier vous permet d'entrer un graphe au format g6 et d'énumérer toutes ses cliques maximales en sélectionnant le langage et l'algorithmes à utiliser.
+
+Pour lancer le projet, il suffit de lancer le script \texttt{run.sh} se trouvant à la racine du projet et de suivre les instructions à l'écran. Vous aurez alors le choix d'utiliser le mode interactif en \emph{Python} ou en \emph{Rust} mais aussi de réaliser un benchmark de différents algorithmes sur les deux sets de test présenté. Enfin vous pouvez également générer des graphiques se basant sur les données obtenues aux benchmarks.
+
+Les outputs des benchmarks ainsi que les graphiques se trouvent dans le répertoire \texttt{./code/out/} et \texttt{./code/out\_fig/} respectivement.
+Notez que relancer un même benchmark ou la génération des graphiques écrasera les précédents.
 
 
 \end{document}
