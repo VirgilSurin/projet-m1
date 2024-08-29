@@ -1,0 +1,23 @@
+\frametitle{Comparaison Python vs Rust}
+  \begin{columns}
+\column{0.48\textwidth}
+  \begin{figure}[h]
+  \begin{lstlisting}[language=Rust]
+        let subg_vec: Vec<&u32> = subg.iter().collect();
+        let u = subg_vec.choose(&mut rng).unwrap();
+        let u_neighbors: HashSet<_> = g.adj[&u].iter().copied().collect();
+        for p in cand.difference(&u_neighbors).copied().collect::<Vec<u32>>() {
+            let p_neighbors: HashSet<_> = g.adj[&p].iter().copied().collect();
+  \end{lstlisting}
+  \caption{Extrait de code Rust}
+  \end{figure}
+\column{0.48\textwidth}
+  \begin{figure}[h]
+  \begin{lstlisting}[language=Python]
+        u = random.choice(list(SUBG))
+        for p in CAND - G.adj[u]:
+            p_neighbors = G.adj[p]
+  \end{lstlisting}
+  \caption{Extrait de code Python}
+  \end{figure}
+  \end{columns}
