@@ -42,7 +42,7 @@
 %\usetheme{Ilmenau}
 %\usetheme{JuanLesPins}
 %\usetheme{Luebeck}
-\usetheme{Madrid}
+\usetheme{Berlin}
 %\usetheme{Malmoe}
 %\usetheme{Marburg}
 %\usetheme{Montpellier}
@@ -73,11 +73,31 @@
 %\usecolortheme{wolverine}
 
 %\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
-%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
 
-%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+% Commande pour la footline personnalisée
+\makeatletter
+\defbeamertemplate*{footline}{custom theme}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.15\paperwidth,ht=2.5ex,dp=1.0ex,leftskip=1em]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.15\paperwidth,ht=2.5ex,dp=1.0ex,center]{author in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshortinstitute
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.0ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.2\paperwidth,ht=2.5ex,dp=1.0ex,rightskip=1em]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\hfill\insertframenumber/\inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
 }
-
+\makeatother
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
 \usepackage{subfigure}
 \usepackage{tikz}
 \usetikzlibrary{arrows, automata}
@@ -116,7 +136,7 @@
 
 \lstset{style=mystyle}
 %----------------------------------------------------------------------------------------
-%	TITLE PAGE
+%TITLE PAGE
 %----------------------------------------------------------------------------------------
 
 \title[Énumération des cliques maximales]{Étude comparative d'algorithmes d'énumération des cliques maximales d'un graphe simple} % The short title appears at the bottom of every slide, the full title is only on the title page
@@ -150,7 +170,7 @@ Directeur: \textit{Hadrien Mélot} % Your email address
 \begin{frame}
 \frametitle{Introduction}
 \begin{block}{Motivation}
-  L'énumération des cliques maximales dans un graphe simple est un problème couteux en temps avec de nombreuses applications concrètes (biologie, sociologie, informatique,...).
+  L'énumération des cliques maximales dans un graphe simple est un problème coûteux en temps avec de nombreuses applications concrètes (biologie, sociologie, informatique, etc.).
 \end{block}
 \pause
 \begin{block}{Objectif}
@@ -174,24 +194,26 @@ Directeur: \textit{Hadrien Mélot} % Your email address
   Un graphe simple non orienté est défini par un ensemble de nœuds \(V\) et un ensemble d'arêtes \(E\). Chaque arête relie une paire de nœuds distincts sans direction associée, ce qui signifie que l'arête \((v, w)\) est identique à l'arête \((w, v)\).
 \end{definition}
 \begin{example}
-  \begin{multicols}{2}
-    Graphe avec 4 noeuds :\vspace*{0.4cm}
-      \(V = \{1,2,3,4\}\)
-      $E = \{(1,2), (1, 3), (2,3), (3,4)\}$
-  \begin{figure}
-    \centering
-    \begin{tikzpicture}
+  \begin{columns}
+    \column{0.38\textwidth}
+    Graphe avec 4 nœuds :\vspace*{0.4cm}
+    \(V = \{1,2,3,4\}\)\\
+    $E = \{(1,2), (1, 3), (2,3), (3,4)\}$
+    \column{0.38\textwidth}
+    \begin{figure}
+      \centering
+      \begin{tikzpicture}
 
-      \node (n1) at (0, 0) {1};
-      \node (n2) at (1, 2) {2};
-      \node (n3) at (2, 0) {3};
-      \node (n4) at (3, 1) {4};
+        \node (n1) at (0, 0) {1};
+        \node (n2) at (1, 2) {2};
+        \node (n3) at (2, 0) {3};
+        \node (n4) at (3, 1) {4};
 
-      \foreach \from/\to in {n1/n2, n2/n3, n1/n3, n3/n4}
-      \draw (\from) -- (\to);
-    \end{tikzpicture}
-  \end{figure}
-  \end{multicols}
+        \foreach \from/\to in {n1/n2, n2/n3, n1/n3, n3/n4}
+        \draw (\from) -- (\to);
+      \end{tikzpicture}
+    \end{figure}
+  \end{columns}
 \end{example}
 \end{frame}
 
@@ -205,12 +227,14 @@ Directeur: \textit{Hadrien Mélot} % Your email address
     Une clique est dite maximale si aucun nœud supplémentaire ne peut être ajouté sans perdre la propriété de clique. Une clique maximale est donc un sous-graphe complet qui ne peut être étendu.
   \end{definition}
   \begin{example}
-    \begin{multicols}{2}
+    \begin{columns}
+      \column{0.38\textwidth}
       Le graphe suivant possède les cliques maximales suivantes :
       \begin{itemize}
         \item \{1, 2, 3\}
         \item \{3, 4\}
       \end{itemize}
+      \column{0.38\textwidth}
       \begin{figure}
         \centering
         \begin{tikzpicture}
@@ -224,7 +248,7 @@ Directeur: \textit{Hadrien Mélot} % Your email address
           \draw (\from) -- (\to);
         \end{tikzpicture}
       \end{figure}
-    \end{multicols}
+    \end{columns}
   \end{example}
 \end{frame}
 
@@ -236,7 +260,7 @@ Directeur: \textit{Hadrien Mélot} % Your email address
 \begin{frame}
   \frametitle{Structure générale}
   \begin{center}
-  \scalebox{0.75}{
+  \scalebox{0.70}{
     \begin{minipage}{1\linewidth}
       \begin{algorithm}[H]
         \textbf{Input}: un graphe $G = (V,E)$
@@ -247,9 +271,9 @@ Directeur: \textit{Hadrien Mélot} % Your email address
           \If{$SUBG = \emptyset$} \Comment{$Q$ est une clique maximale}
           \State \textbf{print} ($ Q $)
           \Else
-          \State $u \gets$ un noeud pivot de \emph{SUBG}
-          \While{ il reste des noeuds candidats}
-          \State $p \gets$ un noeud dans $CAND \setminus N(u)$
+          \State $u \gets$ un nœud pivot de \emph{SUBG}
+          \While{il reste des nœuds candidats}
+          \State $p \gets$ un nœud dans $CAND \setminus N(u)$
           \State $ Q \cup p $ \Comment{on ajoute \emph{p} à $Q$}
           \State // Mise à jour des paramètres
           \State $SUBG_p \gets SUBG \cap N(p)$
@@ -290,7 +314,73 @@ L'algorithme CLIQUES est une optimisation de Bron-Kerbosch qui sélectionne un p
 CLIQUES est la variante de Bron-Kerbosch dont on attend les meilleures performances.
 \end{frame}
 
-%------------------------------------------------
+\begin{frame}
+  \frametitle{Bref exemple}
+  \begin{columns}
+    \column{0.28\textwidth}
+    \begin{figure}
+      \centering
+      \begin{tikzpicture}
+
+        \node (n1) at (0, 0) {1};
+        \node (n2) at (1, 2) {2};
+        \node (n3) at (2, 0) {3};
+        \node (n4) at (3, 1) {4};
+
+        \foreach \from/\to in {n1/n2, n2/n3, n1/n3, n3/n4}
+        \draw (\from) -- (\to);
+      \end{tikzpicture}
+    \end{figure}
+    \column{0.70\textwidth}
+    \begin{figure}[ht]
+      \centering
+      \forestset{
+        mynode/.style={
+          for tree={
+            rectangle, draw, text centered, align=left, anchor=north,
+            edge={-latex},
+            parent anchor=south, child anchor=north,
+            l sep+=1cm, % increase level separation
+            s sep+=0.5cm, % increase sibling separation
+            inner xsep=7pt, % horizontal padding
+            inner ysep=3pt, % vertical padding
+            font=\normalsize,
+            scale=0.3,
+          }
+        },
+        EL/.style = {
+          edge label={node[rectangle, midway, fill=white, draw=none, anchor=center, font=\tiny]{#1}}
+        }
+      }
+      \begin{forest}
+        mynode
+        [{SUBG = \{1, 2, 3, 4\}\\
+          CAND = \{1, 2, 3, 4\}\\
+          u = 3\\
+          CAND - N(u) = \{3\}}
+        [{SUBG = \{1, 2, 4\}\\
+          CAND = \{1, 2, 4\}\\
+          u = 1\\
+          CAND - N(u) = \{1, 4\}}, EL={p=3}
+        [{SUBG = \{2\}\\
+          CAND = \{2\}\\
+          u = 2\\
+          CAND - N(u) = \{2\}}, EL={p=1}
+        [{SUBG = \{\}\\
+          CAND = \{\}\\
+          Clique: \{3, 1, 2\}}, EL={p=2}]
+        ]
+        [{SUBG = \{\}\\
+          CAND = \{\}\\
+          Clique: \{3, 4\}}, EL={p=4}]
+        ]
+        ]
+      \end{forest}
+    \end{figure}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------
 \section{Résultats}
 \begin{frame}
   \frametitle{Test sets}
@@ -300,9 +390,9 @@ CLIQUES est la variante de Bron-Kerbosch dont on attend les meilleures performan
   \begin{block}{Deuxième ensemble de test}
     3 types de graphes différents, d'ordre 3 à 45 sélectionnés pour leurs propriétés spécifiques:
     \begin{itemize}
-      \item Graphe vide (autant de cliques maximales que de noeuds)
-      \item Graphe complet (une seule clique maximale contenant tous les noeuds)
-      \item Graphe de Moon-Moser (contient le nombre maximum de cliques maximales possible, soit \(3^{n/3}\), où \emph{n} est le nombre de noeuds)
+      \item Graphe vide (autant de cliques maximales que de nœuds)
+      \item Graphe complet (une seule clique maximale contenant tous les nœuds)
+      \item Graphe de Moon-Moser (contient le nombre maximum de cliques maximales possible, soit \(3^{n/3}\), où \emph{n} est le nombre de nœuds)
     \end{itemize}
   \end{block}
 \end{frame}
@@ -364,7 +454,7 @@ CLIQUES est la variante de Bron-Kerbosch dont on attend les meilleures performan
 \frametitle{Résultats en Python - Conclusion}
 \begin{block}{Conclusion}
 \begin{itemize}
-  \item Courbes exponentielles peut importe l'aglgorithme (se voit surtout sur les graphes de Moon-Moser)
+  \item Courbes exponentielles peu importe l'algorithme (se voit surtout sur les graphes de Moon-Moser)
   \item Le délai est bien linéaire
   \item Certains algorithmes sont meilleurs selon le type de graphe (exemple : CLIQUES ne performe pas bien sur les graphes complets)
 \end{itemize}
@@ -494,7 +584,7 @@ Bron-Kerbosch avec pivot aléatoire
 \begin{block}{Conclusion}
 \begin{itemize}
   \item Rust est bien meilleur que Python de manière générale
-  \item Résultat clairement inférieur ou mitigé sur des graphes spéciaux, probablement à cause de l'implémentation (\emph{HashSet})
+  \item Résultats clairement inférieurs ou mitigés sur des graphes spéciaux, probablement à cause de l'implémentation (\emph{HashSet})
 \end{itemize}
 \end{block}
 \end{frame}
@@ -504,10 +594,10 @@ Bron-Kerbosch avec pivot aléatoire
 \frametitle{Conclusion}
 \begin{block}{Conclusion}
   \begin{itemize}
-    \item Les algorithmes de Bron-Kerbosch avec pivot et CLIQUES sont bien efficaces
-    \item Les algorithmes sont sensibles au type du graphe
-    \item Le choix du pivot est important (cout en performance)
-    \item Moyennant une bonne implémentation, on peut avoir des gains significatifs en Rust par rapport à Python
+    \item Les algorithmes de Bron-Kerbosch avec pivot et CLIQUES sont très efficaces
+    \item Les algorithmes sont sensibles au type de graphe
+    \item Le choix du pivot est important (coût en performance)
+    \item Moyennant une bonne implémentation, on peut obtenir des gains significatifs en Rust par rapport à Python
   \end{itemize}
 \end{block}
 \end{frame}
